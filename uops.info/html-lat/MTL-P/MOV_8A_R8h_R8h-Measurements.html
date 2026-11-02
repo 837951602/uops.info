@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>MOV_8A (R8h, R8h)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>MOV_8A (R8h, R8h) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (AH, CH, DH, BH)</li><li>Operand 2 (r): Register (AH, CH, DH, BH)</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 3</h3></a><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 3</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 3</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>{store} MOV BH, CH</code></li>
+<li>Code: <pre>   0:	88 ef                	mov    bh,ch
+</pre></li>
+<li>Init: <pre>MOV CH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{store} MOV BH, CH&quot; -asm_late_init &quot;MOV CH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 3.0</li>
+<li>Reference cycles: 2.21</li>
+<li>UOPS_EXECUTED.THREAD: 1.02</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>{store} MOV BH, CH</code></li>
+<li>Chain instructions: <code>MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 21</li>
+<li>Code: <pre>   0:	88 ef                	mov    bh,ch
+   2:	88 ff                	mov    bh,bh
+   4:	88 ff                	mov    bh,bh
+   6:	88 ff                	mov    bh,bh
+   8:	88 ff                	mov    bh,bh
+   a:	88 ff                	mov    bh,bh
+   c:	88 ff                	mov    bh,bh
+   e:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV CH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{store} MOV BH, CH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV CH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 24.01</li>
+<li>Reference cycles: 15.6</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 3</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>{store} MOV CH, BH</code></li>
+<li>Chain instruction: <code>{store} MOV BH, CH</code></li>
+<li>Code: <pre>   0:	88 fd                	mov    ch,bh
+   2:	88 ef                	mov    bh,ch
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{store} MOV CH, BH; {store} MOV BH, CH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 3.25</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>{store} MOV CH, BH</code></li>
+<li>Chain instructions: <code>MOV BH, CH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 21</li>
+<li>Code: <pre>   0:	88 fd                	mov    ch,bh
+   2:	88 ef                	mov    bh,ch
+   4:	88 ff                	mov    bh,bh
+   6:	88 ff                	mov    bh,bh
+   8:	88 ff                	mov    bh,bh
+   a:	88 ff                	mov    bh,bh
+   c:	88 ff                	mov    bh,bh
+   e:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{store} MOV CH, BH; MOV BH, CH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 24.01</li>
+<li>Reference cycles: 14.82</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
