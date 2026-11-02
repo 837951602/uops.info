@@ -1,0 +1,419 @@
+<html>
+<head>
+<title>IDIV (R64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>IDIV (R64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r): Register (RAX, RCX, RDX, RBX, RSP, RBP, RSI, RDI, R8, R9, R10, R11, R12, R13, R14, R15)</li><li>Operand 2 (r/w, suppressed): Register (RAX)</li><li>Operand 3 (r/w, suppressed): Register (RDX)</li><li>Operand 4 (w, suppressed): Flags (AF: undef, CF: undef, OF: undef, PF: undef, SF: undef, ZF: undef)</li></ul><hr><a href="#lat1->2"><h3>Latency operand 1 &rarr; 2: 12 &le; lat &le; 43</h3></a><a href="#lat1->3"><h3>Latency operand 1 &rarr; 3: 13 &le; lat &le; 44</h3></a><a href="#lat2->2"><h3>Latency operand 2 &rarr; 2: 11 &le; lat &le; 42</h3></a><a href="#lat2->3"><h3>Latency operand 2 &rarr; 3: 12 &le; lat &le; 43</h3></a><a href="#lat3->2"><h3>Latency operand 3 &rarr; 2: 11 &le; lat &le; 42</h3></a><a href="#lat3->3"><h3>Latency operand 3 &rarr; 3: 11 &le; lat &le; 42</h3></a><hr><h2 id="lat1->2">Latency operand 1 &rarr; 2: 12 &le; lat &le; 43</h2><div style="margin-left: 50px"><h3>Experiment 1 (fast division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RBX, RAX; AND RBX, RCX; OR RBX, RCX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; ; MOV RAX, R8;MOV RDX, R9</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 c3             	and    rbx,rax
+   6:	48 21 cb             	and    rbx,rcx
+   9:	48 09 cb             	or     rbx,rcx
+   c:	48 09 db             	or     rbx,rbx
+   f:	48 09 db             	or     rbx,rbx
+  12:	48 09 db             	or     rbx,rbx
+  15:	48 09 db             	or     rbx,rbx
+  18:	48 09 db             	or     rbx,rbx
+  1b:	48 09 db             	or     rbx,rbx
+  1e:	48 09 db             	or     rbx,rbx
+  21:	48 09 db             	or     rbx,rbx
+  24:	4c 89 c0             	mov    rax,r8
+  27:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 0;
+MOV R9, 0;
+MOV RCX, 1;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RBX, RAX;  AND RBX, RCX;  OR RBX, RCX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  ;  MOV RAX, R8; MOV RDX, R9&quot; -asm_init &quot;MOV R8, 0; MOV R9, 0; MOV RCX, 1; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 23.39</li>
+<li>Reference cycles: 23.84</li>
+<li>UOPS_RETIRED.ALL: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (slow division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RBX, RAX; AND RBX, RCX; OR RBX, RCX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; ; MOV RAX, R8;MOV RDX, R9</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 c3             	and    rbx,rax
+   6:	48 21 cb             	and    rbx,rcx
+   9:	48 09 cb             	or     rbx,rcx
+   c:	48 09 db             	or     rbx,rbx
+   f:	48 09 db             	or     rbx,rbx
+  12:	48 09 db             	or     rbx,rbx
+  15:	48 09 db             	or     rbx,rbx
+  18:	48 09 db             	or     rbx,rbx
+  1b:	48 09 db             	or     rbx,rbx
+  1e:	48 09 db             	or     rbx,rbx
+  21:	48 09 db             	or     rbx,rbx
+  24:	4c 89 c0             	mov    rax,r8
+  27:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 133;
+MOV R9, 0x343a9ed744556677;
+MOV RCX, 0x75e6e44fccddeeff;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RBX, RAX;  AND RBX, RCX;  OR RBX, RCX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  ;  MOV RAX, R8; MOV RDX, R9&quot; -asm_init &quot;MOV R8, 133; MOV R9, 0x343a9ed744556677; MOV RCX, 0x75e6e44fccddeeff; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 54.34</li>
+<li>Reference cycles: 55.84</li>
+<li>UOPS_RETIRED.ALL: 17.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3">Latency operand 1 &rarr; 3: 13 &le; lat &le; 44</h2><div style="margin-left: 50px"><h3>Experiment 1 (fast division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RBX, RDX; AND RBX, RCX; OR RBX, RCX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; ; MOV RAX, R8;MOV RDX, R9</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 d3             	and    rbx,rdx
+   6:	48 21 cb             	and    rbx,rcx
+   9:	48 09 cb             	or     rbx,rcx
+   c:	48 09 db             	or     rbx,rbx
+   f:	48 09 db             	or     rbx,rbx
+  12:	48 09 db             	or     rbx,rbx
+  15:	48 09 db             	or     rbx,rbx
+  18:	48 09 db             	or     rbx,rbx
+  1b:	48 09 db             	or     rbx,rbx
+  1e:	48 09 db             	or     rbx,rbx
+  21:	48 09 db             	or     rbx,rbx
+  24:	4c 89 c0             	mov    rax,r8
+  27:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 0;
+MOV R9, 0;
+MOV RCX, 1;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RBX, RDX;  AND RBX, RCX;  OR RBX, RCX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  ;  MOV RAX, R8; MOV RDX, R9&quot; -asm_init &quot;MOV R8, 0; MOV R9, 0; MOV RCX, 1; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 24.0</li>
+<li>Reference cycles: 24.48</li>
+<li>UOPS_RETIRED.ALL: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (slow division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RBX, RDX; AND RBX, RCX; OR RBX, RCX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; OR RBX, RBX; ; MOV RAX, R8;MOV RDX, R9</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 d3             	and    rbx,rdx
+   6:	48 21 cb             	and    rbx,rcx
+   9:	48 09 cb             	or     rbx,rcx
+   c:	48 09 db             	or     rbx,rbx
+   f:	48 09 db             	or     rbx,rbx
+  12:	48 09 db             	or     rbx,rbx
+  15:	48 09 db             	or     rbx,rbx
+  18:	48 09 db             	or     rbx,rbx
+  1b:	48 09 db             	or     rbx,rbx
+  1e:	48 09 db             	or     rbx,rbx
+  21:	48 09 db             	or     rbx,rbx
+  24:	4c 89 c0             	mov    rax,r8
+  27:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 133;
+MOV R9, 0x343a9ed744556677;
+MOV RCX, 0x75e6e44fccddeeff;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RBX, RDX;  AND RBX, RCX;  OR RBX, RCX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  OR RBX, RBX;  ;  MOV RAX, R8; MOV RDX, R9&quot; -asm_init &quot;MOV R8, 133; MOV R9, 0x343a9ed744556677; MOV RCX, 0x75e6e44fccddeeff; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 55.0</li>
+<li>Reference cycles: 56.32</li>
+<li>UOPS_RETIRED.ALL: 17.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->2">Latency operand 2 &rarr; 2: 11 &le; lat &le; 42</h2><div style="margin-left: 50px"><h3>Experiment 1 (fast division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RAX, R8; OR RAX, R8; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; ; MOV RDX, R9</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	4c 21 c0             	and    rax,r8
+   6:	4c 09 c0             	or     rax,r8
+   9:	48 09 c0             	or     rax,rax
+   c:	48 09 c0             	or     rax,rax
+   f:	48 09 c0             	or     rax,rax
+  12:	48 09 c0             	or     rax,rax
+  15:	48 09 c0             	or     rax,rax
+  18:	48 09 c0             	or     rax,rax
+  1b:	48 09 c0             	or     rax,rax
+  1e:	48 09 c0             	or     rax,rax
+  21:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 0;
+MOV R9, 0;
+MOV RCX, 1;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RAX, R8;  OR RAX, R8;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  ;  MOV RDX, R9&quot; -asm_init &quot;MOV R8, 0; MOV R9, 0; MOV RCX, 1; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 21.2</li>
+<li>Reference cycles: 21.92</li>
+<li>UOPS_RETIRED.ALL: 15.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (slow division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RAX, R8; OR RAX, R8; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; ; MOV RDX, R9</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	4c 21 c0             	and    rax,r8
+   6:	4c 09 c0             	or     rax,r8
+   9:	48 09 c0             	or     rax,rax
+   c:	48 09 c0             	or     rax,rax
+   f:	48 09 c0             	or     rax,rax
+  12:	48 09 c0             	or     rax,rax
+  15:	48 09 c0             	or     rax,rax
+  18:	48 09 c0             	or     rax,rax
+  1b:	48 09 c0             	or     rax,rax
+  1e:	48 09 c0             	or     rax,rax
+  21:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 133;
+MOV R9, 0x343a9ed744556677;
+MOV RCX, 0x75e6e44fccddeeff;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RAX, R8;  OR RAX, R8;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  ;  MOV RDX, R9&quot; -asm_init &quot;MOV R8, 133; MOV R9, 0x343a9ed744556677; MOV RCX, 0x75e6e44fccddeeff; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 52.0</li>
+<li>Reference cycles: 53.44</li>
+<li>UOPS_RETIRED.ALL: 15.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3">Latency operand 2 &rarr; 3: 12 &le; lat &le; 43</h2><div style="margin-left: 50px"><h3>Experiment 1 (fast division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RAX, RDX; AND RAX, R8; OR RAX, R8; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; ; MOV RDX, R9</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 d0             	and    rax,rdx
+   6:	4c 21 c0             	and    rax,r8
+   9:	4c 09 c0             	or     rax,r8
+   c:	48 09 c0             	or     rax,rax
+   f:	48 09 c0             	or     rax,rax
+  12:	48 09 c0             	or     rax,rax
+  15:	48 09 c0             	or     rax,rax
+  18:	48 09 c0             	or     rax,rax
+  1b:	48 09 c0             	or     rax,rax
+  1e:	48 09 c0             	or     rax,rax
+  21:	48 09 c0             	or     rax,rax
+  24:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 0;
+MOV R9, 0;
+MOV RCX, 1;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RAX, RDX;  AND RAX, R8;  OR RAX, R8;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  ;  MOV RDX, R9&quot; -asm_init &quot;MOV R8, 0; MOV R9, 0; MOV RCX, 1; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 23.0</li>
+<li>Reference cycles: 23.52</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (slow division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RAX, RDX; AND RAX, R8; OR RAX, R8; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; OR RAX, RAX; ; MOV RDX, R9</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 d0             	and    rax,rdx
+   6:	4c 21 c0             	and    rax,r8
+   9:	4c 09 c0             	or     rax,r8
+   c:	48 09 c0             	or     rax,rax
+   f:	48 09 c0             	or     rax,rax
+  12:	48 09 c0             	or     rax,rax
+  15:	48 09 c0             	or     rax,rax
+  18:	48 09 c0             	or     rax,rax
+  1b:	48 09 c0             	or     rax,rax
+  1e:	48 09 c0             	or     rax,rax
+  21:	48 09 c0             	or     rax,rax
+  24:	4c 89 ca             	mov    rdx,r9
+</pre></li>
+<li>Init: <pre>MOV R8, 133;
+MOV R9, 0x343a9ed744556677;
+MOV RCX, 0x75e6e44fccddeeff;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RAX, RDX;  AND RAX, R8;  OR RAX, R8;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  OR RAX, RAX;  ;  MOV RDX, R9&quot; -asm_init &quot;MOV R8, 133; MOV R9, 0x343a9ed744556677; MOV RCX, 0x75e6e44fccddeeff; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 54.0</li>
+<li>Reference cycles: 55.52</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->2">Latency operand 3 &rarr; 2: 11 &le; lat &le; 42</h2><div style="margin-left: 50px"><h3>Experiment 1 (fast division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RDX, RAX; AND RDX, R9; OR RDX, R9; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; ; MOV RAX, R8</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 c2             	and    rdx,rax
+   6:	4c 21 ca             	and    rdx,r9
+   9:	4c 09 ca             	or     rdx,r9
+   c:	48 09 d2             	or     rdx,rdx
+   f:	48 09 d2             	or     rdx,rdx
+  12:	48 09 d2             	or     rdx,rdx
+  15:	48 09 d2             	or     rdx,rdx
+  18:	48 09 d2             	or     rdx,rdx
+  1b:	48 09 d2             	or     rdx,rdx
+  1e:	48 09 d2             	or     rdx,rdx
+  21:	48 09 d2             	or     rdx,rdx
+  24:	4c 89 c0             	mov    rax,r8
+</pre></li>
+<li>Init: <pre>MOV R8, 0;
+MOV R9, 0;
+MOV RCX, 1;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RDX, RAX;  AND RDX, R9;  OR RDX, R9;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  ;  MOV RAX, R8&quot; -asm_init &quot;MOV R8, 0; MOV R9, 0; MOV RCX, 1; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 22.72</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (slow division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RDX, RAX; AND RDX, R9; OR RDX, R9; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; ; MOV RAX, R8</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	48 21 c2             	and    rdx,rax
+   6:	4c 21 ca             	and    rdx,r9
+   9:	4c 09 ca             	or     rdx,r9
+   c:	48 09 d2             	or     rdx,rdx
+   f:	48 09 d2             	or     rdx,rdx
+  12:	48 09 d2             	or     rdx,rdx
+  15:	48 09 d2             	or     rdx,rdx
+  18:	48 09 d2             	or     rdx,rdx
+  1b:	48 09 d2             	or     rdx,rdx
+  1e:	48 09 d2             	or     rdx,rdx
+  21:	48 09 d2             	or     rdx,rdx
+  24:	4c 89 c0             	mov    rax,r8
+</pre></li>
+<li>Init: <pre>MOV R8, 133;
+MOV R9, 0x343a9ed744556677;
+MOV RCX, 0x75e6e44fccddeeff;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RDX, RAX;  AND RDX, R9;  OR RDX, R9;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  ;  MOV RAX, R8&quot; -asm_init &quot;MOV R8, 133; MOV R9, 0x343a9ed744556677; MOV RCX, 0x75e6e44fccddeeff; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 53.0</li>
+<li>Reference cycles: 54.72</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->3">Latency operand 3 &rarr; 3: 11 &le; lat &le; 42</h2><div style="margin-left: 50px"><h3>Experiment 1 (fast division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RDX, R9; OR RDX, R9; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; ; MOV RAX, R8</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	4c 21 ca             	and    rdx,r9
+   6:	4c 09 ca             	or     rdx,r9
+   9:	48 09 d2             	or     rdx,rdx
+   c:	48 09 d2             	or     rdx,rdx
+   f:	48 09 d2             	or     rdx,rdx
+  12:	48 09 d2             	or     rdx,rdx
+  15:	48 09 d2             	or     rdx,rdx
+  18:	48 09 d2             	or     rdx,rdx
+  1b:	48 09 d2             	or     rdx,rdx
+  1e:	48 09 d2             	or     rdx,rdx
+  21:	4c 89 c0             	mov    rax,r8
+</pre></li>
+<li>Init: <pre>MOV R8, 0;
+MOV R9, 0;
+MOV RCX, 1;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RDX, R9;  OR RDX, R9;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  ;  MOV RAX, R8&quot; -asm_init &quot;MOV R8, 0; MOV R9, 0; MOV RCX, 1; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 21.0</li>
+<li>Reference cycles: 21.44</li>
+<li>UOPS_RETIRED.ALL: 15.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (slow division)</h3>
+<ul>
+<li>Instruction: <code>IDIV RBX</code></li>
+<li>Chain instructions: <code>AND RDX, R9; OR RDX, R9; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; OR RDX, RDX; ; MOV RAX, R8</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	48 f7 fb             	idiv   rbx
+   3:	4c 21 ca             	and    rdx,r9
+   6:	4c 09 ca             	or     rdx,r9
+   9:	48 09 d2             	or     rdx,rdx
+   c:	48 09 d2             	or     rdx,rdx
+   f:	48 09 d2             	or     rdx,rdx
+  12:	48 09 d2             	or     rdx,rdx
+  15:	48 09 d2             	or     rdx,rdx
+  18:	48 09 d2             	or     rdx,rdx
+  1b:	48 09 d2             	or     rdx,rdx
+  1e:	48 09 d2             	or     rdx,rdx
+  21:	4c 89 c0             	mov    rax,r8
+</pre></li>
+<li>Init: <pre>MOV R8, 133;
+MOV R9, 0x343a9ed744556677;
+MOV RCX, 0x75e6e44fccddeeff;
+MOV RBX, RCX;
+MOV RAX, R8;
+MOV RDX, R9</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IDIV RBX; AND RDX, R9;  OR RDX, R9;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  OR RDX, RDX;  ;  MOV RAX, R8&quot; -asm_init &quot;MOV R8, 133; MOV R9, 0x343a9ed744556677; MOV RCX, 0x75e6e44fccddeeff; MOV RBX, RCX; MOV RAX, R8; MOV RDX, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 52.0</li>
+<li>Reference cycles: 53.28</li>
+<li>UOPS_RETIRED.ALL: 15.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
