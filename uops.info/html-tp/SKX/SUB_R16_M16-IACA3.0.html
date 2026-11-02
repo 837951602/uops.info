@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>SUB (R16, M16)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>SUB (R16, M16) - Throughput and Uops (IACA 3.0)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Backend
+Loop Count:  63
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  0.2     0.0  |  0.2  |  0.5     0.5  |  0.5     0.5  |  0.0  |  0.2  |  0.2  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   2^     | 0.2         | 0.2  | 0.5     0.5 | 0.5     0.5 |      | 0.2  | 0.2  |      | sub r8w, word ptr [r14]
+Total Num Of Uops: 2
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.00 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  2.0     0.0  |  2.0  |  4.0     4.0  |  4.0     4.0  |  0.0  |  2.0  |  2.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   2^     | 1.0         |      | 1.0     1.0 |             |      |      |      |      | sub r8w, word ptr [r14]
+|   2^     |             | 1.0  |             | 1.0     1.0 |      |      |      |      | sub r9w, word ptr [r14+0x2]
+|   2^     |             |      | 1.0     1.0 |             |      | 1.0  |      |      | sub r10w, word ptr [r14+0x4]
+|   2^     |             |      |             | 1.0     1.0 |      |      | 1.0  |      | sub r11w, word ptr [r14+0x6]
+|   2^     | 1.0         |      | 1.0     1.0 |             |      |      |      |      | sub r12w, word ptr [r14+0x8]
+|   2^     |             | 1.0  |             | 1.0     1.0 |      |      |      |      | sub bx, word ptr [r14+0xa]
+|   2^     |             |      | 1.0     1.0 |             |      | 1.0  |      |      | sub cx, word ptr [r14+0xc]
+|   2^     |             |      |             | 1.0     1.0 |      |      | 1.0  |      | sub dx, word ptr [r14+0xe]
+Total Num Of Uops: 16
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Dependency chains
+Loop Count:  40
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  0.3     0.0  |  0.2  |  0.5     0.5  |  0.5     0.5  |  0.0  |  0.2  |  0.2  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   2      | 0.3         | 0.2  | 0.5     0.5 | 0.5     0.5 |      | 0.2  | 0.2  |      | sub r8w, word ptr [r14+r13*1]
+Total Num Of Uops: 2
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.00 Cycles       Throughput Bottleneck: Dependency chains
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  2.0     0.0  |  2.0  |  4.0     4.0  |  4.0     4.0  |  0.0  |  2.0  |  2.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   2      | 1.0         |      | 1.0     1.0 |             |      |      |      |      | sub r8w, word ptr [r14+r13*1]
+|   2      |             | 1.0  |             | 1.0     1.0 |      |      |      |      | sub r9w, word ptr [r14+r13*1+0x2]
+|   2      |             |      | 1.0     1.0 |             |      | 1.0  |      |      | sub r10w, word ptr [r14+r13*1+0x4]
+|   2      |             |      |             | 1.0     1.0 |      |      | 1.0  |      | sub r11w, word ptr [r14+r13*1+0x6]
+|   2      | 1.0         |      | 1.0     1.0 |             |      |      |      |      | sub r12w, word ptr [r14+r13*1+0x8]
+|   2      |             | 1.0  |             | 1.0     1.0 |      |      |      |      | sub bx, word ptr [r14+r13*1+0xa]
+|   2      |             |      | 1.0     1.0 |             |      | 1.0  |      |      | sub cx, word ptr [r14+r13*1+0xc]
+|   2      |             |      |             | 1.0     1.0 |      |      | 1.0  |      | sub dx, word ptr [r14+r13*1+0xe]
+Total Num Of Uops: 16
+</pre>
+</body>
+</html>

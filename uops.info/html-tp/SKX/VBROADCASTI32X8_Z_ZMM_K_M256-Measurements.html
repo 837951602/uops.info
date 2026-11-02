@@ -1,0 +1,1840 @@
+<html>
+<head>
+<title>VBROADCASTI32X8_Z (ZMM, K, M256)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VBROADCASTI32X8_Z (ZMM, K, M256) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.5</li>
+<li>Reference cycles: 0.44</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+<li>RETIRE_SLOTS: 1.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.5</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.5</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.25</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 0.5</li>
+<li>Reference cycles: 0.47</li>
+<li>UOPS_EXECUTED.THREAD: 2.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 1.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.5</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.5</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.49</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+   d:	0f 1f 84 00 00 00 00 
+  14:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 0.65</li>
+<li>Reference cycles: 0.62</li>
+<li>UOPS_EXECUTED.THREAD: 2.1</li>
+<li>RETIRE_SLOTS: 2.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.35</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.65</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 0.5</li>
+<li>Reference cycles: 0.48</li>
+<li>UOPS_EXECUTED.THREAD: 2.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.06</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.5</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.5</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+   d:	0f 1f 84 00 00 00 00 
+  14:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 0.66</li>
+<li>Reference cycles: 0.63</li>
+<li>UOPS_EXECUTED.THREAD: 2.01</li>
+<li>RETIRE_SLOTS: 2.01</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.48</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.52</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 2.0</li>
+<li>Reference cycles: 1.83</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.91</li>
+<li>UOPS_EXECUTED.THREAD: 8.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  22:	0f 1f 84 00 00 00 00 
+  29:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.9</li>
+<li>UOPS_EXECUTED.THREAD: 8.5</li>
+<li>RETIRE_SLOTS: 5.5</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.92</li>
+<li>UOPS_EXECUTED.THREAD: 8.05</li>
+<li>RETIRE_SLOTS: 4.05</li>
+<li>UOPS_MITE: 0.29</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  22:	0f 1f 84 00 00 00 00 
+  29:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.1</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.9</li>
+<li>UOPS_EXECUTED.THREAD: 8.05</li>
+<li>RETIRE_SLOTS: 5.05</li>
+<li>UOPS_MITE: 0.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  22:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  29:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  30:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 4.0</li>
+<li>Reference cycles: 3.41</li>
+<li>UOPS_EXECUTED.THREAD: 16.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  22:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  29:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  30:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.82</li>
+<li>UOPS_EXECUTED.THREAD: 17.0</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 9.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  22:	0f 1f 84 00 00 00 00 
+  29:	00 
+  2a:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  31:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  38:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  3f:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  46:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  4d:	0f 1f 84 00 00 00 00 
+  54:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.82</li>
+<li>UOPS_EXECUTED.THREAD: 17.0</li>
+<li>RETIRE_SLOTS: 11.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  22:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  29:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  30:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.8</li>
+<li>UOPS_EXECUTED.THREAD: 16.1</li>
+<li>RETIRE_SLOTS: 8.1</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  22:	0f 1f 84 00 00 00 00 
+  29:	00 
+  2a:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  31:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  38:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  3f:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  46:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  4d:	0f 1f 84 00 00 00 00 
+  54:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.2</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.75</li>
+<li>UOPS_EXECUTED.THREAD: 16.1</li>
+<li>RETIRE_SLOTS: 10.1</li>
+<li>UOPS_MITE: 0.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.03</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  22:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  29:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  30:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  37:	62 52 7d c9 5b 46 08 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+0x100]
+  3e:	62 52 7d c9 5b 4e 09 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+0x120]
+  45:	62 52 7d c9 5b 56 0a 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+0x140]
+  4c:	62 52 7d c9 5b 5e 0b 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+0x160]
+  53:	62 52 7d c9 5b 66 0c 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+0x180]
+  5a:	62 c2 7d c9 5b 46 0d 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+0x1a0]
+  61:	62 c2 7d c9 5b 4e 0e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+0x1c0]
+  68:	62 c2 7d c9 5b 56 0f 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+0x1e0]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+352]; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+480]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 8.14</li>
+<li>Reference cycles: 7.79</li>
+<li>UOPS_EXECUTED.THREAD: 32.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.99</li>
+<li>UOPS_PORT_3: 7.99</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.07</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  22:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  29:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  30:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  37:	62 52 7d c9 5b 46 08 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+0x100]
+  3e:	62 52 7d c9 5b 4e 09 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+0x120]
+  45:	62 52 7d c9 5b 56 0a 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+0x140]
+  4c:	62 52 7d c9 5b 5e 0b 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+0x160]
+  53:	62 52 7d c9 5b 66 0c 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+0x180]
+  5a:	62 c2 7d c9 5b 46 0d 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+0x1a0]
+  61:	62 c2 7d c9 5b 4e 0e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+0x1c0]
+  68:	62 c2 7d c9 5b 56 0f 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+0x1e0]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+352]; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+480]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 33.0</li>
+<li>RETIRE_SLOTS: 17.0</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  22:	0f 1f 84 00 00 00 00 
+  29:	00 
+  2a:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  31:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  38:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  3f:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  46:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  4d:	0f 1f 84 00 00 00 00 
+  54:	00 
+  55:	62 52 7d c9 5b 46 08 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+0x100]
+  5c:	62 52 7d c9 5b 4e 09 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+0x120]
+  63:	62 52 7d c9 5b 56 0a 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+0x140]
+  6a:	62 52 7d c9 5b 5e 0b 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+0x160]
+  71:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  78:	0f 1f 84 00 00 00 00 
+  7f:	00 
+  80:	62 52 7d c9 5b 66 0c 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+0x180]
+  87:	62 c2 7d c9 5b 46 0d 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+0x1a0]
+  8e:	62 c2 7d c9 5b 4e 0e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+0x1c0]
+  95:	62 c2 7d c9 5b 56 0f 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+0x1e0]
+  9c:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  a3:	0f 1f 84 00 00 00 00 
+  aa:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+352]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+480]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 22.0</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 33.0</li>
+<li>RETIRE_SLOTS: 21.0</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  22:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  29:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  30:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  37:	62 52 7d c9 5b 46 08 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+0x100]
+  3e:	62 52 7d c9 5b 4e 09 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+0x120]
+  45:	62 52 7d c9 5b 56 0a 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+0x140]
+  4c:	62 52 7d c9 5b 5e 0b 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+0x160]
+  53:	62 52 7d c9 5b 66 0c 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+0x180]
+  5a:	62 c2 7d c9 5b 46 0d 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+0x1a0]
+  61:	62 c2 7d c9 5b 4e 0e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+0x1c0]
+  68:	62 c2 7d c9 5b 56 0f 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+0x1e0]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+352]; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+480]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 32.1</li>
+<li>RETIRE_SLOTS: 16.1</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.11</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 7d c9 5b 06    	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14]
+   6:	62 d2 7d c9 5b 4e 01 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+0x20]
+   d:	62 d2 7d c9 5b 56 02 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+0x40]
+  14:	62 d2 7d c9 5b 5e 03 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+0x60]
+  1b:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  22:	0f 1f 84 00 00 00 00 
+  29:	00 
+  2a:	62 d2 7d c9 5b 66 04 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+0x80]
+  31:	62 d2 7d c9 5b 6e 05 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+0xa0]
+  38:	62 d2 7d c9 5b 76 06 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+0xc0]
+  3f:	62 d2 7d c9 5b 7e 07 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+0xe0]
+  46:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  4d:	0f 1f 84 00 00 00 00 
+  54:	00 
+  55:	62 52 7d c9 5b 46 08 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+0x100]
+  5c:	62 52 7d c9 5b 4e 09 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+0x120]
+  63:	62 52 7d c9 5b 56 0a 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+0x140]
+  6a:	62 52 7d c9 5b 5e 0b 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+0x160]
+  71:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  78:	0f 1f 84 00 00 00 00 
+  7f:	00 
+  80:	62 52 7d c9 5b 66 0c 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+0x180]
+  87:	62 c2 7d c9 5b 46 0d 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+0x1a0]
+  8e:	62 c2 7d c9 5b 4e 0e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+0x1c0]
+  95:	62 c2 7d c9 5b 56 0f 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+0x1e0]
+  9c:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  a3:	0f 1f 84 00 00 00 00 
+  aa:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+352]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+480]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 20.2</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.57</li>
+<li>UOPS_EXECUTED.THREAD: 32.1</li>
+<li>RETIRE_SLOTS: 20.1</li>
+<li>UOPS_MITE: 0.2</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.08</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.5</li>
+<li>Reference cycles: 0.39</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+<li>RETIRE_SLOTS: 1.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.5</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.5</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.25</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 0.5</li>
+<li>Reference cycles: 0.47</li>
+<li>UOPS_EXECUTED.THREAD: 2.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.5</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.5</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+   e:	0f 1f 84 00 00 00 00 
+  15:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 0.68</li>
+<li>Reference cycles: 0.65</li>
+<li>UOPS_EXECUTED.THREAD: 2.1</li>
+<li>RETIRE_SLOTS: 2.1</li>
+<li>UOPS_MITE: 0.3</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.32</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.68</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 0.5</li>
+<li>Reference cycles: 0.48</li>
+<li>UOPS_EXECUTED.THREAD: 2.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.5</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.5</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.03</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+   e:	0f 1f 84 00 00 00 00 
+  15:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 0.69</li>
+<li>Reference cycles: 0.66</li>
+<li>UOPS_EXECUTED.THREAD: 2.01</li>
+<li>RETIRE_SLOTS: 2.01</li>
+<li>UOPS_MITE: 0.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.47</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.53</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.83</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 2.5</li>
+<li>Reference cycles: 2.41</li>
+<li>UOPS_EXECUTED.THREAD: 8.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 4.51</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.49</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  26:	0f 1f 84 00 00 00 00 
+  2d:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.9</li>
+<li>UOPS_EXECUTED.THREAD: 8.5</li>
+<li>RETIRE_SLOTS: 5.5</li>
+<li>UOPS_MITE: 1.51</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.89</li>
+<li>UOPS_EXECUTED.THREAD: 8.05</li>
+<li>RETIRE_SLOTS: 4.05</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  26:	0f 1f 84 00 00 00 00 
+  2d:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.1</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.92</li>
+<li>UOPS_EXECUTED.THREAD: 8.05</li>
+<li>RETIRE_SLOTS: 5.05</li>
+<li>UOPS_MITE: 0.2</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.0</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.07</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  26:	04 
+  27:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  2e:	05 
+  2f:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  36:	06 
+  37:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  3e:	07 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 4.0</li>
+<li>Reference cycles: 3.89</li>
+<li>UOPS_EXECUTED.THREAD: 16.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.01</li>
+<li>UOPS_PORT_3: 4.01</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.12</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  26:	04 
+  27:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  2e:	05 
+  2f:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  36:	06 
+  37:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  3e:	07 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 4.99</li>
+<li>Reference cycles: 4.75</li>
+<li>UOPS_EXECUTED.THREAD: 17.01</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 9.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.01</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 1.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.99</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  26:	0f 1f 84 00 00 00 00 
+  2d:	00 
+  2e:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  35:	04 
+  36:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  3d:	05 
+  3e:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  45:	06 
+  46:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  4d:	07 
+  4e:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  55:	0f 1f 84 00 00 00 00 
+  5c:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.82</li>
+<li>UOPS_EXECUTED.THREAD: 17.0</li>
+<li>RETIRE_SLOTS: 11.0</li>
+<li>UOPS_MITE: 3.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  26:	04 
+  27:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  2e:	05 
+  2f:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  36:	06 
+  37:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  3e:	07 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.8</li>
+<li>UOPS_EXECUTED.THREAD: 16.1</li>
+<li>RETIRE_SLOTS: 8.1</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  26:	0f 1f 84 00 00 00 00 
+  2d:	00 
+  2e:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  35:	04 
+  36:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  3d:	05 
+  3e:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  45:	06 
+  46:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  4d:	07 
+  4e:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  55:	0f 1f 84 00 00 00 00 
+  5c:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.2</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.82</li>
+<li>UOPS_EXECUTED.THREAD: 16.1</li>
+<li>RETIRE_SLOTS: 10.1</li>
+<li>UOPS_MITE: 0.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.03</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  26:	04 
+  27:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  2e:	05 
+  2f:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  36:	06 
+  37:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  3e:	07 
+  3f:	62 12 7d c9 5b 44 2e 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+r13*1+0x100]
+  46:	08 
+  47:	62 12 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+r13*1+0x120]
+  4e:	09 
+  4f:	62 12 7d c9 5b 54 2e 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+r13*1+0x140]
+  56:	0a 
+  57:	62 12 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+r13*1+0x160]
+  5e:	0b 
+  5f:	62 12 7d c9 5b 64 2e 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+r13*1+0x180]
+  66:	0c 
+  67:	62 82 7d c9 5b 44 2e 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+r13*1+0x1a0]
+  6e:	0d 
+  6f:	62 82 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+r13*1+0x1c0]
+  76:	0e 
+  77:	62 82 7d c9 5b 54 2e 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+r13*1+0x1e0]
+  7e:	0f 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+R13+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+R13+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+R13+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+R13+352]; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+R13+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+R13+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+R13+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+R13+480]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 8.0</li>
+<li>Reference cycles: 8.03</li>
+<li>UOPS_EXECUTED.THREAD: 32.03</li>
+<li>RETIRE_SLOTS: 16.03</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.03</li>
+<li>UOPS_PORT_0: 7.99</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.99</li>
+<li>UOPS_PORT_3: 7.99</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.01</li>
+<li>UOPS_PORT_6: 0.02</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.15</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  26:	04 
+  27:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  2e:	05 
+  2f:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  36:	06 
+  37:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  3e:	07 
+  3f:	62 12 7d c9 5b 44 2e 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+r13*1+0x100]
+  46:	08 
+  47:	62 12 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+r13*1+0x120]
+  4e:	09 
+  4f:	62 12 7d c9 5b 54 2e 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+r13*1+0x140]
+  56:	0a 
+  57:	62 12 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+r13*1+0x160]
+  5e:	0b 
+  5f:	62 12 7d c9 5b 64 2e 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+r13*1+0x180]
+  66:	0c 
+  67:	62 82 7d c9 5b 44 2e 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+r13*1+0x1a0]
+  6e:	0d 
+  6f:	62 82 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+r13*1+0x1c0]
+  76:	0e 
+  77:	62 82 7d c9 5b 54 2e 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+r13*1+0x1e0]
+  7e:	0f 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+R13+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+R13+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+R13+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+R13+352]; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+R13+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+R13+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+R13+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+R13+480]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 33.0</li>
+<li>RETIRE_SLOTS: 17.0</li>
+<li>UOPS_MITE: 8.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 1.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  26:	0f 1f 84 00 00 00 00 
+  2d:	00 
+  2e:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  35:	04 
+  36:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  3d:	05 
+  3e:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  45:	06 
+  46:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  4d:	07 
+  4e:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  55:	0f 1f 84 00 00 00 00 
+  5c:	00 
+  5d:	62 12 7d c9 5b 44 2e 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+r13*1+0x100]
+  64:	08 
+  65:	62 12 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+r13*1+0x120]
+  6c:	09 
+  6d:	62 12 7d c9 5b 54 2e 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+r13*1+0x140]
+  74:	0a 
+  75:	62 12 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+r13*1+0x160]
+  7c:	0b 
+  7d:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  84:	0f 1f 84 00 00 00 00 
+  8b:	00 
+  8c:	62 12 7d c9 5b 64 2e 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+r13*1+0x180]
+  93:	0c 
+  94:	62 82 7d c9 5b 44 2e 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+r13*1+0x1a0]
+  9b:	0d 
+  9c:	62 82 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+r13*1+0x1c0]
+  a3:	0e 
+  a4:	62 82 7d c9 5b 54 2e 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+r13*1+0x1e0]
+  ab:	0f 
+  ac:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  b3:	0f 1f 84 00 00 00 00 
+  ba:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+R13+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+R13+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+R13+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+R13+352]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+R13+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+R13+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+R13+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+R13+480]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 22.0</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 33.0</li>
+<li>RETIRE_SLOTS: 21.0</li>
+<li>UOPS_MITE: 6.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 1.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  26:	04 
+  27:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  2e:	05 
+  2f:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  36:	06 
+  37:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  3e:	07 
+  3f:	62 12 7d c9 5b 44 2e 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+r13*1+0x100]
+  46:	08 
+  47:	62 12 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+r13*1+0x120]
+  4e:	09 
+  4f:	62 12 7d c9 5b 54 2e 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+r13*1+0x140]
+  56:	0a 
+  57:	62 12 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+r13*1+0x160]
+  5e:	0b 
+  5f:	62 12 7d c9 5b 64 2e 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+r13*1+0x180]
+  66:	0c 
+  67:	62 82 7d c9 5b 44 2e 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+r13*1+0x1a0]
+  6e:	0d 
+  6f:	62 82 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+r13*1+0x1c0]
+  76:	0e 
+  77:	62 82 7d c9 5b 54 2e 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+r13*1+0x1e0]
+  7e:	0f 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+R13+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+R13+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+R13+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+R13+352]; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+R13+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+R13+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+R13+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+R13+480]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 32.1</li>
+<li>RETIRE_SLOTS: 16.1</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.11</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (long NOPs)</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 7d c9 5b 04 2e 	vbroadcasti32x8 zmm0{k1}{z},YMMWORD PTR [r14+r13*1]
+   7:	62 92 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm1{k1}{z},YMMWORD PTR [r14+r13*1+0x20]
+   e:	01 
+   f:	62 92 7d c9 5b 54 2e 	vbroadcasti32x8 zmm2{k1}{z},YMMWORD PTR [r14+r13*1+0x40]
+  16:	02 
+  17:	62 92 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm3{k1}{z},YMMWORD PTR [r14+r13*1+0x60]
+  1e:	03 
+  1f:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  26:	0f 1f 84 00 00 00 00 
+  2d:	00 
+  2e:	62 92 7d c9 5b 64 2e 	vbroadcasti32x8 zmm4{k1}{z},YMMWORD PTR [r14+r13*1+0x80]
+  35:	04 
+  36:	62 92 7d c9 5b 6c 2e 	vbroadcasti32x8 zmm5{k1}{z},YMMWORD PTR [r14+r13*1+0xa0]
+  3d:	05 
+  3e:	62 92 7d c9 5b 74 2e 	vbroadcasti32x8 zmm6{k1}{z},YMMWORD PTR [r14+r13*1+0xc0]
+  45:	06 
+  46:	62 92 7d c9 5b 7c 2e 	vbroadcasti32x8 zmm7{k1}{z},YMMWORD PTR [r14+r13*1+0xe0]
+  4d:	07 
+  4e:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  55:	0f 1f 84 00 00 00 00 
+  5c:	00 
+  5d:	62 12 7d c9 5b 44 2e 	vbroadcasti32x8 zmm8{k1}{z},YMMWORD PTR [r14+r13*1+0x100]
+  64:	08 
+  65:	62 12 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm9{k1}{z},YMMWORD PTR [r14+r13*1+0x120]
+  6c:	09 
+  6d:	62 12 7d c9 5b 54 2e 	vbroadcasti32x8 zmm10{k1}{z},YMMWORD PTR [r14+r13*1+0x140]
+  74:	0a 
+  75:	62 12 7d c9 5b 5c 2e 	vbroadcasti32x8 zmm11{k1}{z},YMMWORD PTR [r14+r13*1+0x160]
+  7c:	0b 
+  7d:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  84:	0f 1f 84 00 00 00 00 
+  8b:	00 
+  8c:	62 12 7d c9 5b 64 2e 	vbroadcasti32x8 zmm12{k1}{z},YMMWORD PTR [r14+r13*1+0x180]
+  93:	0c 
+  94:	62 82 7d c9 5b 44 2e 	vbroadcasti32x8 zmm16{k1}{z},YMMWORD PTR [r14+r13*1+0x1a0]
+  9b:	0d 
+  9c:	62 82 7d c9 5b 4c 2e 	vbroadcasti32x8 zmm17{k1}{z},YMMWORD PTR [r14+r13*1+0x1c0]
+  a3:	0e 
+  a4:	62 82 7d c9 5b 54 2e 	vbroadcasti32x8 zmm18{k1}{z},YMMWORD PTR [r14+r13*1+0x1e0]
+  ab:	0f 
+  ac:	66 66 66 66 66 66 2e 	data16 data16 data16 data16 data16 cs nop WORD PTR [rax+rax*1+0x0]
+  b3:	0f 1f 84 00 00 00 00 
+  ba:	00 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBROADCASTI32X8 ZMM0  {K1}{z}, ymmword ptr [R14+R13]; VBROADCASTI32X8 ZMM1  {K1}{z}, ymmword ptr [R14+R13+32]; VBROADCASTI32X8 ZMM2  {K1}{z}, ymmword ptr [R14+R13+64]; VBROADCASTI32X8 ZMM3  {K1}{z}, ymmword ptr [R14+R13+96]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM4  {K1}{z}, ymmword ptr [R14+R13+128]; VBROADCASTI32X8 ZMM5  {K1}{z}, ymmword ptr [R14+R13+160]; VBROADCASTI32X8 ZMM6  {K1}{z}, ymmword ptr [R14+R13+192]; VBROADCASTI32X8 ZMM7  {K1}{z}, ymmword ptr [R14+R13+224]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM8  {K1}{z}, ymmword ptr [R14+R13+256]; VBROADCASTI32X8 ZMM9  {K1}{z}, ymmword ptr [R14+R13+288]; VBROADCASTI32X8 ZMM10  {K1}{z}, ymmword ptr [R14+R13+320]; VBROADCASTI32X8 ZMM11  {K1}{z}, ymmword ptr [R14+R13+352]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00; VBROADCASTI32X8 ZMM12  {K1}{z}, ymmword ptr [R14+R13+384]; VBROADCASTI32X8 ZMM16  {K1}{z}, ymmword ptr [R14+R13+416]; VBROADCASTI32X8 ZMM17  {K1}{z}, ymmword ptr [R14+R13+448]; VBROADCASTI32X8 ZMM18  {K1}{z}, ymmword ptr [R14+R13+480]; .byte 0x66,0x66,0x66,0x66,0x66,0x66,0x2e,0x0f,0x1f,0x84,0x00,0x00,0x00,0x00,0x00&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 20.2</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 7.59</li>
+<li>UOPS_EXECUTED.THREAD: 32.1</li>
+<li>RETIRE_SLOTS: 20.1</li>
+<li>UOPS_MITE: 0.2</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.11</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.09</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
