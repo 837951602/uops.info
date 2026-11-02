@@ -1,0 +1,141 @@
+<html>
+<head>
+<title>BLENDPD (XMM, M128, I8)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>BLENDPD (XMM, M128, I8) - Port Usage</h1><hr><h3>With blocking instructions for ports {'2', '3'}:</h3><ul>
+<li>Code: <pre>   0:	f2 41 0f f0 4e 40    	lddqu  xmm1,[r14+0x40]
+   6:	f2 41 0f f0 56 50    	lddqu  xmm2,[r14+0x50]
+   c:	f2 41 0f f0 5e 60    	lddqu  xmm3,[r14+0x60]
+  12:	f2 41 0f f0 66 70    	lddqu  xmm4,[r14+0x70]
+  18:	f2 41 0f f0 ae 80 00 	lddqu  xmm5,[r14+0x80]
+  1f:	00 00 
+  21:	f2 41 0f f0 b6 90 00 	lddqu  xmm6,[r14+0x90]
+  28:	00 00 
+  2a:	f2 41 0f f0 be a0 00 	lddqu  xmm7,[r14+0xa0]
+  31:	00 00 
+  33:	f2 45 0f f0 86 b0 00 	lddqu  xmm8,[r14+0xb0]
+  3a:	00 00 
+  3c:	f2 45 0f f0 8e c0 00 	lddqu  xmm9,[r14+0xc0]
+  43:	00 00 
+  45:	f2 45 0f f0 96 d0 00 	lddqu  xmm10,[r14+0xd0]
+  4c:	00 00 
+  4e:	66 41 0f 3a 0d 06 02 	blendpd xmm0,XMMWORD PTR [r14],0x2
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LDDQU XMM1, xmmword ptr [R14+64]; LDDQU XMM2, xmmword ptr [R14+80]; LDDQU XMM3, xmmword ptr [R14+96]; LDDQU XMM4, xmmword ptr [R14+112]; LDDQU XMM5, xmmword ptr [R14+128]; LDDQU XMM6, xmmword ptr [R14+144]; LDDQU XMM7, xmmword ptr [R14+160]; LDDQU XMM8, xmmword ptr [R14+176]; LDDQU XMM9, xmmword ptr [R14+192]; LDDQU XMM10, xmmword ptr [R14+208]; BLENDPD XMM0, xmmword ptr [R14], 2&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 5.6</li>
+<li>Reference cycles: 4.91</li>
+<li>UOPS_PORT_2: 5.5</li>
+<li>UOPS_PORT_3: 5.5</li>
+</ul>
+</li></ul>
+<strong>&#8680; One &mu;op that can only use ports {'2', '3'}</strong><hr><h3>With blocking instructions for ports {'0', '1', '5'}:</h3><ul>
+<li>Code: <pre>   0:	f3 0f d6 c8          	movq2dq xmm1,mm0
+   4:	f3 0f d6 d0          	movq2dq xmm2,mm0
+   8:	f3 0f d6 d8          	movq2dq xmm3,mm0
+   c:	f3 0f d6 e0          	movq2dq xmm4,mm0
+  10:	f3 0f d6 e8          	movq2dq xmm5,mm0
+  14:	f3 0f d6 f0          	movq2dq xmm6,mm0
+  18:	f3 0f d6 f8          	movq2dq xmm7,mm0
+  1c:	f3 44 0f d6 c0       	movq2dq xmm8,mm0
+  21:	f3 44 0f d6 c8       	movq2dq xmm9,mm0
+  26:	f3 44 0f d6 d0       	movq2dq xmm10,mm0
+  2b:	66 41 0f 3a 0d 06 02 	blendpd xmm0,XMMWORD PTR [r14],0x2
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR MM0, MM0;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;MOVQ2DQ XMM1, MM0; MOVQ2DQ XMM2, MM0; MOVQ2DQ XMM3, MM0; MOVQ2DQ XMM4, MM0; MOVQ2DQ XMM5, MM0; MOVQ2DQ XMM6, MM0; MOVQ2DQ XMM7, MM0; MOVQ2DQ XMM8, MM0; MOVQ2DQ XMM9, MM0; MOVQ2DQ XMM10, MM0; BLENDPD XMM0, xmmword ptr [R14], 2&quot; -asm_init &quot;VZEROALL; PXOR MM0, MM0; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 3.74</li>
+<li>Reference cycles: 3.2</li>
+<li>UOPS_PORT_5: 3.67</li>
+<li>UOPS_PORT_1: 3.66</li>
+<li>UOPS_PORT_0: 3.67</li>
+</ul>
+</li></ul>
+<strong>&#8680; One &mu;op that can only use ports {'0', '1', '5'}</strong><hr><h2>With an indexed addressing mode</h2><hr><h3>With blocking instructions for ports {'2', '3'}:</h3><ul>
+<li>Code: <pre>   0:	f2 41 0f f0 4e 40    	lddqu  xmm1,[r14+0x40]
+   6:	f2 41 0f f0 56 50    	lddqu  xmm2,[r14+0x50]
+   c:	f2 41 0f f0 5e 60    	lddqu  xmm3,[r14+0x60]
+  12:	f2 41 0f f0 66 70    	lddqu  xmm4,[r14+0x70]
+  18:	f2 41 0f f0 ae 80 00 	lddqu  xmm5,[r14+0x80]
+  1f:	00 00 
+  21:	f2 41 0f f0 b6 90 00 	lddqu  xmm6,[r14+0x90]
+  28:	00 00 
+  2a:	f2 41 0f f0 be a0 00 	lddqu  xmm7,[r14+0xa0]
+  31:	00 00 
+  33:	f2 45 0f f0 86 b0 00 	lddqu  xmm8,[r14+0xb0]
+  3a:	00 00 
+  3c:	f2 45 0f f0 8e c0 00 	lddqu  xmm9,[r14+0xc0]
+  43:	00 00 
+  45:	f2 45 0f f0 96 d0 00 	lddqu  xmm10,[r14+0xd0]
+  4c:	00 00 
+  4e:	66 43 0f 3a 0d 04 2e 	blendpd xmm0,XMMWORD PTR [r14+r13*1],0x2
+  55:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LDDQU XMM1, xmmword ptr [R14+64]; LDDQU XMM2, xmmword ptr [R14+80]; LDDQU XMM3, xmmword ptr [R14+96]; LDDQU XMM4, xmmword ptr [R14+112]; LDDQU XMM5, xmmword ptr [R14+128]; LDDQU XMM6, xmmword ptr [R14+144]; LDDQU XMM7, xmmword ptr [R14+160]; LDDQU XMM8, xmmword ptr [R14+176]; LDDQU XMM9, xmmword ptr [R14+192]; LDDQU XMM10, xmmword ptr [R14+208]; BLENDPD XMM0, xmmword ptr [R14+R13], 2&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 5.6</li>
+<li>Reference cycles: 4.96</li>
+<li>UOPS_PORT_2: 5.5</li>
+<li>UOPS_PORT_3: 5.5</li>
+</ul>
+</li></ul>
+<strong>&#8680; One &mu;op that can only use ports {'2', '3'}</strong><hr><h3>With blocking instructions for ports {'0', '1', '5'}:</h3><ul>
+<li>Code: <pre>   0:	f3 0f d6 c8          	movq2dq xmm1,mm0
+   4:	f3 0f d6 d0          	movq2dq xmm2,mm0
+   8:	f3 0f d6 d8          	movq2dq xmm3,mm0
+   c:	f3 0f d6 e0          	movq2dq xmm4,mm0
+  10:	f3 0f d6 e8          	movq2dq xmm5,mm0
+  14:	f3 0f d6 f0          	movq2dq xmm6,mm0
+  18:	f3 0f d6 f8          	movq2dq xmm7,mm0
+  1c:	f3 44 0f d6 c0       	movq2dq xmm8,mm0
+  21:	f3 44 0f d6 c8       	movq2dq xmm9,mm0
+  26:	f3 44 0f d6 d0       	movq2dq xmm10,mm0
+  2b:	66 43 0f 3a 0d 04 2e 	blendpd xmm0,XMMWORD PTR [r14+r13*1],0x2
+  32:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR MM0, MM0;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;MOVQ2DQ XMM1, MM0; MOVQ2DQ XMM2, MM0; MOVQ2DQ XMM3, MM0; MOVQ2DQ XMM4, MM0; MOVQ2DQ XMM5, MM0; MOVQ2DQ XMM6, MM0; MOVQ2DQ XMM7, MM0; MOVQ2DQ XMM8, MM0; MOVQ2DQ XMM9, MM0; MOVQ2DQ XMM10, MM0; BLENDPD XMM0, xmmword ptr [R14+R13], 2&quot; -asm_init &quot;VZEROALL; PXOR MM0, MM0; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 3.74</li>
+<li>Reference cycles: 3.31</li>
+<li>UOPS_PORT_5: 3.67</li>
+<li>UOPS_PORT_1: 3.66</li>
+<li>UOPS_PORT_0: 3.67</li>
+</ul>
+</li></ul>
+<strong>&#8680; One &mu;op that can only use ports {'0', '1', '5'}</strong></body>
+</html>
