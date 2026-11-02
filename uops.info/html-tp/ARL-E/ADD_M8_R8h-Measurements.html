@@ -1,0 +1,551 @@
+<html>
+<head>
+<title>ADD (M8, R8h)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>ADD (M8, R8h) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.05</li>
+<li>Reference cycles: 0.88</li>
+<li>UOPS_RETIRED.ALL: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.85</li>
+<li>UOPS_RETIRED.ALL: 1.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.84</li>
+<li>UOPS_RETIRED.ALL: 1.02</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 6.37</li>
+<li>Reference cycles: 5.39</li>
+<li>UOPS_RETIRED.ALL: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.69</li>
+<li>UOPS_RETIRED.ALL: 5.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 3.17</li>
+<li>Reference cycles: 2.68</li>
+<li>UOPS_RETIRED.ALL: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+   b:	00 7f 04             	add    BYTE PTR [rdi+0x4],bh
+   e:	00 7f 05             	add    BYTE PTR [rdi+0x5],bh
+  11:	00 7f 06             	add    BYTE PTR [rdi+0x6],bh
+  14:	00 7f 07             	add    BYTE PTR [rdi+0x7],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH; ADD byte ptr [RDI+4], BH; ADD byte ptr [RDI+5], BH; ADD byte ptr [RDI+6], BH; ADD byte ptr [RDI+7], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 6.56</li>
+<li>Reference cycles: 5.39</li>
+<li>UOPS_RETIRED.ALL: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+   b:	00 7f 04             	add    BYTE PTR [rdi+0x4],bh
+   e:	00 7f 05             	add    BYTE PTR [rdi+0x5],bh
+  11:	00 7f 06             	add    BYTE PTR [rdi+0x6],bh
+  14:	00 7f 07             	add    BYTE PTR [rdi+0x7],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH; ADD byte ptr [RDI+4], BH; ADD byte ptr [RDI+5], BH; ADD byte ptr [RDI+6], BH; ADD byte ptr [RDI+7], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 4.01</li>
+<li>Reference cycles: 3.38</li>
+<li>UOPS_RETIRED.ALL: 10.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+   b:	00 7f 04             	add    BYTE PTR [rdi+0x4],bh
+   e:	00 7f 05             	add    BYTE PTR [rdi+0x5],bh
+  11:	00 7f 06             	add    BYTE PTR [rdi+0x6],bh
+  14:	00 7f 07             	add    BYTE PTR [rdi+0x7],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH; ADD byte ptr [RDI+4], BH; ADD byte ptr [RDI+5], BH; ADD byte ptr [RDI+6], BH; ADD byte ptr [RDI+7], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 5.11</li>
+<li>Reference cycles: 4.26</li>
+<li>UOPS_RETIRED.ALL: 8.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+   b:	00 7f 04             	add    BYTE PTR [rdi+0x4],bh
+   e:	00 7f 05             	add    BYTE PTR [rdi+0x5],bh
+  11:	00 7f 06             	add    BYTE PTR [rdi+0x6],bh
+  14:	00 7f 07             	add    BYTE PTR [rdi+0x7],bh
+  17:	00 7f 08             	add    BYTE PTR [rdi+0x8],bh
+  1a:	00 7f 09             	add    BYTE PTR [rdi+0x9],bh
+  1d:	00 7f 0a             	add    BYTE PTR [rdi+0xa],bh
+  20:	00 7f 0b             	add    BYTE PTR [rdi+0xb],bh
+  23:	00 7f 0c             	add    BYTE PTR [rdi+0xc],bh
+  26:	00 7f 0d             	add    BYTE PTR [rdi+0xd],bh
+  29:	00 7f 0e             	add    BYTE PTR [rdi+0xe],bh
+  2c:	00 7f 0f             	add    BYTE PTR [rdi+0xf],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH; ADD byte ptr [RDI+4], BH; ADD byte ptr [RDI+5], BH; ADD byte ptr [RDI+6], BH; ADD byte ptr [RDI+7], BH; ADD byte ptr [RDI+8], BH; ADD byte ptr [RDI+9], BH; ADD byte ptr [RDI+10], BH; ADD byte ptr [RDI+11], BH; ADD byte ptr [RDI+12], BH; ADD byte ptr [RDI+13], BH; ADD byte ptr [RDI+14], BH; ADD byte ptr [RDI+15], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 9.13</li>
+<li>Reference cycles: 7.74</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+   b:	00 7f 04             	add    BYTE PTR [rdi+0x4],bh
+   e:	00 7f 05             	add    BYTE PTR [rdi+0x5],bh
+  11:	00 7f 06             	add    BYTE PTR [rdi+0x6],bh
+  14:	00 7f 07             	add    BYTE PTR [rdi+0x7],bh
+  17:	00 7f 08             	add    BYTE PTR [rdi+0x8],bh
+  1a:	00 7f 09             	add    BYTE PTR [rdi+0x9],bh
+  1d:	00 7f 0a             	add    BYTE PTR [rdi+0xa],bh
+  20:	00 7f 0b             	add    BYTE PTR [rdi+0xb],bh
+  23:	00 7f 0c             	add    BYTE PTR [rdi+0xc],bh
+  26:	00 7f 0d             	add    BYTE PTR [rdi+0xd],bh
+  29:	00 7f 0e             	add    BYTE PTR [rdi+0xe],bh
+  2c:	00 7f 0f             	add    BYTE PTR [rdi+0xf],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH; ADD byte ptr [RDI+4], BH; ADD byte ptr [RDI+5], BH; ADD byte ptr [RDI+6], BH; ADD byte ptr [RDI+7], BH; ADD byte ptr [RDI+8], BH; ADD byte ptr [RDI+9], BH; ADD byte ptr [RDI+10], BH; ADD byte ptr [RDI+11], BH; ADD byte ptr [RDI+12], BH; ADD byte ptr [RDI+13], BH; ADD byte ptr [RDI+14], BH; ADD byte ptr [RDI+15], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 9.53</li>
+<li>Reference cycles: 8.05</li>
+<li>UOPS_RETIRED.ALL: 18.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	00 3f                	add    BYTE PTR [rdi],bh
+   2:	00 7f 01             	add    BYTE PTR [rdi+0x1],bh
+   5:	00 7f 02             	add    BYTE PTR [rdi+0x2],bh
+   8:	00 7f 03             	add    BYTE PTR [rdi+0x3],bh
+   b:	00 7f 04             	add    BYTE PTR [rdi+0x4],bh
+   e:	00 7f 05             	add    BYTE PTR [rdi+0x5],bh
+  11:	00 7f 06             	add    BYTE PTR [rdi+0x6],bh
+  14:	00 7f 07             	add    BYTE PTR [rdi+0x7],bh
+  17:	00 7f 08             	add    BYTE PTR [rdi+0x8],bh
+  1a:	00 7f 09             	add    BYTE PTR [rdi+0x9],bh
+  1d:	00 7f 0a             	add    BYTE PTR [rdi+0xa],bh
+  20:	00 7f 0b             	add    BYTE PTR [rdi+0xb],bh
+  23:	00 7f 0c             	add    BYTE PTR [rdi+0xc],bh
+  26:	00 7f 0d             	add    BYTE PTR [rdi+0xd],bh
+  29:	00 7f 0e             	add    BYTE PTR [rdi+0xe],bh
+  2c:	00 7f 0f             	add    BYTE PTR [rdi+0xf],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI], BH; ADD byte ptr [RDI+1], BH; ADD byte ptr [RDI+2], BH; ADD byte ptr [RDI+3], BH; ADD byte ptr [RDI+4], BH; ADD byte ptr [RDI+5], BH; ADD byte ptr [RDI+6], BH; ADD byte ptr [RDI+7], BH; ADD byte ptr [RDI+8], BH; ADD byte ptr [RDI+9], BH; ADD byte ptr [RDI+10], BH; ADD byte ptr [RDI+11], BH; ADD byte ptr [RDI+12], BH; ADD byte ptr [RDI+13], BH; ADD byte ptr [RDI+14], BH; ADD byte ptr [RDI+15], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 10.05</li>
+<li>Reference cycles: 8.45</li>
+<li>UOPS_RETIRED.ALL: 16.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.05</li>
+<li>Reference cycles: 0.88</li>
+<li>UOPS_RETIRED.ALL: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.84</li>
+<li>UOPS_RETIRED.ALL: 1.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.84</li>
+<li>UOPS_RETIRED.ALL: 1.02</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 6.12</li>
+<li>Reference cycles: 5.22</li>
+<li>UOPS_RETIRED.ALL: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.67</li>
+<li>UOPS_RETIRED.ALL: 5.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 3.02</li>
+<li>Reference cycles: 2.55</li>
+<li>UOPS_RETIRED.ALL: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+   f:	00 7c 37 04          	add    BYTE PTR [rdi+rsi*1+0x4],bh
+  13:	00 7c 37 05          	add    BYTE PTR [rdi+rsi*1+0x5],bh
+  17:	00 7c 37 06          	add    BYTE PTR [rdi+rsi*1+0x6],bh
+  1b:	00 7c 37 07          	add    BYTE PTR [rdi+rsi*1+0x7],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH; ADD byte ptr [RDI+RSI+4], BH; ADD byte ptr [RDI+RSI+5], BH; ADD byte ptr [RDI+RSI+6], BH; ADD byte ptr [RDI+RSI+7], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 6.43</li>
+<li>Reference cycles: 5.22</li>
+<li>UOPS_RETIRED.ALL: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+   f:	00 7c 37 04          	add    BYTE PTR [rdi+rsi*1+0x4],bh
+  13:	00 7c 37 05          	add    BYTE PTR [rdi+rsi*1+0x5],bh
+  17:	00 7c 37 06          	add    BYTE PTR [rdi+rsi*1+0x6],bh
+  1b:	00 7c 37 07          	add    BYTE PTR [rdi+rsi*1+0x7],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH; ADD byte ptr [RDI+RSI+4], BH; ADD byte ptr [RDI+RSI+5], BH; ADD byte ptr [RDI+RSI+6], BH; ADD byte ptr [RDI+RSI+7], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 4.02</li>
+<li>Reference cycles: 3.37</li>
+<li>UOPS_RETIRED.ALL: 10.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+   f:	00 7c 37 04          	add    BYTE PTR [rdi+rsi*1+0x4],bh
+  13:	00 7c 37 05          	add    BYTE PTR [rdi+rsi*1+0x5],bh
+  17:	00 7c 37 06          	add    BYTE PTR [rdi+rsi*1+0x6],bh
+  1b:	00 7c 37 07          	add    BYTE PTR [rdi+rsi*1+0x7],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH; ADD byte ptr [RDI+RSI+4], BH; ADD byte ptr [RDI+RSI+5], BH; ADD byte ptr [RDI+RSI+6], BH; ADD byte ptr [RDI+RSI+7], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 5.27</li>
+<li>Reference cycles: 4.44</li>
+<li>UOPS_RETIRED.ALL: 8.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+   f:	00 7c 37 04          	add    BYTE PTR [rdi+rsi*1+0x4],bh
+  13:	00 7c 37 05          	add    BYTE PTR [rdi+rsi*1+0x5],bh
+  17:	00 7c 37 06          	add    BYTE PTR [rdi+rsi*1+0x6],bh
+  1b:	00 7c 37 07          	add    BYTE PTR [rdi+rsi*1+0x7],bh
+  1f:	00 7c 37 08          	add    BYTE PTR [rdi+rsi*1+0x8],bh
+  23:	00 7c 37 09          	add    BYTE PTR [rdi+rsi*1+0x9],bh
+  27:	00 7c 37 0a          	add    BYTE PTR [rdi+rsi*1+0xa],bh
+  2b:	00 7c 37 0b          	add    BYTE PTR [rdi+rsi*1+0xb],bh
+  2f:	00 7c 37 0c          	add    BYTE PTR [rdi+rsi*1+0xc],bh
+  33:	00 7c 37 0d          	add    BYTE PTR [rdi+rsi*1+0xd],bh
+  37:	00 7c 37 0e          	add    BYTE PTR [rdi+rsi*1+0xe],bh
+  3b:	00 7c 37 0f          	add    BYTE PTR [rdi+rsi*1+0xf],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH; ADD byte ptr [RDI+RSI+4], BH; ADD byte ptr [RDI+RSI+5], BH; ADD byte ptr [RDI+RSI+6], BH; ADD byte ptr [RDI+RSI+7], BH; ADD byte ptr [RDI+RSI+8], BH; ADD byte ptr [RDI+RSI+9], BH; ADD byte ptr [RDI+RSI+10], BH; ADD byte ptr [RDI+RSI+11], BH; ADD byte ptr [RDI+RSI+12], BH; ADD byte ptr [RDI+RSI+13], BH; ADD byte ptr [RDI+RSI+14], BH; ADD byte ptr [RDI+RSI+15], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 9.15</li>
+<li>Reference cycles: 7.41</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+   f:	00 7c 37 04          	add    BYTE PTR [rdi+rsi*1+0x4],bh
+  13:	00 7c 37 05          	add    BYTE PTR [rdi+rsi*1+0x5],bh
+  17:	00 7c 37 06          	add    BYTE PTR [rdi+rsi*1+0x6],bh
+  1b:	00 7c 37 07          	add    BYTE PTR [rdi+rsi*1+0x7],bh
+  1f:	00 7c 37 08          	add    BYTE PTR [rdi+rsi*1+0x8],bh
+  23:	00 7c 37 09          	add    BYTE PTR [rdi+rsi*1+0x9],bh
+  27:	00 7c 37 0a          	add    BYTE PTR [rdi+rsi*1+0xa],bh
+  2b:	00 7c 37 0b          	add    BYTE PTR [rdi+rsi*1+0xb],bh
+  2f:	00 7c 37 0c          	add    BYTE PTR [rdi+rsi*1+0xc],bh
+  33:	00 7c 37 0d          	add    BYTE PTR [rdi+rsi*1+0xd],bh
+  37:	00 7c 37 0e          	add    BYTE PTR [rdi+rsi*1+0xe],bh
+  3b:	00 7c 37 0f          	add    BYTE PTR [rdi+rsi*1+0xf],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH; ADD byte ptr [RDI+RSI+4], BH; ADD byte ptr [RDI+RSI+5], BH; ADD byte ptr [RDI+RSI+6], BH; ADD byte ptr [RDI+RSI+7], BH; ADD byte ptr [RDI+RSI+8], BH; ADD byte ptr [RDI+RSI+9], BH; ADD byte ptr [RDI+RSI+10], BH; ADD byte ptr [RDI+RSI+11], BH; ADD byte ptr [RDI+RSI+12], BH; ADD byte ptr [RDI+RSI+13], BH; ADD byte ptr [RDI+RSI+14], BH; ADD byte ptr [RDI+RSI+15], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 9.04</li>
+<li>Reference cycles: 7.61</li>
+<li>UOPS_RETIRED.ALL: 18.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	00 3c 37             	add    BYTE PTR [rdi+rsi*1],bh
+   3:	00 7c 37 01          	add    BYTE PTR [rdi+rsi*1+0x1],bh
+   7:	00 7c 37 02          	add    BYTE PTR [rdi+rsi*1+0x2],bh
+   b:	00 7c 37 03          	add    BYTE PTR [rdi+rsi*1+0x3],bh
+   f:	00 7c 37 04          	add    BYTE PTR [rdi+rsi*1+0x4],bh
+  13:	00 7c 37 05          	add    BYTE PTR [rdi+rsi*1+0x5],bh
+  17:	00 7c 37 06          	add    BYTE PTR [rdi+rsi*1+0x6],bh
+  1b:	00 7c 37 07          	add    BYTE PTR [rdi+rsi*1+0x7],bh
+  1f:	00 7c 37 08          	add    BYTE PTR [rdi+rsi*1+0x8],bh
+  23:	00 7c 37 09          	add    BYTE PTR [rdi+rsi*1+0x9],bh
+  27:	00 7c 37 0a          	add    BYTE PTR [rdi+rsi*1+0xa],bh
+  2b:	00 7c 37 0b          	add    BYTE PTR [rdi+rsi*1+0xb],bh
+  2f:	00 7c 37 0c          	add    BYTE PTR [rdi+rsi*1+0xc],bh
+  33:	00 7c 37 0d          	add    BYTE PTR [rdi+rsi*1+0xd],bh
+  37:	00 7c 37 0e          	add    BYTE PTR [rdi+rsi*1+0xe],bh
+  3b:	00 7c 37 0f          	add    BYTE PTR [rdi+rsi*1+0xf],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ADD byte ptr [RDI+RSI], BH; ADD byte ptr [RDI+RSI+1], BH; ADD byte ptr [RDI+RSI+2], BH; ADD byte ptr [RDI+RSI+3], BH; ADD byte ptr [RDI+RSI+4], BH; ADD byte ptr [RDI+RSI+5], BH; ADD byte ptr [RDI+RSI+6], BH; ADD byte ptr [RDI+RSI+7], BH; ADD byte ptr [RDI+RSI+8], BH; ADD byte ptr [RDI+RSI+9], BH; ADD byte ptr [RDI+RSI+10], BH; ADD byte ptr [RDI+RSI+11], BH; ADD byte ptr [RDI+RSI+12], BH; ADD byte ptr [RDI+RSI+13], BH; ADD byte ptr [RDI+RSI+14], BH; ADD byte ptr [RDI+RSI+15], BH&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 11.14</li>
+<li>Reference cycles: 9.41</li>
+<li>UOPS_RETIRED.ALL: 16.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
