@@ -1,0 +1,1082 @@
+<html>
+<head>
+<title>VPERMQ_EVEX (YMM, YMM, M64_1to4)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VPERMQ_EVEX (YMM, YMM, M64_1to4) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.74</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+<li>RETIRE_SLOTS: 1.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.25</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.74</li>
+<li>UOPS_EXECUTED.THREAD: 2.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.74</li>
+<li>UOPS_EXECUTED.THREAD: 2.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 4.0</li>
+<li>Reference cycles: 3.07</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 4.01</li>
+<li>Reference cycles: 2.95</li>
+<li>UOPS_EXECUTED.THREAD: 8.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 4.01</li>
+<li>Reference cycles: 2.94</li>
+<li>UOPS_EXECUTED.THREAD: 8.05</li>
+<li>RETIRE_SLOTS: 4.06</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+  1b:	62 d2 f5 38 36 6e 04 	vpermq ymm5,ymm1,QWORD BCST [r14+0x20]
+  22:	62 d2 f5 38 36 76 05 	vpermq ymm6,ymm1,QWORD BCST [r14+0x28]
+  29:	62 d2 f5 38 36 7e 06 	vpermq ymm7,ymm1,QWORD BCST [r14+0x30]
+  30:	62 52 f5 38 36 46 07 	vpermq ymm8,ymm1,QWORD BCST [r14+0x38]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+56] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.0</li>
+<li>Reference cycles: 5.67</li>
+<li>UOPS_EXECUTED.THREAD: 16.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+  1b:	62 d2 f5 38 36 6e 04 	vpermq ymm5,ymm1,QWORD BCST [r14+0x20]
+  22:	62 d2 f5 38 36 76 05 	vpermq ymm6,ymm1,QWORD BCST [r14+0x28]
+  29:	62 d2 f5 38 36 7e 06 	vpermq ymm7,ymm1,QWORD BCST [r14+0x30]
+  30:	62 52 f5 38 36 46 07 	vpermq ymm8,ymm1,QWORD BCST [r14+0x38]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+56] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 8.01</li>
+<li>Reference cycles: 5.73</li>
+<li>UOPS_EXECUTED.THREAD: 17.0</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+  1b:	62 d2 f5 38 36 6e 04 	vpermq ymm5,ymm1,QWORD BCST [r14+0x20]
+  22:	62 d2 f5 38 36 76 05 	vpermq ymm6,ymm1,QWORD BCST [r14+0x28]
+  29:	62 d2 f5 38 36 7e 06 	vpermq ymm7,ymm1,QWORD BCST [r14+0x30]
+  30:	62 52 f5 38 36 46 07 	vpermq ymm8,ymm1,QWORD BCST [r14+0x38]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+56] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 8.02</li>
+<li>Reference cycles: 5.75</li>
+<li>UOPS_EXECUTED.THREAD: 16.11</li>
+<li>RETIRE_SLOTS: 8.1</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.01</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+  1b:	62 d2 f5 38 36 6e 04 	vpermq ymm5,ymm1,QWORD BCST [r14+0x20]
+  22:	62 d2 f5 38 36 76 05 	vpermq ymm6,ymm1,QWORD BCST [r14+0x28]
+  29:	62 d2 f5 38 36 7e 06 	vpermq ymm7,ymm1,QWORD BCST [r14+0x30]
+  30:	62 52 f5 38 36 46 07 	vpermq ymm8,ymm1,QWORD BCST [r14+0x38]
+  37:	62 52 f5 38 36 4e 08 	vpermq ymm9,ymm1,QWORD BCST [r14+0x40]
+  3e:	62 52 f5 38 36 56 09 	vpermq ymm10,ymm1,QWORD BCST [r14+0x48]
+  45:	62 52 f5 38 36 5e 0a 	vpermq ymm11,ymm1,QWORD BCST [r14+0x50]
+  4c:	62 52 f5 38 36 66 0b 	vpermq ymm12,ymm1,QWORD BCST [r14+0x58]
+  53:	62 c2 f5 38 36 46 0c 	vpermq ymm16,ymm1,QWORD BCST [r14+0x60]
+  5a:	62 c2 f5 38 36 4e 0d 	vpermq ymm17,ymm1,QWORD BCST [r14+0x68]
+  61:	62 c2 f5 38 36 56 0e 	vpermq ymm18,ymm1,QWORD BCST [r14+0x70]
+  68:	62 c2 f5 38 36 5e 0f 	vpermq ymm19,ymm1,QWORD BCST [r14+0x78]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+56] {1to4}; {evex} VPERMQ YMM9, YMM1, qword ptr [R14+64] {1to4}; {evex} VPERMQ YMM10, YMM1, qword ptr [R14+72] {1to4}; {evex} VPERMQ YMM11, YMM1, qword ptr [R14+80] {1to4}; {evex} VPERMQ YMM12, YMM1, qword ptr [R14+88] {1to4}; {evex} VPERMQ YMM16, YMM1, qword ptr [R14+96] {1to4}; {evex} VPERMQ YMM17, YMM1, qword ptr [R14+104] {1to4}; {evex} VPERMQ YMM18, YMM1, qword ptr [R14+112] {1to4}; {evex} VPERMQ YMM19, YMM1, qword ptr [R14+120] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 11.19</li>
+<li>UOPS_EXECUTED.THREAD: 32.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 16.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+  1b:	62 d2 f5 38 36 6e 04 	vpermq ymm5,ymm1,QWORD BCST [r14+0x20]
+  22:	62 d2 f5 38 36 76 05 	vpermq ymm6,ymm1,QWORD BCST [r14+0x28]
+  29:	62 d2 f5 38 36 7e 06 	vpermq ymm7,ymm1,QWORD BCST [r14+0x30]
+  30:	62 52 f5 38 36 46 07 	vpermq ymm8,ymm1,QWORD BCST [r14+0x38]
+  37:	62 52 f5 38 36 4e 08 	vpermq ymm9,ymm1,QWORD BCST [r14+0x40]
+  3e:	62 52 f5 38 36 56 09 	vpermq ymm10,ymm1,QWORD BCST [r14+0x48]
+  45:	62 52 f5 38 36 5e 0a 	vpermq ymm11,ymm1,QWORD BCST [r14+0x50]
+  4c:	62 52 f5 38 36 66 0b 	vpermq ymm12,ymm1,QWORD BCST [r14+0x58]
+  53:	62 c2 f5 38 36 46 0c 	vpermq ymm16,ymm1,QWORD BCST [r14+0x60]
+  5a:	62 c2 f5 38 36 4e 0d 	vpermq ymm17,ymm1,QWORD BCST [r14+0x68]
+  61:	62 c2 f5 38 36 56 0e 	vpermq ymm18,ymm1,QWORD BCST [r14+0x70]
+  68:	62 c2 f5 38 36 5e 0f 	vpermq ymm19,ymm1,QWORD BCST [r14+0x78]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+56] {1to4}; {evex} VPERMQ YMM9, YMM1, qword ptr [R14+64] {1to4}; {evex} VPERMQ YMM10, YMM1, qword ptr [R14+72] {1to4}; {evex} VPERMQ YMM11, YMM1, qword ptr [R14+80] {1to4}; {evex} VPERMQ YMM12, YMM1, qword ptr [R14+88] {1to4}; {evex} VPERMQ YMM16, YMM1, qword ptr [R14+96] {1to4}; {evex} VPERMQ YMM17, YMM1, qword ptr [R14+104] {1to4}; {evex} VPERMQ YMM18, YMM1, qword ptr [R14+112] {1to4}; {evex} VPERMQ YMM19, YMM1, qword ptr [R14+120] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 16.01</li>
+<li>Reference cycles: 11.41</li>
+<li>UOPS_EXECUTED.THREAD: 33.0</li>
+<li>RETIRE_SLOTS: 17.0</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 16.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d2 f5 38 36 06    	vpermq ymm0,ymm1,QWORD BCST [r14]
+   6:	62 d2 f5 38 36 56 01 	vpermq ymm2,ymm1,QWORD BCST [r14+0x8]
+   d:	62 d2 f5 38 36 5e 02 	vpermq ymm3,ymm1,QWORD BCST [r14+0x10]
+  14:	62 d2 f5 38 36 66 03 	vpermq ymm4,ymm1,QWORD BCST [r14+0x18]
+  1b:	62 d2 f5 38 36 6e 04 	vpermq ymm5,ymm1,QWORD BCST [r14+0x20]
+  22:	62 d2 f5 38 36 76 05 	vpermq ymm6,ymm1,QWORD BCST [r14+0x28]
+  29:	62 d2 f5 38 36 7e 06 	vpermq ymm7,ymm1,QWORD BCST [r14+0x30]
+  30:	62 52 f5 38 36 46 07 	vpermq ymm8,ymm1,QWORD BCST [r14+0x38]
+  37:	62 52 f5 38 36 4e 08 	vpermq ymm9,ymm1,QWORD BCST [r14+0x40]
+  3e:	62 52 f5 38 36 56 09 	vpermq ymm10,ymm1,QWORD BCST [r14+0x48]
+  45:	62 52 f5 38 36 5e 0a 	vpermq ymm11,ymm1,QWORD BCST [r14+0x50]
+  4c:	62 52 f5 38 36 66 0b 	vpermq ymm12,ymm1,QWORD BCST [r14+0x58]
+  53:	62 c2 f5 38 36 46 0c 	vpermq ymm16,ymm1,QWORD BCST [r14+0x60]
+  5a:	62 c2 f5 38 36 4e 0d 	vpermq ymm17,ymm1,QWORD BCST [r14+0x68]
+  61:	62 c2 f5 38 36 56 0e 	vpermq ymm18,ymm1,QWORD BCST [r14+0x70]
+  68:	62 c2 f5 38 36 5e 0f 	vpermq ymm19,ymm1,QWORD BCST [r14+0x78]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+56] {1to4}; {evex} VPERMQ YMM9, YMM1, qword ptr [R14+64] {1to4}; {evex} VPERMQ YMM10, YMM1, qword ptr [R14+72] {1to4}; {evex} VPERMQ YMM11, YMM1, qword ptr [R14+80] {1to4}; {evex} VPERMQ YMM12, YMM1, qword ptr [R14+88] {1to4}; {evex} VPERMQ YMM16, YMM1, qword ptr [R14+96] {1to4}; {evex} VPERMQ YMM17, YMM1, qword ptr [R14+104] {1to4}; {evex} VPERMQ YMM18, YMM1, qword ptr [R14+112] {1to4}; {evex} VPERMQ YMM19, YMM1, qword ptr [R14+120] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 16.01</li>
+<li>Reference cycles: 11.45</li>
+<li>UOPS_EXECUTED.THREAD: 32.11</li>
+<li>RETIRE_SLOTS: 16.1</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 16.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.71</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+<li>RETIRE_SLOTS: 2.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.25</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.74</li>
+<li>UOPS_EXECUTED.THREAD: 2.1</li>
+<li>RETIRE_SLOTS: 2.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.74</li>
+<li>UOPS_EXECUTED.THREAD: 2.01</li>
+<li>RETIRE_SLOTS: 2.01</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.5</li>
+<li>UOPS_PORT_3: 0.5</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 4.0</li>
+<li>Reference cycles: 3.07</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 4.01</li>
+<li>Reference cycles: 2.94</li>
+<li>UOPS_EXECUTED.THREAD: 8.5</li>
+<li>RETIRE_SLOTS: 8.5</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 4.01</li>
+<li>Reference cycles: 2.94</li>
+<li>UOPS_EXECUTED.THREAD: 8.05</li>
+<li>RETIRE_SLOTS: 8.05</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 2.0</li>
+<li>UOPS_PORT_3: 2.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+  1f:	62 92 f5 38 36 6c 2e 	vpermq ymm5,ymm1,QWORD BCST [r14+r13*1+0x20]
+  26:	04 
+  27:	62 92 f5 38 36 74 2e 	vpermq ymm6,ymm1,QWORD BCST [r14+r13*1+0x28]
+  2e:	05 
+  2f:	62 92 f5 38 36 7c 2e 	vpermq ymm7,ymm1,QWORD BCST [r14+r13*1+0x30]
+  36:	06 
+  37:	62 12 f5 38 36 44 2e 	vpermq ymm8,ymm1,QWORD BCST [r14+r13*1+0x38]
+  3e:	07 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+R13+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+R13+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+R13+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+R13+56] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.0</li>
+<li>Reference cycles: 6.13</li>
+<li>UOPS_EXECUTED.THREAD: 16.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+  1f:	62 92 f5 38 36 6c 2e 	vpermq ymm5,ymm1,QWORD BCST [r14+r13*1+0x20]
+  26:	04 
+  27:	62 92 f5 38 36 74 2e 	vpermq ymm6,ymm1,QWORD BCST [r14+r13*1+0x28]
+  2e:	05 
+  2f:	62 92 f5 38 36 7c 2e 	vpermq ymm7,ymm1,QWORD BCST [r14+r13*1+0x30]
+  36:	06 
+  37:	62 12 f5 38 36 44 2e 	vpermq ymm8,ymm1,QWORD BCST [r14+r13*1+0x38]
+  3e:	07 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+R13+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+R13+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+R13+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+R13+56] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 8.01</li>
+<li>Reference cycles: 5.89</li>
+<li>UOPS_EXECUTED.THREAD: 17.01</li>
+<li>RETIRE_SLOTS: 17.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+  1f:	62 92 f5 38 36 6c 2e 	vpermq ymm5,ymm1,QWORD BCST [r14+r13*1+0x20]
+  26:	04 
+  27:	62 92 f5 38 36 74 2e 	vpermq ymm6,ymm1,QWORD BCST [r14+r13*1+0x28]
+  2e:	05 
+  2f:	62 92 f5 38 36 7c 2e 	vpermq ymm7,ymm1,QWORD BCST [r14+r13*1+0x30]
+  36:	06 
+  37:	62 12 f5 38 36 44 2e 	vpermq ymm8,ymm1,QWORD BCST [r14+r13*1+0x38]
+  3e:	07 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+R13+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+R13+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+R13+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+R13+56] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 8.01</li>
+<li>Reference cycles: 5.89</li>
+<li>UOPS_EXECUTED.THREAD: 16.11</li>
+<li>RETIRE_SLOTS: 16.1</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 8.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+  1f:	62 92 f5 38 36 6c 2e 	vpermq ymm5,ymm1,QWORD BCST [r14+r13*1+0x20]
+  26:	04 
+  27:	62 92 f5 38 36 74 2e 	vpermq ymm6,ymm1,QWORD BCST [r14+r13*1+0x28]
+  2e:	05 
+  2f:	62 92 f5 38 36 7c 2e 	vpermq ymm7,ymm1,QWORD BCST [r14+r13*1+0x30]
+  36:	06 
+  37:	62 12 f5 38 36 44 2e 	vpermq ymm8,ymm1,QWORD BCST [r14+r13*1+0x38]
+  3e:	07 
+  3f:	62 12 f5 38 36 4c 2e 	vpermq ymm9,ymm1,QWORD BCST [r14+r13*1+0x40]
+  46:	08 
+  47:	62 12 f5 38 36 54 2e 	vpermq ymm10,ymm1,QWORD BCST [r14+r13*1+0x48]
+  4e:	09 
+  4f:	62 12 f5 38 36 5c 2e 	vpermq ymm11,ymm1,QWORD BCST [r14+r13*1+0x50]
+  56:	0a 
+  57:	62 12 f5 38 36 64 2e 	vpermq ymm12,ymm1,QWORD BCST [r14+r13*1+0x58]
+  5e:	0b 
+  5f:	62 82 f5 38 36 44 2e 	vpermq ymm16,ymm1,QWORD BCST [r14+r13*1+0x60]
+  66:	0c 
+  67:	62 82 f5 38 36 4c 2e 	vpermq ymm17,ymm1,QWORD BCST [r14+r13*1+0x68]
+  6e:	0d 
+  6f:	62 82 f5 38 36 54 2e 	vpermq ymm18,ymm1,QWORD BCST [r14+r13*1+0x70]
+  76:	0e 
+  77:	62 82 f5 38 36 5c 2e 	vpermq ymm19,ymm1,QWORD BCST [r14+r13*1+0x78]
+  7e:	0f 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+R13+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+R13+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+R13+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+R13+56] {1to4}; {evex} VPERMQ YMM9, YMM1, qword ptr [R14+R13+64] {1to4}; {evex} VPERMQ YMM10, YMM1, qword ptr [R14+R13+72] {1to4}; {evex} VPERMQ YMM11, YMM1, qword ptr [R14+R13+80] {1to4}; {evex} VPERMQ YMM12, YMM1, qword ptr [R14+R13+88] {1to4}; {evex} VPERMQ YMM16, YMM1, qword ptr [R14+R13+96] {1to4}; {evex} VPERMQ YMM17, YMM1, qword ptr [R14+R13+104] {1to4}; {evex} VPERMQ YMM18, YMM1, qword ptr [R14+R13+112] {1to4}; {evex} VPERMQ YMM19, YMM1, qword ptr [R14+R13+120] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 11.65</li>
+<li>UOPS_EXECUTED.THREAD: 32.0</li>
+<li>RETIRE_SLOTS: 32.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 16.0</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+  1f:	62 92 f5 38 36 6c 2e 	vpermq ymm5,ymm1,QWORD BCST [r14+r13*1+0x20]
+  26:	04 
+  27:	62 92 f5 38 36 74 2e 	vpermq ymm6,ymm1,QWORD BCST [r14+r13*1+0x28]
+  2e:	05 
+  2f:	62 92 f5 38 36 7c 2e 	vpermq ymm7,ymm1,QWORD BCST [r14+r13*1+0x30]
+  36:	06 
+  37:	62 12 f5 38 36 44 2e 	vpermq ymm8,ymm1,QWORD BCST [r14+r13*1+0x38]
+  3e:	07 
+  3f:	62 12 f5 38 36 4c 2e 	vpermq ymm9,ymm1,QWORD BCST [r14+r13*1+0x40]
+  46:	08 
+  47:	62 12 f5 38 36 54 2e 	vpermq ymm10,ymm1,QWORD BCST [r14+r13*1+0x48]
+  4e:	09 
+  4f:	62 12 f5 38 36 5c 2e 	vpermq ymm11,ymm1,QWORD BCST [r14+r13*1+0x50]
+  56:	0a 
+  57:	62 12 f5 38 36 64 2e 	vpermq ymm12,ymm1,QWORD BCST [r14+r13*1+0x58]
+  5e:	0b 
+  5f:	62 82 f5 38 36 44 2e 	vpermq ymm16,ymm1,QWORD BCST [r14+r13*1+0x60]
+  66:	0c 
+  67:	62 82 f5 38 36 4c 2e 	vpermq ymm17,ymm1,QWORD BCST [r14+r13*1+0x68]
+  6e:	0d 
+  6f:	62 82 f5 38 36 54 2e 	vpermq ymm18,ymm1,QWORD BCST [r14+r13*1+0x70]
+  76:	0e 
+  77:	62 82 f5 38 36 5c 2e 	vpermq ymm19,ymm1,QWORD BCST [r14+r13*1+0x78]
+  7e:	0f 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+R13+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+R13+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+R13+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+R13+56] {1to4}; {evex} VPERMQ YMM9, YMM1, qword ptr [R14+R13+64] {1to4}; {evex} VPERMQ YMM10, YMM1, qword ptr [R14+R13+72] {1to4}; {evex} VPERMQ YMM11, YMM1, qword ptr [R14+R13+80] {1to4}; {evex} VPERMQ YMM12, YMM1, qword ptr [R14+R13+88] {1to4}; {evex} VPERMQ YMM16, YMM1, qword ptr [R14+R13+96] {1to4}; {evex} VPERMQ YMM17, YMM1, qword ptr [R14+R13+104] {1to4}; {evex} VPERMQ YMM18, YMM1, qword ptr [R14+R13+112] {1to4}; {evex} VPERMQ YMM19, YMM1, qword ptr [R14+R13+120] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 16.01</li>
+<li>Reference cycles: 11.78</li>
+<li>UOPS_EXECUTED.THREAD: 33.01</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 16.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 92 f5 38 36 04 2e 	vpermq ymm0,ymm1,QWORD BCST [r14+r13*1]
+   7:	62 92 f5 38 36 54 2e 	vpermq ymm2,ymm1,QWORD BCST [r14+r13*1+0x8]
+   e:	01 
+   f:	62 92 f5 38 36 5c 2e 	vpermq ymm3,ymm1,QWORD BCST [r14+r13*1+0x10]
+  16:	02 
+  17:	62 92 f5 38 36 64 2e 	vpermq ymm4,ymm1,QWORD BCST [r14+r13*1+0x18]
+  1e:	03 
+  1f:	62 92 f5 38 36 6c 2e 	vpermq ymm5,ymm1,QWORD BCST [r14+r13*1+0x20]
+  26:	04 
+  27:	62 92 f5 38 36 74 2e 	vpermq ymm6,ymm1,QWORD BCST [r14+r13*1+0x28]
+  2e:	05 
+  2f:	62 92 f5 38 36 7c 2e 	vpermq ymm7,ymm1,QWORD BCST [r14+r13*1+0x30]
+  36:	06 
+  37:	62 12 f5 38 36 44 2e 	vpermq ymm8,ymm1,QWORD BCST [r14+r13*1+0x38]
+  3e:	07 
+  3f:	62 12 f5 38 36 4c 2e 	vpermq ymm9,ymm1,QWORD BCST [r14+r13*1+0x40]
+  46:	08 
+  47:	62 12 f5 38 36 54 2e 	vpermq ymm10,ymm1,QWORD BCST [r14+r13*1+0x48]
+  4e:	09 
+  4f:	62 12 f5 38 36 5c 2e 	vpermq ymm11,ymm1,QWORD BCST [r14+r13*1+0x50]
+  56:	0a 
+  57:	62 12 f5 38 36 64 2e 	vpermq ymm12,ymm1,QWORD BCST [r14+r13*1+0x58]
+  5e:	0b 
+  5f:	62 82 f5 38 36 44 2e 	vpermq ymm16,ymm1,QWORD BCST [r14+r13*1+0x60]
+  66:	0c 
+  67:	62 82 f5 38 36 4c 2e 	vpermq ymm17,ymm1,QWORD BCST [r14+r13*1+0x68]
+  6e:	0d 
+  6f:	62 82 f5 38 36 54 2e 	vpermq ymm18,ymm1,QWORD BCST [r14+r13*1+0x70]
+  76:	0e 
+  77:	62 82 f5 38 36 5c 2e 	vpermq ymm19,ymm1,QWORD BCST [r14+r13*1+0x78]
+  7e:	0f 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS YMM1, YMM1, YMM1;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VPERMQ YMM0, YMM1, qword ptr [R14+R13] {1to4}; {evex} VPERMQ YMM2, YMM1, qword ptr [R14+R13+8] {1to4}; {evex} VPERMQ YMM3, YMM1, qword ptr [R14+R13+16] {1to4}; {evex} VPERMQ YMM4, YMM1, qword ptr [R14+R13+24] {1to4}; {evex} VPERMQ YMM5, YMM1, qword ptr [R14+R13+32] {1to4}; {evex} VPERMQ YMM6, YMM1, qword ptr [R14+R13+40] {1to4}; {evex} VPERMQ YMM7, YMM1, qword ptr [R14+R13+48] {1to4}; {evex} VPERMQ YMM8, YMM1, qword ptr [R14+R13+56] {1to4}; {evex} VPERMQ YMM9, YMM1, qword ptr [R14+R13+64] {1to4}; {evex} VPERMQ YMM10, YMM1, qword ptr [R14+R13+72] {1to4}; {evex} VPERMQ YMM11, YMM1, qword ptr [R14+R13+80] {1to4}; {evex} VPERMQ YMM12, YMM1, qword ptr [R14+R13+88] {1to4}; {evex} VPERMQ YMM16, YMM1, qword ptr [R14+R13+96] {1to4}; {evex} VPERMQ YMM17, YMM1, qword ptr [R14+R13+104] {1to4}; {evex} VPERMQ YMM18, YMM1, qword ptr [R14+R13+112] {1to4}; {evex} VPERMQ YMM19, YMM1, qword ptr [R14+R13+120] {1to4}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS YMM1, YMM1, YMM1; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 16.01</li>
+<li>Reference cycles: 11.79</li>
+<li>UOPS_EXECUTED.THREAD: 32.11</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.01</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 16.0</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

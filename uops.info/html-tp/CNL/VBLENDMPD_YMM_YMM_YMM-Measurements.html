@@ -1,0 +1,1202 @@
+<html>
+<head>
+<title>VBLENDMPD (YMM, YMM, YMM)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VBLENDMPD (YMM, YMM, YMM) - Throughput and Uops</h1>
+<hr>
+<h2 id="distinctRegs">With different registers for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.38</li>
+<li>Reference cycles: 0.37</li>
+<li>UOPS_EXECUTED.THREAD: 1.0</li>
+<li>RETIRE_SLOTS: 1.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.33</li>
+<li>UOPS_PORT_1: 0.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.34</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.37</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 0.33</li>
+<li>Reference cycles: 0.25</li>
+<li>UOPS_EXECUTED.THREAD: 1.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.33</li>
+<li>UOPS_PORT_1: 0.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.33</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 0.33</li>
+<li>Reference cycles: 0.25</li>
+<li>UOPS_EXECUTED.THREAD: 1.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.33</li>
+<li>UOPS_PORT_1: 0.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.33</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 1.5</li>
+<li>Reference cycles: 1.23</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 1.32</li>
+<li>UOPS_PORT_1: 1.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.36</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 1.34</li>
+<li>Reference cycles: 0.97</li>
+<li>UOPS_EXECUTED.THREAD: 4.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 1.33</li>
+<li>UOPS_PORT_1: 1.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.33</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 1.34</li>
+<li>Reference cycles: 0.97</li>
+<li>UOPS_EXECUTED.THREAD: 4.05</li>
+<li>RETIRE_SLOTS: 4.05</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 1.33</li>
+<li>UOPS_PORT_1: 1.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.33</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+  18:	62 f2 f5 28 65 f2    	vblendmpd ymm6,ymm1,ymm2
+  1e:	62 f2 f5 28 65 fa    	vblendmpd ymm7,ymm1,ymm2
+  24:	62 72 f5 28 65 c2    	vblendmpd ymm8,ymm1,ymm2
+  2a:	62 72 f5 28 65 ca    	vblendmpd ymm9,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2; VBLENDMPD YMM6, YMM1, YMM2; VBLENDMPD YMM7, YMM1, YMM2; VBLENDMPD YMM8, YMM1, YMM2; VBLENDMPD YMM9, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 3.0</li>
+<li>Reference cycles: 2.15</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.63</li>
+<li>UOPS_PORT_1: 2.66</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.71</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 3.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+  18:	62 f2 f5 28 65 f2    	vblendmpd ymm6,ymm1,ymm2
+  1e:	62 f2 f5 28 65 fa    	vblendmpd ymm7,ymm1,ymm2
+  24:	62 72 f5 28 65 c2    	vblendmpd ymm8,ymm1,ymm2
+  2a:	62 72 f5 28 65 ca    	vblendmpd ymm9,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2; VBLENDMPD YMM6, YMM1, YMM2; VBLENDMPD YMM7, YMM1, YMM2; VBLENDMPD YMM8, YMM1, YMM2; VBLENDMPD YMM9, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 2.68</li>
+<li>Reference cycles: 1.92</li>
+<li>UOPS_EXECUTED.THREAD: 9.0</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.67</li>
+<li>UOPS_PORT_1: 2.67</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.67</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+  18:	62 f2 f5 28 65 f2    	vblendmpd ymm6,ymm1,ymm2
+  1e:	62 f2 f5 28 65 fa    	vblendmpd ymm7,ymm1,ymm2
+  24:	62 72 f5 28 65 c2    	vblendmpd ymm8,ymm1,ymm2
+  2a:	62 72 f5 28 65 ca    	vblendmpd ymm9,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2; VBLENDMPD YMM6, YMM1, YMM2; VBLENDMPD YMM7, YMM1, YMM2; VBLENDMPD YMM8, YMM1, YMM2; VBLENDMPD YMM9, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 2.68</li>
+<li>Reference cycles: 1.95</li>
+<li>UOPS_EXECUTED.THREAD: 8.1</li>
+<li>RETIRE_SLOTS: 8.11</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.67</li>
+<li>UOPS_PORT_1: 2.67</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.67</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+  18:	62 f2 f5 28 65 f2    	vblendmpd ymm6,ymm1,ymm2
+  1e:	62 f2 f5 28 65 fa    	vblendmpd ymm7,ymm1,ymm2
+  24:	62 72 f5 28 65 c2    	vblendmpd ymm8,ymm1,ymm2
+  2a:	62 72 f5 28 65 ca    	vblendmpd ymm9,ymm1,ymm2
+  30:	62 72 f5 28 65 d2    	vblendmpd ymm10,ymm1,ymm2
+  36:	62 72 f5 28 65 da    	vblendmpd ymm11,ymm1,ymm2
+  3c:	62 72 f5 28 65 e2    	vblendmpd ymm12,ymm1,ymm2
+  42:	62 e2 f5 28 65 c2    	vblendmpd ymm16,ymm1,ymm2
+  48:	62 e2 f5 28 65 ca    	vblendmpd ymm17,ymm1,ymm2
+  4e:	62 e2 f5 28 65 d2    	vblendmpd ymm18,ymm1,ymm2
+  54:	62 e2 f5 28 65 da    	vblendmpd ymm19,ymm1,ymm2
+  5a:	62 e2 f5 28 65 e2    	vblendmpd ymm20,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2; VBLENDMPD YMM6, YMM1, YMM2; VBLENDMPD YMM7, YMM1, YMM2; VBLENDMPD YMM8, YMM1, YMM2; VBLENDMPD YMM9, YMM1, YMM2; VBLENDMPD YMM10, YMM1, YMM2; VBLENDMPD YMM11, YMM1, YMM2; VBLENDMPD YMM12, YMM1, YMM2; VBLENDMPD YMM16, YMM1, YMM2; VBLENDMPD YMM17, YMM1, YMM2; VBLENDMPD YMM18, YMM1, YMM2; VBLENDMPD YMM19, YMM1, YMM2; VBLENDMPD YMM20, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 4.45</li>
+<li>UOPS_EXECUTED.THREAD: 16.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.25</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.42</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 6.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+  18:	62 f2 f5 28 65 f2    	vblendmpd ymm6,ymm1,ymm2
+  1e:	62 f2 f5 28 65 fa    	vblendmpd ymm7,ymm1,ymm2
+  24:	62 72 f5 28 65 c2    	vblendmpd ymm8,ymm1,ymm2
+  2a:	62 72 f5 28 65 ca    	vblendmpd ymm9,ymm1,ymm2
+  30:	62 72 f5 28 65 d2    	vblendmpd ymm10,ymm1,ymm2
+  36:	62 72 f5 28 65 da    	vblendmpd ymm11,ymm1,ymm2
+  3c:	62 72 f5 28 65 e2    	vblendmpd ymm12,ymm1,ymm2
+  42:	62 e2 f5 28 65 c2    	vblendmpd ymm16,ymm1,ymm2
+  48:	62 e2 f5 28 65 ca    	vblendmpd ymm17,ymm1,ymm2
+  4e:	62 e2 f5 28 65 d2    	vblendmpd ymm18,ymm1,ymm2
+  54:	62 e2 f5 28 65 da    	vblendmpd ymm19,ymm1,ymm2
+  5a:	62 e2 f5 28 65 e2    	vblendmpd ymm20,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2; VBLENDMPD YMM6, YMM1, YMM2; VBLENDMPD YMM7, YMM1, YMM2; VBLENDMPD YMM8, YMM1, YMM2; VBLENDMPD YMM9, YMM1, YMM2; VBLENDMPD YMM10, YMM1, YMM2; VBLENDMPD YMM11, YMM1, YMM2; VBLENDMPD YMM12, YMM1, YMM2; VBLENDMPD YMM16, YMM1, YMM2; VBLENDMPD YMM17, YMM1, YMM2; VBLENDMPD YMM18, YMM1, YMM2; VBLENDMPD YMM19, YMM1, YMM2; VBLENDMPD YMM20, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 5.35</li>
+<li>Reference cycles: 3.82</li>
+<li>UOPS_EXECUTED.THREAD: 17.0</li>
+<li>RETIRE_SLOTS: 17.01</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.33</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.34</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 f5 28 65 c2    	vblendmpd ymm0,ymm1,ymm2
+   6:	62 f2 f5 28 65 da    	vblendmpd ymm3,ymm1,ymm2
+   c:	62 f2 f5 28 65 e2    	vblendmpd ymm4,ymm1,ymm2
+  12:	62 f2 f5 28 65 ea    	vblendmpd ymm5,ymm1,ymm2
+  18:	62 f2 f5 28 65 f2    	vblendmpd ymm6,ymm1,ymm2
+  1e:	62 f2 f5 28 65 fa    	vblendmpd ymm7,ymm1,ymm2
+  24:	62 72 f5 28 65 c2    	vblendmpd ymm8,ymm1,ymm2
+  2a:	62 72 f5 28 65 ca    	vblendmpd ymm9,ymm1,ymm2
+  30:	62 72 f5 28 65 d2    	vblendmpd ymm10,ymm1,ymm2
+  36:	62 72 f5 28 65 da    	vblendmpd ymm11,ymm1,ymm2
+  3c:	62 72 f5 28 65 e2    	vblendmpd ymm12,ymm1,ymm2
+  42:	62 e2 f5 28 65 c2    	vblendmpd ymm16,ymm1,ymm2
+  48:	62 e2 f5 28 65 ca    	vblendmpd ymm17,ymm1,ymm2
+  4e:	62 e2 f5 28 65 d2    	vblendmpd ymm18,ymm1,ymm2
+  54:	62 e2 f5 28 65 da    	vblendmpd ymm19,ymm1,ymm2
+  5a:	62 e2 f5 28 65 e2    	vblendmpd ymm20,ymm1,ymm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM1, YMM2; VBLENDMPD YMM3, YMM1, YMM2; VBLENDMPD YMM4, YMM1, YMM2; VBLENDMPD YMM5, YMM1, YMM2; VBLENDMPD YMM6, YMM1, YMM2; VBLENDMPD YMM7, YMM1, YMM2; VBLENDMPD YMM8, YMM1, YMM2; VBLENDMPD YMM9, YMM1, YMM2; VBLENDMPD YMM10, YMM1, YMM2; VBLENDMPD YMM11, YMM1, YMM2; VBLENDMPD YMM12, YMM1, YMM2; VBLENDMPD YMM16, YMM1, YMM2; VBLENDMPD YMM17, YMM1, YMM2; VBLENDMPD YMM18, YMM1, YMM2; VBLENDMPD YMM19, YMM1, YMM2; VBLENDMPD YMM20, YMM1, YMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 5.35</li>
+<li>Reference cycles: 3.77</li>
+<li>UOPS_EXECUTED.THREAD: 16.1</li>
+<li>RETIRE_SLOTS: 16.1</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.33</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.34</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.05</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="sameReg">With the same register for for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.71</li>
+<li>UOPS_EXECUTED.THREAD: 1.0</li>
+<li>RETIRE_SLOTS: 1.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.32</li>
+<li>UOPS_PORT_1: 0.34</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.34</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.25</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.71</li>
+<li>UOPS_EXECUTED.THREAD: 1.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.33</li>
+<li>UOPS_PORT_1: 0.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.34</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.72</li>
+<li>UOPS_EXECUTED.THREAD: 1.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.33</li>
+<li>UOPS_PORT_1: 0.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.34</li>
+<li>UOPS_PORT_6: 0.01</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 1.5</li>
+<li>Reference cycles: 1.0</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 1.3</li>
+<li>UOPS_PORT_1: 1.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.38</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 1.53</li>
+<li>Reference cycles: 1.07</li>
+<li>UOPS_EXECUTED.THREAD: 4.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 1.32</li>
+<li>UOPS_PORT_1: 1.34</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.35</li>
+<li>UOPS_PORT_6: 0.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 1.36</li>
+<li>Reference cycles: 0.98</li>
+<li>UOPS_EXECUTED.THREAD: 4.05</li>
+<li>RETIRE_SLOTS: 4.05</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 1.32</li>
+<li>UOPS_PORT_1: 1.34</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 1.34</li>
+<li>UOPS_PORT_6: 0.05</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+  18:	62 f2 dd 28 65 e4    	vblendmpd ymm4,ymm4,ymm4
+  1e:	62 f2 d5 28 65 ed    	vblendmpd ymm5,ymm5,ymm5
+  24:	62 f2 cd 28 65 f6    	vblendmpd ymm6,ymm6,ymm6
+  2a:	62 f2 c5 28 65 ff    	vblendmpd ymm7,ymm7,ymm7
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14];
+VMOVUPD YMM4, [R14];
+VMOVUPD YMM5, [R14];
+VMOVUPD YMM6, [R14];
+VMOVUPD YMM7, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3; VBLENDMPD YMM4, YMM4, YMM4; VBLENDMPD YMM5, YMM5, YMM5; VBLENDMPD YMM6, YMM6, YMM6; VBLENDMPD YMM7, YMM7, YMM7&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]; VMOVUPD YMM4, [R14]; VMOVUPD YMM5, [R14]; VMOVUPD YMM6, [R14]; VMOVUPD YMM7, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 3.0</li>
+<li>Reference cycles: 1.84</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.63</li>
+<li>UOPS_PORT_1: 2.66</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.71</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 3.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+  18:	62 f2 dd 28 65 e4    	vblendmpd ymm4,ymm4,ymm4
+  1e:	62 f2 d5 28 65 ed    	vblendmpd ymm5,ymm5,ymm5
+  24:	62 f2 cd 28 65 f6    	vblendmpd ymm6,ymm6,ymm6
+  2a:	62 f2 c5 28 65 ff    	vblendmpd ymm7,ymm7,ymm7
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14];
+VMOVUPD YMM4, [R14];
+VMOVUPD YMM5, [R14];
+VMOVUPD YMM6, [R14];
+VMOVUPD YMM7, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3; VBLENDMPD YMM4, YMM4, YMM4; VBLENDMPD YMM5, YMM5, YMM5; VBLENDMPD YMM6, YMM6, YMM6; VBLENDMPD YMM7, YMM7, YMM7&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]; VMOVUPD YMM4, [R14]; VMOVUPD YMM5, [R14]; VMOVUPD YMM6, [R14]; VMOVUPD YMM7, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 2.68</li>
+<li>Reference cycles: 1.9</li>
+<li>UOPS_EXECUTED.THREAD: 9.0</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.67</li>
+<li>UOPS_PORT_1: 2.67</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.67</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+  18:	62 f2 dd 28 65 e4    	vblendmpd ymm4,ymm4,ymm4
+  1e:	62 f2 d5 28 65 ed    	vblendmpd ymm5,ymm5,ymm5
+  24:	62 f2 cd 28 65 f6    	vblendmpd ymm6,ymm6,ymm6
+  2a:	62 f2 c5 28 65 ff    	vblendmpd ymm7,ymm7,ymm7
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14];
+VMOVUPD YMM4, [R14];
+VMOVUPD YMM5, [R14];
+VMOVUPD YMM6, [R14];
+VMOVUPD YMM7, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3; VBLENDMPD YMM4, YMM4, YMM4; VBLENDMPD YMM5, YMM5, YMM5; VBLENDMPD YMM6, YMM6, YMM6; VBLENDMPD YMM7, YMM7, YMM7&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]; VMOVUPD YMM4, [R14]; VMOVUPD YMM5, [R14]; VMOVUPD YMM6, [R14]; VMOVUPD YMM7, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 2.68</li>
+<li>Reference cycles: 1.98</li>
+<li>UOPS_EXECUTED.THREAD: 8.1</li>
+<li>RETIRE_SLOTS: 8.11</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.67</li>
+<li>UOPS_PORT_1: 2.67</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 2.67</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+  18:	62 f2 dd 28 65 e4    	vblendmpd ymm4,ymm4,ymm4
+  1e:	62 f2 d5 28 65 ed    	vblendmpd ymm5,ymm5,ymm5
+  24:	62 f2 cd 28 65 f6    	vblendmpd ymm6,ymm6,ymm6
+  2a:	62 f2 c5 28 65 ff    	vblendmpd ymm7,ymm7,ymm7
+  30:	62 52 bd 28 65 c0    	vblendmpd ymm8,ymm8,ymm8
+  36:	62 52 b5 28 65 c9    	vblendmpd ymm9,ymm9,ymm9
+  3c:	62 52 ad 28 65 d2    	vblendmpd ymm10,ymm10,ymm10
+  42:	62 52 a5 28 65 db    	vblendmpd ymm11,ymm11,ymm11
+  48:	62 52 9d 28 65 e4    	vblendmpd ymm12,ymm12,ymm12
+  4e:	62 a2 fd 20 65 c0    	vblendmpd ymm16,ymm16,ymm16
+  54:	62 a2 f5 20 65 c9    	vblendmpd ymm17,ymm17,ymm17
+  5a:	62 a2 ed 20 65 d2    	vblendmpd ymm18,ymm18,ymm18
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14];
+VMOVUPD YMM4, [R14];
+VMOVUPD YMM5, [R14];
+VMOVUPD YMM6, [R14];
+VMOVUPD YMM7, [R14];
+VMOVUPD YMM8, [R14];
+VMOVUPD YMM9, [R14];
+VMOVUPD YMM10, [R14];
+VMOVUPD YMM11, [R14];
+VMOVUPD YMM12, [R14];
+VMOVUPD YMM16, [R14];
+VMOVUPD YMM17, [R14];
+VMOVUPD YMM18, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3; VBLENDMPD YMM4, YMM4, YMM4; VBLENDMPD YMM5, YMM5, YMM5; VBLENDMPD YMM6, YMM6, YMM6; VBLENDMPD YMM7, YMM7, YMM7; VBLENDMPD YMM8, YMM8, YMM8; VBLENDMPD YMM9, YMM9, YMM9; VBLENDMPD YMM10, YMM10, YMM10; VBLENDMPD YMM11, YMM11, YMM11; VBLENDMPD YMM12, YMM12, YMM12; VBLENDMPD YMM16, YMM16, YMM16; VBLENDMPD YMM17, YMM17, YMM17; VBLENDMPD YMM18, YMM18, YMM18&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]; VMOVUPD YMM4, [R14]; VMOVUPD YMM5, [R14]; VMOVUPD YMM6, [R14]; VMOVUPD YMM7, [R14]; VMOVUPD YMM8, [R14]; VMOVUPD YMM9, [R14]; VMOVUPD YMM10, [R14]; VMOVUPD YMM11, [R14]; VMOVUPD YMM12, [R14]; VMOVUPD YMM16, [R14]; VMOVUPD YMM17, [R14]; VMOVUPD YMM18, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 4.29</li>
+<li>UOPS_EXECUTED.THREAD: 16.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.25</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.42</li>
+<li>UOPS_PORT_6: 0.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 6.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+  18:	62 f2 dd 28 65 e4    	vblendmpd ymm4,ymm4,ymm4
+  1e:	62 f2 d5 28 65 ed    	vblendmpd ymm5,ymm5,ymm5
+  24:	62 f2 cd 28 65 f6    	vblendmpd ymm6,ymm6,ymm6
+  2a:	62 f2 c5 28 65 ff    	vblendmpd ymm7,ymm7,ymm7
+  30:	62 52 bd 28 65 c0    	vblendmpd ymm8,ymm8,ymm8
+  36:	62 52 b5 28 65 c9    	vblendmpd ymm9,ymm9,ymm9
+  3c:	62 52 ad 28 65 d2    	vblendmpd ymm10,ymm10,ymm10
+  42:	62 52 a5 28 65 db    	vblendmpd ymm11,ymm11,ymm11
+  48:	62 52 9d 28 65 e4    	vblendmpd ymm12,ymm12,ymm12
+  4e:	62 a2 fd 20 65 c0    	vblendmpd ymm16,ymm16,ymm16
+  54:	62 a2 f5 20 65 c9    	vblendmpd ymm17,ymm17,ymm17
+  5a:	62 a2 ed 20 65 d2    	vblendmpd ymm18,ymm18,ymm18
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14];
+VMOVUPD YMM4, [R14];
+VMOVUPD YMM5, [R14];
+VMOVUPD YMM6, [R14];
+VMOVUPD YMM7, [R14];
+VMOVUPD YMM8, [R14];
+VMOVUPD YMM9, [R14];
+VMOVUPD YMM10, [R14];
+VMOVUPD YMM11, [R14];
+VMOVUPD YMM12, [R14];
+VMOVUPD YMM16, [R14];
+VMOVUPD YMM17, [R14];
+VMOVUPD YMM18, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3; VBLENDMPD YMM4, YMM4, YMM4; VBLENDMPD YMM5, YMM5, YMM5; VBLENDMPD YMM6, YMM6, YMM6; VBLENDMPD YMM7, YMM7, YMM7; VBLENDMPD YMM8, YMM8, YMM8; VBLENDMPD YMM9, YMM9, YMM9; VBLENDMPD YMM10, YMM10, YMM10; VBLENDMPD YMM11, YMM11, YMM11; VBLENDMPD YMM12, YMM12, YMM12; VBLENDMPD YMM16, YMM16, YMM16; VBLENDMPD YMM17, YMM17, YMM17; VBLENDMPD YMM18, YMM18, YMM18&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]; VMOVUPD YMM4, [R14]; VMOVUPD YMM5, [R14]; VMOVUPD YMM6, [R14]; VMOVUPD YMM7, [R14]; VMOVUPD YMM8, [R14]; VMOVUPD YMM9, [R14]; VMOVUPD YMM10, [R14]; VMOVUPD YMM11, [R14]; VMOVUPD YMM12, [R14]; VMOVUPD YMM16, [R14]; VMOVUPD YMM17, [R14]; VMOVUPD YMM18, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 5.35</li>
+<li>Reference cycles: 3.8</li>
+<li>UOPS_EXECUTED.THREAD: 17.0</li>
+<li>RETIRE_SLOTS: 17.01</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.33</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.34</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 fd 28 65 c0    	vblendmpd ymm0,ymm0,ymm0
+   6:	62 f2 f5 28 65 c9    	vblendmpd ymm1,ymm1,ymm1
+   c:	62 f2 ed 28 65 d2    	vblendmpd ymm2,ymm2,ymm2
+  12:	62 f2 e5 28 65 db    	vblendmpd ymm3,ymm3,ymm3
+  18:	62 f2 dd 28 65 e4    	vblendmpd ymm4,ymm4,ymm4
+  1e:	62 f2 d5 28 65 ed    	vblendmpd ymm5,ymm5,ymm5
+  24:	62 f2 cd 28 65 f6    	vblendmpd ymm6,ymm6,ymm6
+  2a:	62 f2 c5 28 65 ff    	vblendmpd ymm7,ymm7,ymm7
+  30:	62 52 bd 28 65 c0    	vblendmpd ymm8,ymm8,ymm8
+  36:	62 52 b5 28 65 c9    	vblendmpd ymm9,ymm9,ymm9
+  3c:	62 52 ad 28 65 d2    	vblendmpd ymm10,ymm10,ymm10
+  42:	62 52 a5 28 65 db    	vblendmpd ymm11,ymm11,ymm11
+  48:	62 52 9d 28 65 e4    	vblendmpd ymm12,ymm12,ymm12
+  4e:	62 a2 fd 20 65 c0    	vblendmpd ymm16,ymm16,ymm16
+  54:	62 a2 f5 20 65 c9    	vblendmpd ymm17,ymm17,ymm17
+  5a:	62 a2 ed 20 65 d2    	vblendmpd ymm18,ymm18,ymm18
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VMOVUPD YMM0, [R14];
+VMOVUPD YMM1, [R14];
+VMOVUPD YMM2, [R14];
+VMOVUPD YMM3, [R14];
+VMOVUPD YMM4, [R14];
+VMOVUPD YMM5, [R14];
+VMOVUPD YMM6, [R14];
+VMOVUPD YMM7, [R14];
+VMOVUPD YMM8, [R14];
+VMOVUPD YMM9, [R14];
+VMOVUPD YMM10, [R14];
+VMOVUPD YMM11, [R14];
+VMOVUPD YMM12, [R14];
+VMOVUPD YMM16, [R14];
+VMOVUPD YMM17, [R14];
+VMOVUPD YMM18, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VBLENDMPD YMM0, YMM0, YMM0; VBLENDMPD YMM1, YMM1, YMM1; VBLENDMPD YMM2, YMM2, YMM2; VBLENDMPD YMM3, YMM3, YMM3; VBLENDMPD YMM4, YMM4, YMM4; VBLENDMPD YMM5, YMM5, YMM5; VBLENDMPD YMM6, YMM6, YMM6; VBLENDMPD YMM7, YMM7, YMM7; VBLENDMPD YMM8, YMM8, YMM8; VBLENDMPD YMM9, YMM9, YMM9; VBLENDMPD YMM10, YMM10, YMM10; VBLENDMPD YMM11, YMM11, YMM11; VBLENDMPD YMM12, YMM12, YMM12; VBLENDMPD YMM16, YMM16, YMM16; VBLENDMPD YMM17, YMM17, YMM17; VBLENDMPD YMM18, YMM18, YMM18&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOV [R14+16], RAX; MOV [R14+24], RAX; VMOVUPD YMM0, [R14]; VMOVUPD YMM1, [R14]; VMOVUPD YMM2, [R14]; VMOVUPD YMM3, [R14]; VMOVUPD YMM4, [R14]; VMOVUPD YMM5, [R14]; VMOVUPD YMM6, [R14]; VMOVUPD YMM7, [R14]; VMOVUPD YMM8, [R14]; VMOVUPD YMM9, [R14]; VMOVUPD YMM10, [R14]; VMOVUPD YMM11, [R14]; VMOVUPD YMM12, [R14]; VMOVUPD YMM16, [R14]; VMOVUPD YMM17, [R14]; VMOVUPD YMM18, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 5.35</li>
+<li>Reference cycles: 3.85</li>
+<li>UOPS_EXECUTED.THREAD: 16.1</li>
+<li>RETIRE_SLOTS: 16.1</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.33</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.34</li>
+<li>UOPS_PORT_6: 0.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.05</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
