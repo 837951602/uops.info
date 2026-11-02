@@ -1,0 +1,1965 @@
+<html>
+<head>
+<title>VDIVPS_EVEX (YMM, YMM, M256)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VDIVPS_EVEX (YMM, YMM, M256) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h2>Fast division</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.65</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; lfence&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 26.79</li>
+<li>APERF: 31.0</li>
+<li>UOPS: 2.0</li>
+<li>FpuPipeAssignment.Total0: 1.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.1</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.01</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.58</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.5</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.05</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.92</li>
+<li>APERF: 24.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.71</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 9.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.73</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 8.1</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h2>Slow division</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.62</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; lfence&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 26.77</li>
+<li>APERF: 31.0</li>
+<li>UOPS: 2.0</li>
+<li>FpuPipeAssignment.Total0: 1.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.1</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.01</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.42</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.5</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.05</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.76</li>
+<li>APERF: 24.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.73</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 9.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.71</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 8.1</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h2>Fast division</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; lfence&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 26.73</li>
+<li>APERF: 31.0</li>
+<li>UOPS: 2.0</li>
+<li>FpuPipeAssignment.Total0: 1.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.1</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.01</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.58</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.5</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.05</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.68</li>
+<li>APERF: 24.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.71</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 9.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.73</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 8.1</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h2>Slow division</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.54</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; lfence&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 26.77</li>
+<li>APERF: 31.0</li>
+<li>UOPS: 2.0</li>
+<li>FpuPipeAssignment.Total0: 1.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.1</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.59</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.01</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.5</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.11</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.5</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.36</li>
+<li>APERF: 12.01</li>
+<li>UOPS: 4.05</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 2.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.52</li>
+<li>APERF: 24.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.72</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 9.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 d1 7c 28 5e 16    	vdivps ymm2,ymm0,YMMWORD PTR [r14]
+   6:	62 d1 7c 28 5e 1e    	vdivps ymm3,ymm0,YMMWORD PTR [r14]
+   c:	62 d1 7c 28 5e 26    	vdivps ymm4,ymm0,YMMWORD PTR [r14]
+  12:	62 d1 7c 28 5e 2e    	vdivps ymm5,ymm0,YMMWORD PTR [r14]
+  18:	62 d1 7c 28 5e 36    	vdivps ymm6,ymm0,YMMWORD PTR [r14]
+  1e:	62 d1 7c 28 5e 3e    	vdivps ymm7,ymm0,YMMWORD PTR [r14]
+  24:	62 51 7c 28 5e 06    	vdivps ymm8,ymm0,YMMWORD PTR [r14]
+  2a:	62 51 7c 28 5e 0e    	vdivps ymm9,ymm0,YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+VMOVUPS YMM0, [R14+64];
+VMOVUPS YMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;{evex} VDIVPS YMM2, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM3, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM4, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM5, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM6, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM7, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM8, YMM0, ymmword ptr [R14]; {evex} VDIVPS YMM9, YMM0, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; VMOVUPS YMM0, [R14+64]; VMOVUPS YMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 20.73</li>
+<li>APERF: 24.02</li>
+<li>UOPS: 8.1</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 4.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
