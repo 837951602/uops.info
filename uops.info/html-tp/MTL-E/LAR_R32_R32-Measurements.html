@@ -1,0 +1,1549 @@
+<html>
+<head>
+<title>LAR (R32, R32)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>LAR (R32, R32) - Throughput and Uops</h1>
+<hr>
+<h2 id="distinctRegs">With different registers for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;LAR R8D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 81.5</li>
+<li>Reference cycles: 64.32</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 82.25</li>
+<li>Reference cycles: 64.96</li>
+<li>UOPS_RETIRED.ALL: 16.2</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 81.28</li>
+<li>Reference cycles: 64.2</li>
+<li>UOPS_RETIRED.ALL: 16.02</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 82.25</li>
+<li>Reference cycles: 65.0</li>
+<li>UOPS_RETIRED.ALL: 17.0</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 82.54</li>
+<li>Reference cycles: 65.19</li>
+<li>UOPS_RETIRED.ALL: 17.2</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 82.37</li>
+<li>Reference cycles: 94.35</li>
+<li>UOPS_RETIRED.ALL: 17.02</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 326.1</li>
+<li>Reference cycles: 257.53</li>
+<li>UOPS_RETIRED.ALL: 64.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 330.01</li>
+<li>Reference cycles: 260.64</li>
+<li>UOPS_RETIRED.ALL: 65.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 325.15</li>
+<li>Reference cycles: 256.8</li>
+<li>UOPS_RETIRED.ALL: 64.1</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 327.19</li>
+<li>Reference cycles: 258.51</li>
+<li>UOPS_RETIRED.ALL: 65.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 330.17</li>
+<li>Reference cycles: 260.77</li>
+<li>UOPS_RETIRED.ALL: 66.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.1</li>
+<li>Core cycles: 326.45</li>
+<li>Reference cycles: 257.82</li>
+<li>UOPS_RETIRED.ALL: 65.1</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions (before each instruction)</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 328.98</li>
+<li>Reference cycles: 259.87</li>
+<li>UOPS_RETIRED.ALL: 68.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 330.51</li>
+<li>Reference cycles: 261.03</li>
+<li>UOPS_RETIRED.ALL: 69.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 329.78</li>
+<li>Reference cycles: 260.48</li>
+<li>UOPS_RETIRED.ALL: 68.1</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+  10:	45 0f 02 e9          	lar    r13d,r9d
+  14:	45 0f 02 f1          	lar    r14d,r9d
+  18:	41 0f 02 d9          	lar    ebx,r9d
+  1c:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 652.17</li>
+<li>Reference cycles: 515.32</li>
+<li>UOPS_RETIRED.ALL: 128.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+  10:	45 0f 02 e9          	lar    r13d,r9d
+  14:	45 0f 02 f1          	lar    r14d,r9d
+  18:	41 0f 02 d9          	lar    ebx,r9d
+  1c:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 660.01</li>
+<li>Reference cycles: 521.29</li>
+<li>UOPS_RETIRED.ALL: 130.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+  10:	45 0f 02 e9          	lar    r13d,r9d
+  14:	45 0f 02 f1          	lar    r14d,r9d
+  18:	41 0f 02 d9          	lar    ebx,r9d
+  1c:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 650.29</li>
+<li>Reference cycles: 513.58</li>
+<li>UOPS_RETIRED.ALL: 128.2</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+  13:	45 0f 02 e9          	lar    r13d,r9d
+  17:	45 0f 02 f1          	lar    r14d,r9d
+  1b:	41 0f 02 d9          	lar    ebx,r9d
+  1f:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 653.82</li>
+<li>Reference cycles: 516.36</li>
+<li>UOPS_RETIRED.ALL: 129.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+  13:	45 0f 02 e9          	lar    r13d,r9d
+  17:	45 0f 02 f1          	lar    r14d,r9d
+  1b:	41 0f 02 d9          	lar    ebx,r9d
+  1f:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 661.01</li>
+<li>Reference cycles: 522.07</li>
+<li>UOPS_RETIRED.ALL: 131.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+  13:	45 0f 02 e9          	lar    r13d,r9d
+  17:	45 0f 02 f1          	lar    r14d,r9d
+  1b:	41 0f 02 d9          	lar    ebx,r9d
+  1f:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.2</li>
+<li>Core cycles: 653.36</li>
+<li>Reference cycles: 516.06</li>
+<li>UOPS_RETIRED.ALL: 129.2</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions (before each instruction)</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e9          	lar    r13d,r9d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 f1          	lar    r14d,r9d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	41 0f 02 d9          	lar    ebx,r9d
+  31:	4d 85 ff             	test   r15,r15
+  34:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D; TEST R15, R15; LAR R13D, R9D; TEST R15, R15; LAR R14D, R9D; TEST R15, R15; LAR EBX, R9D; TEST R15, R15; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 658.01</li>
+<li>Reference cycles: 519.74</li>
+<li>UOPS_RETIRED.ALL: 136.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e9          	lar    r13d,r9d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 f1          	lar    r14d,r9d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	41 0f 02 d9          	lar    ebx,r9d
+  31:	4d 85 ff             	test   r15,r15
+  34:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D; TEST R15, R15; LAR R13D, R9D; TEST R15, R15; LAR R14D, R9D; TEST R15, R15; LAR EBX, R9D; TEST R15, R15; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 661.01</li>
+<li>Reference cycles: 522.08</li>
+<li>UOPS_RETIRED.ALL: 138.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e9          	lar    r13d,r9d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 f1          	lar    r14d,r9d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	41 0f 02 d9          	lar    ebx,r9d
+  31:	4d 85 ff             	test   r15,r15
+  34:	41 0f 02 c9          	lar    ecx,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D; TEST R15, R15; LAR R13D, R9D; TEST R15, R15; LAR R14D, R9D; TEST R15, R15; LAR EBX, R9D; TEST R15, R15; LAR ECX, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 659.46</li>
+<li>Reference cycles: 520.86</li>
+<li>UOPS_RETIRED.ALL: 136.2</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+  10:	45 0f 02 e9          	lar    r13d,r9d
+  14:	45 0f 02 f1          	lar    r14d,r9d
+  18:	41 0f 02 d9          	lar    ebx,r9d
+  1c:	41 0f 02 c9          	lar    ecx,r9d
+  20:	41 0f 02 d1          	lar    edx,r9d
+  24:	41 0f 02 c1          	lar    eax,r9d
+  28:	41 0f 02 f9          	lar    edi,r9d
+  2c:	41 0f 02 f1          	lar    esi,r9d
+  30:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D; LAR EDX, R9D; LAR EAX, R9D; LAR EDI, R9D; LAR ESI, R9D; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 1059.59</li>
+<li>Reference cycles: 837.07</li>
+<li>UOPS_RETIRED.ALL: 208.0</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+  10:	45 0f 02 e9          	lar    r13d,r9d
+  14:	45 0f 02 f1          	lar    r14d,r9d
+  18:	41 0f 02 d9          	lar    ebx,r9d
+  1c:	41 0f 02 c9          	lar    ecx,r9d
+  20:	41 0f 02 d1          	lar    edx,r9d
+  24:	41 0f 02 c1          	lar    eax,r9d
+  28:	41 0f 02 f9          	lar    edi,r9d
+  2c:	41 0f 02 f1          	lar    esi,r9d
+  30:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D; LAR EDX, R9D; LAR EAX, R9D; LAR EDI, R9D; LAR ESI, R9D; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 1067.26</li>
+<li>Reference cycles: 842.92</li>
+<li>UOPS_RETIRED.ALL: 210.0</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c1          	lar    r8d,r9d
+   4:	45 0f 02 d1          	lar    r10d,r9d
+   8:	45 0f 02 d9          	lar    r11d,r9d
+   c:	45 0f 02 e1          	lar    r12d,r9d
+  10:	45 0f 02 e9          	lar    r13d,r9d
+  14:	45 0f 02 f1          	lar    r14d,r9d
+  18:	41 0f 02 d9          	lar    ebx,r9d
+  1c:	41 0f 02 c9          	lar    ecx,r9d
+  20:	41 0f 02 d1          	lar    edx,r9d
+  24:	41 0f 02 c1          	lar    eax,r9d
+  28:	41 0f 02 f9          	lar    edi,r9d
+  2c:	41 0f 02 f1          	lar    esi,r9d
+  30:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D; LAR EDX, R9D; LAR EAX, R9D; LAR EDI, R9D; LAR ESI, R9D; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.2</li>
+<li>Core cycles: 1056.55</li>
+<li>Reference cycles: 847.67</li>
+<li>UOPS_RETIRED.ALL: 208.2</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+  13:	45 0f 02 e9          	lar    r13d,r9d
+  17:	45 0f 02 f1          	lar    r14d,r9d
+  1b:	41 0f 02 d9          	lar    ebx,r9d
+  1f:	41 0f 02 c9          	lar    ecx,r9d
+  23:	41 0f 02 d1          	lar    edx,r9d
+  27:	41 0f 02 c1          	lar    eax,r9d
+  2b:	41 0f 02 f9          	lar    edi,r9d
+  2f:	41 0f 02 f1          	lar    esi,r9d
+  33:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D; LAR EDX, R9D; LAR EAX, R9D; LAR EDI, R9D; LAR ESI, R9D; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 1060.83</li>
+<li>Reference cycles: 837.85</li>
+<li>UOPS_RETIRED.ALL: 209.0</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+  13:	45 0f 02 e9          	lar    r13d,r9d
+  17:	45 0f 02 f1          	lar    r14d,r9d
+  1b:	41 0f 02 d9          	lar    ebx,r9d
+  1f:	41 0f 02 c9          	lar    ecx,r9d
+  23:	41 0f 02 d1          	lar    edx,r9d
+  27:	41 0f 02 c1          	lar    eax,r9d
+  2b:	41 0f 02 f9          	lar    edi,r9d
+  2f:	41 0f 02 f1          	lar    esi,r9d
+  33:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D; LAR EDX, R9D; LAR EAX, R9D; LAR EDI, R9D; LAR ESI, R9D; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 1071.26</li>
+<li>Reference cycles: 846.09</li>
+<li>UOPS_RETIRED.ALL: 211.0</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	45 0f 02 d1          	lar    r10d,r9d
+   b:	45 0f 02 d9          	lar    r11d,r9d
+   f:	45 0f 02 e1          	lar    r12d,r9d
+  13:	45 0f 02 e9          	lar    r13d,r9d
+  17:	45 0f 02 f1          	lar    r14d,r9d
+  1b:	41 0f 02 d9          	lar    ebx,r9d
+  1f:	41 0f 02 c9          	lar    ecx,r9d
+  23:	41 0f 02 d1          	lar    edx,r9d
+  27:	41 0f 02 c1          	lar    eax,r9d
+  2b:	41 0f 02 f9          	lar    edi,r9d
+  2f:	41 0f 02 f1          	lar    esi,r9d
+  33:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; LAR R10D, R9D; LAR R11D, R9D; LAR R12D, R9D; LAR R13D, R9D; LAR R14D, R9D; LAR EBX, R9D; LAR ECX, R9D; LAR EDX, R9D; LAR EAX, R9D; LAR EDI, R9D; LAR ESI, R9D; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.2</li>
+<li>Core cycles: 1062.43</li>
+<li>Reference cycles: 839.11</li>
+<li>UOPS_RETIRED.ALL: 209.2</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions (before each instruction)</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e9          	lar    r13d,r9d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 f1          	lar    r14d,r9d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	41 0f 02 d9          	lar    ebx,r9d
+  31:	4d 85 ff             	test   r15,r15
+  34:	41 0f 02 c9          	lar    ecx,r9d
+  38:	4d 85 ff             	test   r15,r15
+  3b:	41 0f 02 d1          	lar    edx,r9d
+  3f:	4d 85 ff             	test   r15,r15
+  42:	41 0f 02 c1          	lar    eax,r9d
+  46:	4d 85 ff             	test   r15,r15
+  49:	41 0f 02 f9          	lar    edi,r9d
+  4d:	4d 85 ff             	test   r15,r15
+  50:	41 0f 02 f1          	lar    esi,r9d
+  54:	4d 85 ff             	test   r15,r15
+  57:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D; TEST R15, R15; LAR R13D, R9D; TEST R15, R15; LAR R14D, R9D; TEST R15, R15; LAR EBX, R9D; TEST R15, R15; LAR ECX, R9D; TEST R15, R15; LAR EDX, R9D; TEST R15, R15; LAR EAX, R9D; TEST R15, R15; LAR EDI, R9D; TEST R15, R15; LAR ESI, R9D; TEST R15, R15; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.0</li>
+<li>Core cycles: 1069.24</li>
+<li>Reference cycles: 844.61</li>
+<li>UOPS_RETIRED.ALL: 221.0</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e9          	lar    r13d,r9d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 f1          	lar    r14d,r9d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	41 0f 02 d9          	lar    ebx,r9d
+  31:	4d 85 ff             	test   r15,r15
+  34:	41 0f 02 c9          	lar    ecx,r9d
+  38:	4d 85 ff             	test   r15,r15
+  3b:	41 0f 02 d1          	lar    edx,r9d
+  3f:	4d 85 ff             	test   r15,r15
+  42:	41 0f 02 c1          	lar    eax,r9d
+  46:	4d 85 ff             	test   r15,r15
+  49:	41 0f 02 f9          	lar    edi,r9d
+  4d:	4d 85 ff             	test   r15,r15
+  50:	41 0f 02 f1          	lar    esi,r9d
+  54:	4d 85 ff             	test   r15,r15
+  57:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D; TEST R15, R15; LAR R13D, R9D; TEST R15, R15; LAR R14D, R9D; TEST R15, R15; LAR EBX, R9D; TEST R15, R15; LAR ECX, R9D; TEST R15, R15; LAR EDX, R9D; TEST R15, R15; LAR EAX, R9D; TEST R15, R15; LAR EDI, R9D; TEST R15, R15; LAR ESI, R9D; TEST R15, R15; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.0</li>
+<li>Core cycles: 1073.26</li>
+<li>Reference cycles: 847.7</li>
+<li>UOPS_RETIRED.ALL: 223.0</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c1          	lar    r8d,r9d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 d1          	lar    r10d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d9          	lar    r11d,r9d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 e1          	lar    r12d,r9d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e9          	lar    r13d,r9d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 f1          	lar    r14d,r9d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	41 0f 02 d9          	lar    ebx,r9d
+  31:	4d 85 ff             	test   r15,r15
+  34:	41 0f 02 c9          	lar    ecx,r9d
+  38:	4d 85 ff             	test   r15,r15
+  3b:	41 0f 02 d1          	lar    edx,r9d
+  3f:	4d 85 ff             	test   r15,r15
+  42:	41 0f 02 c1          	lar    eax,r9d
+  46:	4d 85 ff             	test   r15,r15
+  49:	41 0f 02 f9          	lar    edi,r9d
+  4d:	4d 85 ff             	test   r15,r15
+  50:	41 0f 02 f1          	lar    esi,r9d
+  54:	4d 85 ff             	test   r15,r15
+  57:	41 0f 02 e9          	lar    ebp,r9d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R9D; TEST R15, R15; LAR R10D, R9D; TEST R15, R15; LAR R11D, R9D; TEST R15, R15; LAR R12D, R9D; TEST R15, R15; LAR R13D, R9D; TEST R15, R15; LAR R14D, R9D; TEST R15, R15; LAR EBX, R9D; TEST R15, R15; LAR ECX, R9D; TEST R15, R15; LAR EDX, R9D; TEST R15, R15; LAR EAX, R9D; TEST R15, R15; LAR EDI, R9D; TEST R15, R15; LAR ESI, R9D; TEST R15, R15; LAR EBP, R9D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.2</li>
+<li>Core cycles: 1071.67</li>
+<li>Reference cycles: 846.39</li>
+<li>UOPS_RETIRED.ALL: 221.2</li>
+<li>UOPS_MS: 195.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="sameReg">With the same register for for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;LAR R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 80.5</li>
+<li>Reference cycles: 63.6</li>
+<li>UOPS_RETIRED.ALL: 16.0</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 81.15</li>
+<li>Reference cycles: 65.18</li>
+<li>UOPS_RETIRED.ALL: 16.2</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 80.28</li>
+<li>Reference cycles: 63.4</li>
+<li>UOPS_RETIRED.ALL: 16.02</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 81.25</li>
+<li>Reference cycles: 64.22</li>
+<li>UOPS_RETIRED.ALL: 17.0</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 81.63</li>
+<li>Reference cycles: 64.48</li>
+<li>UOPS_RETIRED.ALL: 17.2</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 81.44</li>
+<li>Reference cycles: 64.33</li>
+<li>UOPS_RETIRED.ALL: 17.02</li>
+<li>UOPS_MS: 15.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 326.06</li>
+<li>Reference cycles: 257.47</li>
+<li>UOPS_RETIRED.ALL: 64.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 330.01</li>
+<li>Reference cycles: 260.64</li>
+<li>UOPS_RETIRED.ALL: 65.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 325.15</li>
+<li>Reference cycles: 256.79</li>
+<li>UOPS_RETIRED.ALL: 64.1</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 327.08</li>
+<li>Reference cycles: 258.38</li>
+<li>UOPS_RETIRED.ALL: 65.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 330.17</li>
+<li>Reference cycles: 260.78</li>
+<li>UOPS_RETIRED.ALL: 66.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.1</li>
+<li>Core cycles: 326.6</li>
+<li>Reference cycles: 257.97</li>
+<li>UOPS_RETIRED.ALL: 65.1</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions (before each instruction)</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 329.04</li>
+<li>Reference cycles: 259.94</li>
+<li>UOPS_RETIRED.ALL: 68.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 330.51</li>
+<li>Reference cycles: 261.01</li>
+<li>UOPS_RETIRED.ALL: 69.0</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 329.7</li>
+<li>Reference cycles: 260.39</li>
+<li>UOPS_RETIRED.ALL: 68.1</li>
+<li>UOPS_MS: 60.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+  10:	45 0f 02 e4          	lar    r12d,r12d
+  14:	45 0f 02 ed          	lar    r13d,r13d
+  18:	45 0f 02 f6          	lar    r14d,r14d
+  1c:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 653.61</li>
+<li>Reference cycles: 516.23</li>
+<li>UOPS_RETIRED.ALL: 128.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+  10:	45 0f 02 e4          	lar    r12d,r12d
+  14:	45 0f 02 ed          	lar    r13d,r13d
+  18:	45 0f 02 f6          	lar    r14d,r14d
+  1c:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 660.02</li>
+<li>Reference cycles: 521.29</li>
+<li>UOPS_RETIRED.ALL: 130.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+  10:	45 0f 02 e4          	lar    r12d,r12d
+  14:	45 0f 02 ed          	lar    r13d,r13d
+  18:	45 0f 02 f6          	lar    r14d,r14d
+  1c:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 652.09</li>
+<li>Reference cycles: 515.02</li>
+<li>UOPS_RETIRED.ALL: 128.2</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+  13:	45 0f 02 e4          	lar    r12d,r12d
+  17:	45 0f 02 ed          	lar    r13d,r13d
+  1b:	45 0f 02 f6          	lar    r14d,r14d
+  1f:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 653.07</li>
+<li>Reference cycles: 515.84</li>
+<li>UOPS_RETIRED.ALL: 129.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+  13:	45 0f 02 e4          	lar    r12d,r12d
+  17:	45 0f 02 ed          	lar    r13d,r13d
+  1b:	45 0f 02 f6          	lar    r14d,r14d
+  1f:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 662.01</li>
+<li>Reference cycles: 522.87</li>
+<li>UOPS_RETIRED.ALL: 131.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+  13:	45 0f 02 e4          	lar    r12d,r12d
+  17:	45 0f 02 ed          	lar    r13d,r13d
+  1b:	45 0f 02 f6          	lar    r14d,r14d
+  1f:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.2</li>
+<li>Core cycles: 653.16</li>
+<li>Reference cycles: 515.89</li>
+<li>UOPS_RETIRED.ALL: 129.2</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions (before each instruction)</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e4          	lar    r12d,r12d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 ed          	lar    r13d,r13d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	45 0f 02 f6          	lar    r14d,r14d
+  31:	4d 85 ff             	test   r15,r15
+  34:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D; TEST R15, R15; LAR R12D, R12D; TEST R15, R15; LAR R13D, R13D; TEST R15, R15; LAR R14D, R14D; TEST R15, R15; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 657.97</li>
+<li>Reference cycles: 520.0</li>
+<li>UOPS_RETIRED.ALL: 136.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e4          	lar    r12d,r12d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 ed          	lar    r13d,r13d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	45 0f 02 f6          	lar    r14d,r14d
+  31:	4d 85 ff             	test   r15,r15
+  34:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D; TEST R15, R15; LAR R12D, R12D; TEST R15, R15; LAR R13D, R13D; TEST R15, R15; LAR R14D, R14D; TEST R15, R15; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 660.02</li>
+<li>Reference cycles: 521.29</li>
+<li>UOPS_RETIRED.ALL: 138.0</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e4          	lar    r12d,r12d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 ed          	lar    r13d,r13d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	45 0f 02 f6          	lar    r14d,r14d
+  31:	4d 85 ff             	test   r15,r15
+  34:	0f 02 db             	lar    ebx,ebx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D; TEST R15, R15; LAR R12D, R12D; TEST R15, R15; LAR R13D, R13D; TEST R15, R15; LAR R14D, R14D; TEST R15, R15; LAR EBX, EBX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 659.37</li>
+<li>Reference cycles: 520.75</li>
+<li>UOPS_RETIRED.ALL: 136.2</li>
+<li>UOPS_MS: 120.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 14 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+  10:	45 0f 02 e4          	lar    r12d,r12d
+  14:	45 0f 02 ed          	lar    r13d,r13d
+  18:	45 0f 02 f6          	lar    r14d,r14d
+  1c:	0f 02 db             	lar    ebx,ebx
+  1f:	0f 02 c9             	lar    ecx,ecx
+  22:	0f 02 d2             	lar    edx,edx
+  25:	0f 02 c0             	lar    eax,eax
+  28:	0f 02 ff             	lar    edi,edi
+  2b:	0f 02 f6             	lar    esi,esi
+  2e:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX; LAR ECX, ECX; LAR EDX, EDX; LAR EAX, EAX; LAR EDI, EDI; LAR ESI, ESI; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 1259.19</li>
+<li>Reference cycles: 994.37</li>
+<li>UOPS_RETIRED.ALL: 244.0</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+  10:	45 0f 02 e4          	lar    r12d,r12d
+  14:	45 0f 02 ed          	lar    r13d,r13d
+  18:	45 0f 02 f6          	lar    r14d,r14d
+  1c:	0f 02 db             	lar    ebx,ebx
+  1f:	0f 02 c9             	lar    ecx,ecx
+  22:	0f 02 d2             	lar    edx,edx
+  25:	0f 02 c0             	lar    eax,eax
+  28:	0f 02 ff             	lar    edi,edi
+  2b:	0f 02 f6             	lar    esi,esi
+  2e:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX; LAR ECX, ECX; LAR EDX, EDX; LAR EAX, EAX; LAR EDI, EDI; LAR ESI, ESI; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 1257.01</li>
+<li>Reference cycles: 992.81</li>
+<li>UOPS_RETIRED.ALL: 246.0</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 02 c0          	lar    r8d,r8d
+   4:	45 0f 02 c9          	lar    r9d,r9d
+   8:	45 0f 02 d2          	lar    r10d,r10d
+   c:	45 0f 02 db          	lar    r11d,r11d
+  10:	45 0f 02 e4          	lar    r12d,r12d
+  14:	45 0f 02 ed          	lar    r13d,r13d
+  18:	45 0f 02 f6          	lar    r14d,r14d
+  1c:	0f 02 db             	lar    ebx,ebx
+  1f:	0f 02 c9             	lar    ecx,ecx
+  22:	0f 02 d2             	lar    edx,edx
+  25:	0f 02 c0             	lar    eax,eax
+  28:	0f 02 ff             	lar    edi,edi
+  2b:	0f 02 f6             	lar    esi,esi
+  2e:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX; LAR ECX, ECX; LAR EDX, EDX; LAR EAX, EAX; LAR EDI, EDI; LAR ESI, ESI; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.2</li>
+<li>Core cycles: 1258.3</li>
+<li>Reference cycles: 993.8</li>
+<li>UOPS_RETIRED.ALL: 244.2</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+  13:	45 0f 02 e4          	lar    r12d,r12d
+  17:	45 0f 02 ed          	lar    r13d,r13d
+  1b:	45 0f 02 f6          	lar    r14d,r14d
+  1f:	0f 02 db             	lar    ebx,ebx
+  22:	0f 02 c9             	lar    ecx,ecx
+  25:	0f 02 d2             	lar    edx,edx
+  28:	0f 02 c0             	lar    eax,eax
+  2b:	0f 02 ff             	lar    edi,edi
+  2e:	0f 02 f6             	lar    esi,esi
+  31:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX; LAR ECX, ECX; LAR EDX, EDX; LAR EAX, EAX; LAR EDI, EDI; LAR ESI, ESI; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 1246.6</li>
+<li>Reference cycles: 984.36</li>
+<li>UOPS_RETIRED.ALL: 245.0</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+  13:	45 0f 02 e4          	lar    r12d,r12d
+  17:	45 0f 02 ed          	lar    r13d,r13d
+  1b:	45 0f 02 f6          	lar    r14d,r14d
+  1f:	0f 02 db             	lar    ebx,ebx
+  22:	0f 02 c9             	lar    ecx,ecx
+  25:	0f 02 d2             	lar    edx,edx
+  28:	0f 02 c0             	lar    eax,eax
+  2b:	0f 02 ff             	lar    edi,edi
+  2e:	0f 02 f6             	lar    esi,esi
+  31:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX; LAR ECX, ECX; LAR EDX, EDX; LAR EAX, EAX; LAR EDI, EDI; LAR ESI, ESI; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 17.0</li>
+<li>Core cycles: 1258.02</li>
+<li>Reference cycles: 1008.96</li>
+<li>UOPS_RETIRED.ALL: 247.0</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	45 0f 02 c9          	lar    r9d,r9d
+   b:	45 0f 02 d2          	lar    r10d,r10d
+   f:	45 0f 02 db          	lar    r11d,r11d
+  13:	45 0f 02 e4          	lar    r12d,r12d
+  17:	45 0f 02 ed          	lar    r13d,r13d
+  1b:	45 0f 02 f6          	lar    r14d,r14d
+  1f:	0f 02 db             	lar    ebx,ebx
+  22:	0f 02 c9             	lar    ecx,ecx
+  25:	0f 02 d2             	lar    edx,edx
+  28:	0f 02 c0             	lar    eax,eax
+  2b:	0f 02 ff             	lar    edi,edi
+  2e:	0f 02 f6             	lar    esi,esi
+  31:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; LAR R9D, R9D; LAR R10D, R10D; LAR R11D, R11D; LAR R12D, R12D; LAR R13D, R13D; LAR R14D, R14D; LAR EBX, EBX; LAR ECX, ECX; LAR EDX, EDX; LAR EAX, EAX; LAR EDI, EDI; LAR ESI, ESI; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.2</li>
+<li>Core cycles: 1248.1</li>
+<li>Reference cycles: 985.74</li>
+<li>UOPS_RETIRED.ALL: 245.2</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions (before each instruction)</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e4          	lar    r12d,r12d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 ed          	lar    r13d,r13d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	45 0f 02 f6          	lar    r14d,r14d
+  31:	4d 85 ff             	test   r15,r15
+  34:	0f 02 db             	lar    ebx,ebx
+  37:	4d 85 ff             	test   r15,r15
+  3a:	0f 02 c9             	lar    ecx,ecx
+  3d:	4d 85 ff             	test   r15,r15
+  40:	0f 02 d2             	lar    edx,edx
+  43:	4d 85 ff             	test   r15,r15
+  46:	0f 02 c0             	lar    eax,eax
+  49:	4d 85 ff             	test   r15,r15
+  4c:	0f 02 ff             	lar    edi,edi
+  4f:	4d 85 ff             	test   r15,r15
+  52:	0f 02 f6             	lar    esi,esi
+  55:	4d 85 ff             	test   r15,r15
+  58:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D; TEST R15, R15; LAR R12D, R12D; TEST R15, R15; LAR R13D, R13D; TEST R15, R15; LAR R14D, R14D; TEST R15, R15; LAR EBX, EBX; TEST R15, R15; LAR ECX, ECX; TEST R15, R15; LAR EDX, EDX; TEST R15, R15; LAR EAX, EAX; TEST R15, R15; LAR EDI, EDI; TEST R15, R15; LAR ESI, ESI; TEST R15, R15; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.0</li>
+<li>Core cycles: 1253.29</li>
+<li>Reference cycles: 990.08</li>
+<li>UOPS_RETIRED.ALL: 258.0</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e4          	lar    r12d,r12d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 ed          	lar    r13d,r13d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	45 0f 02 f6          	lar    r14d,r14d
+  31:	4d 85 ff             	test   r15,r15
+  34:	0f 02 db             	lar    ebx,ebx
+  37:	4d 85 ff             	test   r15,r15
+  3a:	0f 02 c9             	lar    ecx,ecx
+  3d:	4d 85 ff             	test   r15,r15
+  40:	0f 02 d2             	lar    edx,edx
+  43:	4d 85 ff             	test   r15,r15
+  46:	0f 02 c0             	lar    eax,eax
+  49:	4d 85 ff             	test   r15,r15
+  4c:	0f 02 ff             	lar    edi,edi
+  4f:	4d 85 ff             	test   r15,r15
+  52:	0f 02 f6             	lar    esi,esi
+  55:	4d 85 ff             	test   r15,r15
+  58:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D; TEST R15, R15; LAR R12D, R12D; TEST R15, R15; LAR R13D, R13D; TEST R15, R15; LAR R14D, R14D; TEST R15, R15; LAR EBX, EBX; TEST R15, R15; LAR ECX, ECX; TEST R15, R15; LAR EDX, EDX; TEST R15, R15; LAR EAX, EAX; TEST R15, R15; LAR EDI, EDI; TEST R15, R15; LAR ESI, ESI; TEST R15, R15; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 30.0</li>
+<li>Core cycles: 1262.02</li>
+<li>Reference cycles: 996.76</li>
+<li>UOPS_RETIRED.ALL: 260.0</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	4d 85 ff             	test   r15,r15
+   3:	45 0f 02 c0          	lar    r8d,r8d
+   7:	4d 85 ff             	test   r15,r15
+   a:	45 0f 02 c9          	lar    r9d,r9d
+   e:	4d 85 ff             	test   r15,r15
+  11:	45 0f 02 d2          	lar    r10d,r10d
+  15:	4d 85 ff             	test   r15,r15
+  18:	45 0f 02 db          	lar    r11d,r11d
+  1c:	4d 85 ff             	test   r15,r15
+  1f:	45 0f 02 e4          	lar    r12d,r12d
+  23:	4d 85 ff             	test   r15,r15
+  26:	45 0f 02 ed          	lar    r13d,r13d
+  2a:	4d 85 ff             	test   r15,r15
+  2d:	45 0f 02 f6          	lar    r14d,r14d
+  31:	4d 85 ff             	test   r15,r15
+  34:	0f 02 db             	lar    ebx,ebx
+  37:	4d 85 ff             	test   r15,r15
+  3a:	0f 02 c9             	lar    ecx,ecx
+  3d:	4d 85 ff             	test   r15,r15
+  40:	0f 02 d2             	lar    edx,edx
+  43:	4d 85 ff             	test   r15,r15
+  46:	0f 02 c0             	lar    eax,eax
+  49:	4d 85 ff             	test   r15,r15
+  4c:	0f 02 ff             	lar    edi,edi
+  4f:	4d 85 ff             	test   r15,r15
+  52:	0f 02 f6             	lar    esi,esi
+  55:	4d 85 ff             	test   r15,r15
+  58:	0f 02 ed             	lar    ebp,ebp
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;TEST R15, R15; LAR R8D, R8D; TEST R15, R15; LAR R9D, R9D; TEST R15, R15; LAR R10D, R10D; TEST R15, R15; LAR R11D, R11D; TEST R15, R15; LAR R12D, R12D; TEST R15, R15; LAR R13D, R13D; TEST R15, R15; LAR R14D, R14D; TEST R15, R15; LAR EBX, EBX; TEST R15, R15; LAR ECX, ECX; TEST R15, R15; LAR EDX, EDX; TEST R15, R15; LAR EAX, EAX; TEST R15, R15; LAR EDI, EDI; TEST R15, R15; LAR ESI, ESI; TEST R15, R15; LAR EBP, EBP&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.2</li>
+<li>Core cycles: 1261.53</li>
+<li>Reference cycles: 996.35</li>
+<li>UOPS_RETIRED.ALL: 258.2</li>
+<li>UOPS_MS: 230.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
