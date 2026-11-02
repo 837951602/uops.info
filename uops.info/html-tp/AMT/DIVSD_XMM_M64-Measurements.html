@@ -1,0 +1,601 @@
+<html>
+<head>
+<title>DIVSD (XMM, M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>DIVSD (XMM, M64) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h2>Fast division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+   9:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]; lfence&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 47.0</li>
+<li>Reference cycles: 23.5</li>
+<li>UOPS_RETIRED.ALL: 4.0</li>
+<li>UOPS_MS: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.07</li>
+<li>Core cycles: 32.32</li>
+<li>Reference cycles: 16.16</li>
+<li>UOPS_RETIRED.ALL: 2.02</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h2>Slow division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+   9:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]; lfence&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 47.0</li>
+<li>Reference cycles: 23.49</li>
+<li>UOPS_RETIRED.ALL: 4.0</li>
+<li>UOPS_MS: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.02</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h2>Fast division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+   9:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]; lfence&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 47.0</li>
+<li>Reference cycles: 23.5</li>
+<li>UOPS_RETIRED.ALL: 4.0</li>
+<li>UOPS_MS: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x3ff0000000000000;
+MOV RBX, 0x3ff0000000000000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x3ff0000000000000; MOV RBX, 0x3ff0000000000000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.02</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div><h2>Slow division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 15.99</li>
+<li>UOPS_RETIRED.ALL: 2.0</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+   9:	0f ae e8             	lfence 
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]; lfence&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 47.0</li>
+<li>Reference cycles: 23.5</li>
+<li>UOPS_RETIRED.ALL: 4.0</li>
+<li>UOPS_MS: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.2</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 0f 10 d1          	movupd xmm2,xmm1
+   4:	f2 41 0f 5e 16       	divsd  xmm2,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV RAX, 0x429da724b687da66;
+MOV RBX, 0x3ff33e97f934078b;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+16], RBX;
+MOV [R14+24], RBX;
+MOV [R14+32], RBX;
+MOV [R14+40], RBX;
+MOV [R14+48], RBX;
+MOV [R14+56], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOV [R14+80], RAX;
+MOV [R14+88], RAX;
+MOV [R14+96], RAX;
+MOV [R14+104], RAX;
+MOV [R14+112], RAX;
+MOV [R14+120], RAX;
+MOVUPD XMM0, [R14];
+MOVUPD XMM1, [R14+64];
+MOVUPD XMM2, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOVUPD XMM2, XMM1;  ; DIVSD XMM2, qword ptr [R14]&quot; -asm_init &quot;MOV RAX, 0x429da724b687da66; MOV RBX, 0x3ff33e97f934078b; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+16], RBX; MOV [R14+24], RBX; MOV [R14+32], RBX; MOV [R14+40], RBX; MOV [R14+48], RBX; MOV [R14+56], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOV [R14+80], RAX; MOV [R14+88], RAX; MOV [R14+96], RAX; MOV [R14+104], RAX; MOV [R14+112], RAX; MOV [R14+120], RAX; MOVUPD XMM0, [R14]; MOVUPD XMM1, [R14+64]; MOVUPD XMM2, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 16.0</li>
+<li>UOPS_RETIRED.ALL: 2.02</li>
+<li>UOPS_MS: 0.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

@@ -1,0 +1,346 @@
+<html>
+<head>
+<title>LSL (R32, M16)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>LSL (R32, M16) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;LSL R8D, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 18.51</li>
+<li>UOPS_RETIRED.ALL: 20.0</li>
+<li>UOPS_MS: 20.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 38.1</li>
+<li>Reference cycles: 19.05</li>
+<li>UOPS_RETIRED.ALL: 20.2</li>
+<li>UOPS_MS: 20.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 38.01</li>
+<li>Reference cycles: 19.01</li>
+<li>UOPS_RETIRED.ALL: 20.02</li>
+<li>UOPS_MS: 20.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+   4:	45 0f 03 4e 02       	lsl    r9d,WORD PTR [r14+0x2]
+   9:	45 0f 03 56 04       	lsl    r10d,WORD PTR [r14+0x4]
+   e:	45 0f 03 5e 06       	lsl    r11d,WORD PTR [r14+0x6]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;LSL R8D, [R14]; LSL R9D, [R14+2]; LSL R10D, [R14+4]; LSL R11D, [R14+6]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 148.0</li>
+<li>Reference cycles: 73.99</li>
+<li>UOPS_RETIRED.ALL: 80.0</li>
+<li>UOPS_MS: 80.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+   4:	45 0f 03 4e 02       	lsl    r9d,WORD PTR [r14+0x2]
+   9:	45 0f 03 56 04       	lsl    r10d,WORD PTR [r14+0x4]
+   e:	45 0f 03 5e 06       	lsl    r11d,WORD PTR [r14+0x6]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14]; LSL R9D, [R14+2]; LSL R10D, [R14+4]; LSL R11D, [R14+6]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 152.5</li>
+<li>Reference cycles: 76.25</li>
+<li>UOPS_RETIRED.ALL: 81.0</li>
+<li>UOPS_MS: 80.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+   4:	45 0f 03 4e 02       	lsl    r9d,WORD PTR [r14+0x2]
+   9:	45 0f 03 56 04       	lsl    r10d,WORD PTR [r14+0x4]
+   e:	45 0f 03 5e 06       	lsl    r11d,WORD PTR [r14+0x6]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14]; LSL R9D, [R14+2]; LSL R10D, [R14+4]; LSL R11D, [R14+6]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 152.05</li>
+<li>Reference cycles: 76.03</li>
+<li>UOPS_RETIRED.ALL: 80.1</li>
+<li>UOPS_MS: 80.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+   4:	45 0f 03 4e 02       	lsl    r9d,WORD PTR [r14+0x2]
+   9:	45 0f 03 56 04       	lsl    r10d,WORD PTR [r14+0x4]
+   e:	45 0f 03 5e 06       	lsl    r11d,WORD PTR [r14+0x6]
+  13:	45 0f 03 66 08       	lsl    r12d,WORD PTR [r14+0x8]
+  18:	41 0f 03 5e 0a       	lsl    ebx,WORD PTR [r14+0xa]
+  1d:	41 0f 03 4e 0c       	lsl    ecx,WORD PTR [r14+0xc]
+  22:	41 0f 03 56 0e       	lsl    edx,WORD PTR [r14+0xe]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LSL R8D, [R14]; LSL R9D, [R14+2]; LSL R10D, [R14+4]; LSL R11D, [R14+6]; LSL R12D, [R14+8]; LSL EBX, [R14+10]; LSL ECX, [R14+12]; LSL EDX, [R14+14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 296.0</li>
+<li>Reference cycles: 147.98</li>
+<li>UOPS_RETIRED.ALL: 160.0</li>
+<li>UOPS_MS: 160.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+   4:	45 0f 03 4e 02       	lsl    r9d,WORD PTR [r14+0x2]
+   9:	45 0f 03 56 04       	lsl    r10d,WORD PTR [r14+0x4]
+   e:	45 0f 03 5e 06       	lsl    r11d,WORD PTR [r14+0x6]
+  13:	45 0f 03 66 08       	lsl    r12d,WORD PTR [r14+0x8]
+  18:	41 0f 03 5e 0a       	lsl    ebx,WORD PTR [r14+0xa]
+  1d:	41 0f 03 4e 0c       	lsl    ecx,WORD PTR [r14+0xc]
+  22:	41 0f 03 56 0e       	lsl    edx,WORD PTR [r14+0xe]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14]; LSL R9D, [R14+2]; LSL R10D, [R14+4]; LSL R11D, [R14+6]; LSL R12D, [R14+8]; LSL EBX, [R14+10]; LSL ECX, [R14+12]; LSL EDX, [R14+14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 305.01</li>
+<li>Reference cycles: 152.51</li>
+<li>UOPS_RETIRED.ALL: 162.0</li>
+<li>UOPS_MS: 160.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f 03 06          	lsl    r8d,WORD PTR [r14]
+   4:	45 0f 03 4e 02       	lsl    r9d,WORD PTR [r14+0x2]
+   9:	45 0f 03 56 04       	lsl    r10d,WORD PTR [r14+0x4]
+   e:	45 0f 03 5e 06       	lsl    r11d,WORD PTR [r14+0x6]
+  13:	45 0f 03 66 08       	lsl    r12d,WORD PTR [r14+0x8]
+  18:	41 0f 03 5e 0a       	lsl    ebx,WORD PTR [r14+0xa]
+  1d:	41 0f 03 4e 0c       	lsl    ecx,WORD PTR [r14+0xc]
+  22:	41 0f 03 56 0e       	lsl    edx,WORD PTR [r14+0xe]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14]; LSL R9D, [R14+2]; LSL R10D, [R14+4]; LSL R11D, [R14+6]; LSL R12D, [R14+8]; LSL EBX, [R14+10]; LSL ECX, [R14+12]; LSL EDX, [R14+14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 304.11</li>
+<li>Reference cycles: 152.06</li>
+<li>UOPS_RETIRED.ALL: 160.2</li>
+<li>UOPS_MS: 160.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 38.0</li>
+<li>Reference cycles: 19.0</li>
+<li>UOPS_RETIRED.ALL: 20.0</li>
+<li>UOPS_MS: 20.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 37.1</li>
+<li>Reference cycles: 18.55</li>
+<li>UOPS_RETIRED.ALL: 20.2</li>
+<li>UOPS_MS: 20.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 37.01</li>
+<li>Reference cycles: 18.51</li>
+<li>UOPS_RETIRED.ALL: 20.02</li>
+<li>UOPS_MS: 20.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+   5:	47 0f 03 4c 2e 02    	lsl    r9d,WORD PTR [r14+r13*1+0x2]
+   b:	47 0f 03 54 2e 04    	lsl    r10d,WORD PTR [r14+r13*1+0x4]
+  11:	47 0f 03 5c 2e 06    	lsl    r11d,WORD PTR [r14+r13*1+0x6]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]; LSL R9D, [R14+R13+2]; LSL R10D, [R14+R13+4]; LSL R11D, [R14+R13+6]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 152.0</li>
+<li>Reference cycles: 75.99</li>
+<li>UOPS_RETIRED.ALL: 80.0</li>
+<li>UOPS_MS: 80.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+   5:	47 0f 03 4c 2e 02    	lsl    r9d,WORD PTR [r14+r13*1+0x2]
+   b:	47 0f 03 54 2e 04    	lsl    r10d,WORD PTR [r14+r13*1+0x4]
+  11:	47 0f 03 5c 2e 06    	lsl    r11d,WORD PTR [r14+r13*1+0x6]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]; LSL R9D, [R14+R13+2]; LSL R10D, [R14+R13+4]; LSL R11D, [R14+R13+6]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 148.5</li>
+<li>Reference cycles: 74.25</li>
+<li>UOPS_RETIRED.ALL: 81.0</li>
+<li>UOPS_MS: 80.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+   5:	47 0f 03 4c 2e 02    	lsl    r9d,WORD PTR [r14+r13*1+0x2]
+   b:	47 0f 03 54 2e 04    	lsl    r10d,WORD PTR [r14+r13*1+0x4]
+  11:	47 0f 03 5c 2e 06    	lsl    r11d,WORD PTR [r14+r13*1+0x6]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]; LSL R9D, [R14+R13+2]; LSL R10D, [R14+R13+4]; LSL R11D, [R14+R13+6]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 148.05</li>
+<li>Reference cycles: 74.03</li>
+<li>UOPS_RETIRED.ALL: 80.1</li>
+<li>UOPS_MS: 80.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+   5:	47 0f 03 4c 2e 02    	lsl    r9d,WORD PTR [r14+r13*1+0x2]
+   b:	47 0f 03 54 2e 04    	lsl    r10d,WORD PTR [r14+r13*1+0x4]
+  11:	47 0f 03 5c 2e 06    	lsl    r11d,WORD PTR [r14+r13*1+0x6]
+  17:	47 0f 03 64 2e 08    	lsl    r12d,WORD PTR [r14+r13*1+0x8]
+  1d:	43 0f 03 5c 2e 0a    	lsl    ebx,WORD PTR [r14+r13*1+0xa]
+  23:	43 0f 03 4c 2e 0c    	lsl    ecx,WORD PTR [r14+r13*1+0xc]
+  29:	43 0f 03 54 2e 0e    	lsl    edx,WORD PTR [r14+r13*1+0xe]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]; LSL R9D, [R14+R13+2]; LSL R10D, [R14+R13+4]; LSL R11D, [R14+R13+6]; LSL R12D, [R14+R13+8]; LSL EBX, [R14+R13+10]; LSL ECX, [R14+R13+12]; LSL EDX, [R14+R13+14]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 304.0</li>
+<li>Reference cycles: 151.99</li>
+<li>UOPS_RETIRED.ALL: 160.0</li>
+<li>UOPS_MS: 160.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+   5:	47 0f 03 4c 2e 02    	lsl    r9d,WORD PTR [r14+r13*1+0x2]
+   b:	47 0f 03 54 2e 04    	lsl    r10d,WORD PTR [r14+r13*1+0x4]
+  11:	47 0f 03 5c 2e 06    	lsl    r11d,WORD PTR [r14+r13*1+0x6]
+  17:	47 0f 03 64 2e 08    	lsl    r12d,WORD PTR [r14+r13*1+0x8]
+  1d:	43 0f 03 5c 2e 0a    	lsl    ebx,WORD PTR [r14+r13*1+0xa]
+  23:	43 0f 03 4c 2e 0c    	lsl    ecx,WORD PTR [r14+r13*1+0xc]
+  29:	43 0f 03 54 2e 0e    	lsl    edx,WORD PTR [r14+r13*1+0xe]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]; LSL R9D, [R14+R13+2]; LSL R10D, [R14+R13+4]; LSL R11D, [R14+R13+6]; LSL R12D, [R14+R13+8]; LSL EBX, [R14+R13+10]; LSL ECX, [R14+R13+12]; LSL EDX, [R14+R13+14]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 297.01</li>
+<li>Reference cycles: 148.5</li>
+<li>UOPS_RETIRED.ALL: 162.0</li>
+<li>UOPS_MS: 160.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f 03 04 2e       	lsl    r8d,WORD PTR [r14+r13*1]
+   5:	47 0f 03 4c 2e 02    	lsl    r9d,WORD PTR [r14+r13*1+0x2]
+   b:	47 0f 03 54 2e 04    	lsl    r10d,WORD PTR [r14+r13*1+0x4]
+  11:	47 0f 03 5c 2e 06    	lsl    r11d,WORD PTR [r14+r13*1+0x6]
+  17:	47 0f 03 64 2e 08    	lsl    r12d,WORD PTR [r14+r13*1+0x8]
+  1d:	43 0f 03 5c 2e 0a    	lsl    ebx,WORD PTR [r14+r13*1+0xa]
+  23:	43 0f 03 4c 2e 0c    	lsl    ecx,WORD PTR [r14+r13*1+0xc]
+  29:	43 0f 03 54 2e 0e    	lsl    edx,WORD PTR [r14+r13*1+0xe]
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;LSL R8D, [R14+R13]; LSL R9D, [R14+R13+2]; LSL R10D, [R14+R13+4]; LSL R11D, [R14+R13+6]; LSL R12D, [R14+R13+8]; LSL EBX, [R14+R13+10]; LSL ECX, [R14+R13+12]; LSL EDX, [R14+R13+14]&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 296.11</li>
+<li>Reference cycles: 148.05</li>
+<li>UOPS_RETIRED.ALL: 160.2</li>
+<li>UOPS_MS: 160.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
