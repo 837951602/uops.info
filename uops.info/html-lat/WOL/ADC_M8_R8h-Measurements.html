@@ -1,0 +1,989 @@
+<html>
+<head>
+<title>ADC (M8, R8h)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>ADC (M8, R8h) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Memory</li><li>Operand 2 (r): Register (AH, CH, DH, BH)</li><li>Operand 3 (r/w, suppressed): Flags (AF: w, CF: r/w, OF: w, PF: w, SF: w, ZF: w)</li></ul><hr><a href="#lat1->1_addr"><h3>Latency operand 1 &rarr; 1 (address, base register): &le;10</h3></a><a href="#lat1->1_addr_index"><h3>Latency operand 1 &rarr; 1 (address, index register): &le;10</h3></a><a href="#lat1->1_mem"><h3>Latency operand 1 &rarr; 1 (memory): 6</h3></a><a href="#lat1->3_addr"><h3>Latency operand 1 &rarr; 3 (address, base register): 7</h3></a><a href="#lat1->3_addr_index"><h3>Latency operand 1 &rarr; 3 (address, index register): 6</h3></a><a href="#lat1->3_mem"><h3>Latency operand 1 &rarr; 3 (memory): &le;7</h3></a><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: &le;5</h3></a><a href="#lat2->3"><h3>Latency operand 2 &rarr; 3: 2</h3></a><a href="#lat3->1"><h3>Latency operand 3 &rarr; 1: &le;7</h3></a><a href="#lat3->3"><h3>Latency operand 3 &rarr; 3: 2</h3></a><hr><h2 id="lat1->1_addr">Latency operand 1 &rarr; 1 (address, base register): &le;10</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>MOV R12B, [RDI];MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;XOR RDI, R12; XOR RDI, R12;TEST R15, R15</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	44 8a 27             	mov    r12b,BYTE PTR [rdi]
+   5:	4d 0f be e4          	movsx  r12,r12b
+   9:	4d 0f be e4          	movsx  r12,r12b
+   d:	4d 0f be e4          	movsx  r12,r12b
+  11:	4d 0f be e4          	movsx  r12,r12b
+  15:	4d 0f be e4          	movsx  r12,r12b
+  19:	4d 0f be e4          	movsx  r12,r12b
+  1d:	4d 0f be e4          	movsx  r12,r12b
+  21:	4d 0f be e4          	movsx  r12,r12b
+  25:	4d 0f be e4          	movsx  r12,r12b
+  29:	4d 0f be e4          	movsx  r12,r12b
+  2d:	4c 31 e7             	xor    rdi,r12
+  30:	4c 31 e7             	xor    rdi,r12
+  33:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; MOV R12B, [RDI]; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; XOR RDI, R12;  XOR RDI, R12; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 23.44</li>
+<li>Reference cycles: 23.43</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with additional nop)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>MOV R12B, [RDI];MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;XOR RDI, R12; XOR RDI, R12;TEST R15, R15;nop</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	44 8a 27             	mov    r12b,BYTE PTR [rdi]
+   5:	4d 0f be e4          	movsx  r12,r12b
+   9:	4d 0f be e4          	movsx  r12,r12b
+   d:	4d 0f be e4          	movsx  r12,r12b
+  11:	4d 0f be e4          	movsx  r12,r12b
+  15:	4d 0f be e4          	movsx  r12,r12b
+  19:	4d 0f be e4          	movsx  r12,r12b
+  1d:	4d 0f be e4          	movsx  r12,r12b
+  21:	4d 0f be e4          	movsx  r12,r12b
+  25:	4d 0f be e4          	movsx  r12,r12b
+  29:	4d 0f be e4          	movsx  r12,r12b
+  2d:	4c 31 e7             	xor    rdi,r12
+  30:	4c 31 e7             	xor    rdi,r12
+  33:	4d 85 ff             	test   r15,r15
+  36:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; MOV R12B, [RDI]; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; XOR RDI, R12;  XOR RDI, R12; TEST R15, R15; nop&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 23.61</li>
+<li>Reference cycles: 23.58</li>
+<li>RS_UOPS_DISPATCHED: 21.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->1_addr_index">Latency operand 1 &rarr; 1 (address, index register): &le;10</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>MOV R12B, [RDI+RSI];MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;XOR RSI, R12; XOR RSI, R12;TEST R15, R15</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	44 8a 24 37          	mov    r12b,BYTE PTR [rdi+rsi*1]
+   7:	4d 0f be e4          	movsx  r12,r12b
+   b:	4d 0f be e4          	movsx  r12,r12b
+   f:	4d 0f be e4          	movsx  r12,r12b
+  13:	4d 0f be e4          	movsx  r12,r12b
+  17:	4d 0f be e4          	movsx  r12,r12b
+  1b:	4d 0f be e4          	movsx  r12,r12b
+  1f:	4d 0f be e4          	movsx  r12,r12b
+  23:	4d 0f be e4          	movsx  r12,r12b
+  27:	4d 0f be e4          	movsx  r12,r12b
+  2b:	4d 0f be e4          	movsx  r12,r12b
+  2f:	4c 31 e6             	xor    rsi,r12
+  32:	4c 31 e6             	xor    rsi,r12
+  35:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; MOV R12B, [RDI+RSI]; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; XOR RSI, R12;  XOR RSI, R12; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 23.49</li>
+<li>Reference cycles: 23.49</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with additional nop)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>MOV R12B, [RDI+RSI];MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;XOR RSI, R12; XOR RSI, R12;TEST R15, R15;nop</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	44 8a 24 37          	mov    r12b,BYTE PTR [rdi+rsi*1]
+   7:	4d 0f be e4          	movsx  r12,r12b
+   b:	4d 0f be e4          	movsx  r12,r12b
+   f:	4d 0f be e4          	movsx  r12,r12b
+  13:	4d 0f be e4          	movsx  r12,r12b
+  17:	4d 0f be e4          	movsx  r12,r12b
+  1b:	4d 0f be e4          	movsx  r12,r12b
+  1f:	4d 0f be e4          	movsx  r12,r12b
+  23:	4d 0f be e4          	movsx  r12,r12b
+  27:	4d 0f be e4          	movsx  r12,r12b
+  2b:	4d 0f be e4          	movsx  r12,r12b
+  2f:	4c 31 e6             	xor    rsi,r12
+  32:	4c 31 e6             	xor    rsi,r12
+  35:	4d 85 ff             	test   r15,r15
+  38:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; MOV R12B, [RDI+RSI]; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; XOR RSI, R12;  XOR RSI, R12; TEST R15, R15; nop&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 23.63</li>
+<li>Reference cycles: 23.63</li>
+<li>RS_UOPS_DISPATCHED: 21.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->1_mem">Latency operand 1 &rarr; 1 (memory): 6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>MOV R12B, [RDI];MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOVSX R12, R12B;MOV [RDI], R12B</code></li>
+<li>Chain latency: 16</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	44 8a 27             	mov    r12b,BYTE PTR [rdi]
+   5:	4d 0f be e4          	movsx  r12,r12b
+   9:	4d 0f be e4          	movsx  r12,r12b
+   d:	4d 0f be e4          	movsx  r12,r12b
+  11:	4d 0f be e4          	movsx  r12,r12b
+  15:	4d 0f be e4          	movsx  r12,r12b
+  19:	4d 0f be e4          	movsx  r12,r12b
+  1d:	4d 0f be e4          	movsx  r12,r12b
+  21:	4d 0f be e4          	movsx  r12,r12b
+  25:	4d 0f be e4          	movsx  r12,r12b
+  29:	4d 0f be e4          	movsx  r12,r12b
+  2d:	44 88 27             	mov    BYTE PTR [rdi],r12b
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; MOV R12B, [RDI]; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOVSX R12, R12B; MOV [RDI], R12B&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 22.27</li>
+<li>Reference cycles: 22.26</li>
+<li>RS_UOPS_DISPATCHED: 19.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 6.97</li>
+<li>Reference cycles: 6.96</li>
+<li>RS_UOPS_DISPATCHED: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>TEST R15, R15</code></li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 7.02</li>
+<li>RS_UOPS_DISPATCHED: 7.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_addr">Latency operand 1 &rarr; 3 (address, base register): 7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>CMOVS RDI, RDI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVS RDI, RDI&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.83</li>
+<li>Reference cycles: 8.84</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVS RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVS RDI, RDI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 9.0</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>CMOVP RDI, RDI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVP RDI, RDI&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.83</li>
+<li>Reference cycles: 8.81</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVP RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVP RDI, RDI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 9.0</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>CMOVO RDI, RDI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVO RDI, RDI&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.83</li>
+<li>Reference cycles: 8.84</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVO RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVO RDI, RDI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 9.09</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>CMOVC RDI, RDI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVC RDI, RDI&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.83</li>
+<li>Reference cycles: 8.84</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVC RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVC RDI, RDI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 9.0</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>CMOVZ RDI, RDI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVZ RDI, RDI&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.83</li>
+<li>Reference cycles: 8.84</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVZ RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVZ RDI, RDI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 9.0</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_addr_index">Latency operand 1 &rarr; 3 (address, index register): 6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instruction: <code>CMOVS RSI, RSI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 48 f6          	cmovs  rsi,rsi
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVS RSI, RSI&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.85</li>
+<li>Reference cycles: 8.9</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>CMOVS RSI, RSI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 48 f6          	cmovs  rsi,rsi
+   7:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVS RSI, RSI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 8.63</li>
+<li>Reference cycles: 8.63</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instruction: <code>CMOVP RSI, RSI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 4a f6          	cmovp  rsi,rsi
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVP RSI, RSI&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.85</li>
+<li>Reference cycles: 8.9</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>CMOVP RSI, RSI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 4a f6          	cmovp  rsi,rsi
+   7:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVP RSI, RSI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 8.63</li>
+<li>Reference cycles: 8.63</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instruction: <code>CMOVO RSI, RSI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 40 f6          	cmovo  rsi,rsi
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVO RSI, RSI&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.85</li>
+<li>Reference cycles: 8.9</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>CMOVO RSI, RSI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 40 f6          	cmovo  rsi,rsi
+   7:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVO RSI, RSI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 8.63</li>
+<li>Reference cycles: 8.61</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instruction: <code>CMOVC RSI, RSI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 42 f6          	cmovb  rsi,rsi
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVC RSI, RSI&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.85</li>
+<li>Reference cycles: 8.9</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>CMOVC RSI, RSI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 42 f6          	cmovb  rsi,rsi
+   7:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVC RSI, RSI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 8.63</li>
+<li>Reference cycles: 8.63</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instruction: <code>CMOVZ RSI, RSI</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 44 f6          	cmove  rsi,rsi
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVZ RSI, RSI&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.85</li>
+<li>Reference cycles: 8.9</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI+RSI], BH</code></li>
+<li>Chain instructions: <code>CMOVZ RSI, RSI;TEST R15, R15</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	10 3c 37             	adc    BYTE PTR [rdi+rsi*1],bh
+   3:	48 0f 44 f6          	cmove  rsi,rsi
+   7:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV BH, 0;
+XOR RSI, RSI</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI+RSI], BH; CMOVZ RSI, RSI; TEST R15, R15&quot; -asm_late_init &quot;MOV BH, 0; XOR RSI, RSI&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 8.63</li>
+<li>Reference cycles: 8.63</li>
+<li>RS_UOPS_DISPATCHED: 9.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_mem">Latency operand 1 &rarr; 3 (memory): &le;7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12B</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	4d 0f 48 e4          	cmovs  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	44 88 27             	mov    BYTE PTR [rdi],r12b
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12B&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 19.83</li>
+<li>Reference cycles: 19.77</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12B</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	4d 0f 4a e4          	cmovp  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	44 88 27             	mov    BYTE PTR [rdi],r12b
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12B&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 19.83</li>
+<li>Reference cycles: 19.77</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12B</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	4d 0f 40 e4          	cmovo  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	44 88 27             	mov    BYTE PTR [rdi],r12b
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12B&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 19.83</li>
+<li>Reference cycles: 19.77</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12B</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	4d 0f 42 e4          	cmovb  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	44 88 27             	mov    BYTE PTR [rdi],r12b
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12B&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 19.83</li>
+<li>Reference cycles: 19.77</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12B</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	4d 0f 44 e4          	cmove  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	44 88 27             	mov    BYTE PTR [rdi],r12b
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12B&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 19.83</li>
+<li>Reference cycles: 19.77</li>
+<li>RS_UOPS_DISPATCHED: 20.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: &le;5</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>MOV BH, [RDI];MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	8a 3f                	mov    bh,BYTE PTR [rdi]
+   4:	88 ff                	mov    bh,bh
+   6:	88 ff                	mov    bh,bh
+   8:	88 ff                	mov    bh,bh
+   a:	88 ff                	mov    bh,bh
+   c:	88 ff                	mov    bh,bh
+   e:	88 ff                	mov    bh,bh
+  10:	88 ff                	mov    bh,bh
+  12:	88 ff                	mov    bh,bh
+  14:	88 ff                	mov    bh,bh
+  16:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; MOV BH, [RDI]; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 16.43</li>
+<li>Reference cycles: 16.44</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3">Latency operand 2 &rarr; 3: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>SETS BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	0f 98 c7             	sets   bh
+   5:	88 ff                	mov    bh,bh
+   7:	88 ff                	mov    bh,bh
+   9:	88 ff                	mov    bh,bh
+   b:	88 ff                	mov    bh,bh
+   d:	88 ff                	mov    bh,bh
+   f:	88 ff                	mov    bh,bh
+  11:	88 ff                	mov    bh,bh
+  13:	88 ff                	mov    bh,bh
+  15:	88 ff                	mov    bh,bh
+  17:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; SETS BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 12.95</li>
+<li>Reference cycles: 12.95</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>SETP BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	0f 9a c7             	setp   bh
+   5:	88 ff                	mov    bh,bh
+   7:	88 ff                	mov    bh,bh
+   9:	88 ff                	mov    bh,bh
+   b:	88 ff                	mov    bh,bh
+   d:	88 ff                	mov    bh,bh
+   f:	88 ff                	mov    bh,bh
+  11:	88 ff                	mov    bh,bh
+  13:	88 ff                	mov    bh,bh
+  15:	88 ff                	mov    bh,bh
+  17:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; SETP BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 12.95</li>
+<li>Reference cycles: 12.95</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>SETO BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	0f 90 c7             	seto   bh
+   5:	88 ff                	mov    bh,bh
+   7:	88 ff                	mov    bh,bh
+   9:	88 ff                	mov    bh,bh
+   b:	88 ff                	mov    bh,bh
+   d:	88 ff                	mov    bh,bh
+   f:	88 ff                	mov    bh,bh
+  11:	88 ff                	mov    bh,bh
+  13:	88 ff                	mov    bh,bh
+  15:	88 ff                	mov    bh,bh
+  17:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; SETO BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 12.95</li>
+<li>Reference cycles: 12.95</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>SETC BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	0f 92 c7             	setb   bh
+   5:	88 ff                	mov    bh,bh
+   7:	88 ff                	mov    bh,bh
+   9:	88 ff                	mov    bh,bh
+   b:	88 ff                	mov    bh,bh
+   d:	88 ff                	mov    bh,bh
+   f:	88 ff                	mov    bh,bh
+  11:	88 ff                	mov    bh,bh
+  13:	88 ff                	mov    bh,bh
+  15:	88 ff                	mov    bh,bh
+  17:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; SETC BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 12.95</li>
+<li>Reference cycles: 12.93</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>SETZ BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH;MOV BH, BH</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	0f 94 c7             	sete   bh
+   5:	88 ff                	mov    bh,bh
+   7:	88 ff                	mov    bh,bh
+   9:	88 ff                	mov    bh,bh
+   b:	88 ff                	mov    bh,bh
+   d:	88 ff                	mov    bh,bh
+   f:	88 ff                	mov    bh,bh
+  11:	88 ff                	mov    bh,bh
+  13:	88 ff                	mov    bh,bh
+  15:	88 ff                	mov    bh,bh
+  17:	88 ff                	mov    bh,bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; SETZ BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH; MOV BH, BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 12.95</li>
+<li>Reference cycles: 12.95</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1">Latency operand 3 &rarr; 1: &le;7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>TEST byte ptr [RDI], 1</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	f6 07 01             	test   BYTE PTR [rdi],0x1
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; TEST byte ptr [RDI], 1&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 8.16</li>
+<li>Reference cycles: 8.19</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>TEST byte ptr [RDI], 1;MOV byte ptr [RDI], 0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	f6 07 01             	test   BYTE PTR [rdi],0x1
+   5:	c6 07 00             	mov    BYTE PTR [rdi],0x0
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; TEST byte ptr [RDI], 1; MOV byte ptr [RDI], 0&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 8.28</li>
+<li>Reference cycles: 8.28</li>
+<li>RS_UOPS_DISPATCHED: 10.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->3">Latency operand 3 &rarr; 3: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instructions: <code>CMC;CMC;CMC;CMC;CMC;CMC;CMC;CMC;CMC;CMC</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	f5                   	cmc    
+   3:	f5                   	cmc    
+   4:	f5                   	cmc    
+   5:	f5                   	cmc    
+   6:	f5                   	cmc    
+   7:	f5                   	cmc    
+   8:	f5                   	cmc    
+   9:	f5                   	cmc    
+   a:	f5                   	cmc    
+   b:	f5                   	cmc    
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; CMC; CMC; CMC; CMC; CMC; CMC; CMC; CMC; CMC; CMC&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 12.39</li>
+<li>Reference cycles: 12.42</li>
+<li>RS_UOPS_DISPATCHED: 16.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 7.05</li>
+<li>RS_UOPS_DISPATCHED: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>ADC byte ptr [RDI], BH</code></li>
+<li>Chain instruction: <code>MOV byte ptr [RDI], 0</code></li>
+<li>Code: <pre>   0:	10 3f                	adc    BYTE PTR [rdi],bh
+   2:	c6 07 00             	mov    BYTE PTR [rdi],0x0
+</pre></li>
+<li>Init: <pre>MOV BH, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ADC byte ptr [RDI], BH; MOV byte ptr [RDI], 0&quot; -asm_late_init &quot;MOV BH, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 5.0</li>
+<li>Reference cycles: 4.97</li>
+<li>RS_UOPS_DISPATCHED: 8.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
