@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>VPBROADCASTB_Z (YMM, K, XMM)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VPBROADCASTB_Z (YMM, K, XMM) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (YMM0, YMM1, YMM2, YMM3, YMM4, YMM5, YMM6, YMM7, YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15, YMM16, YMM17, YMM18, YMM19, YMM20, YMM21, YMM22, YMM23, YMM24, YMM25, YMM26, YMM27, YMM28, YMM29, YMM30, YMM31)</li><li>Operand 2 (r): Register (K1, K2, K3, K4, K5, K6, K7)</li><li>Operand 3 (r): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15, XMM16, XMM17, XMM18, XMM19, XMM20, XMM21, XMM22, XMM23, XMM24, XMM25, XMM26, XMM27, XMM28, XMM29, XMM30, XMM31)</li></ul><hr><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 2</h3></a><a href="#lat3->1"><h3>Latency operand 3 &rarr; 1: 2</h3></a><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTB YMM0  {K1}{z}, XMM1</code></li>
+<li>Chain instruction: <code>VPMOVQ2M K1, YMM0</code></li>
+<li>Chain latency: 4</li>
+<li>Code: <pre>   0:	62 f2 7d a9 78 c1    	vpbroadcastb ymm0{k1}{z},xmm1
+   6:	62 f2 fe 28 39 c8    	vpmovq2m k1,ymm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS XMM1, XMM1, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTB YMM0  {K1}{z}, XMM1; VPMOVQ2M K1, YMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS XMM1, XMM1, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.93</li>
+<li>APERF: 5.99</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTB YMM0  {K1}{z}, XMM1</code></li>
+<li>Chain instruction: <code>VPTESTNMQ K1 {K1}, YMM0, YMM0</code></li>
+<li>Chain latency: 4</li>
+<li>Code: <pre>   0:	62 f2 7d a9 78 c1    	vpbroadcastb ymm0{k1}{z},xmm1
+   6:	62 f2 fe 29 27 c8    	vptestnmq k1{k1},ymm0,ymm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS XMM1, XMM1, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTB YMM0  {K1}{z}, XMM1; VPTESTNMQ K1 {K1}, YMM0, YMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS XMM1, XMM1, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.93</li>
+<li>APERF: 5.99</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1">Latency operand 3 &rarr; 1: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTB YMM1  {K1}{z}, XMM0</code></li>
+<li>Chain instructions: <code>VANDPD XMM0, XMM1, XMM1;VANDPD XMM0, XMM0, XMM0;VANDPD XMM0, XMM0, XMM0;VANDPD XMM0, XMM0, XMM0;VANDPD XMM0, XMM0, XMM0</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	62 f2 7d a9 78 c8    	vpbroadcastb ymm1{k1}{z},xmm0
+   6:	c5 f1 54 c1          	vandpd xmm0,xmm1,xmm1
+   a:	c5 f9 54 c0          	vandpd xmm0,xmm0,xmm0
+   e:	c5 f9 54 c0          	vandpd xmm0,xmm0,xmm0
+  12:	c5 f9 54 c0          	vandpd xmm0,xmm0,xmm0
+  16:	c5 f9 54 c0          	vandpd xmm0,xmm0,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS XMM0, XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTB YMM1  {K1}{z}, XMM0; VANDPD XMM0, XMM1, XMM1; VANDPD XMM0, XMM0, XMM0; VANDPD XMM0, XMM0, XMM0; VANDPD XMM0, XMM0, XMM0; VANDPD XMM0, XMM0, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS XMM0, XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.11</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTB YMM1  {K1}{z}, XMM0</code></li>
+<li>Chain instructions: <code>VPAND XMM0, XMM1, XMM1;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0</code></li>
+<li>Chain latency: 10</li>
+<li>Code: <pre>   0:	62 f2 7d a9 78 c8    	vpbroadcastb ymm1{k1}{z},xmm0
+   6:	c5 f1 db c1          	vpand  xmm0,xmm1,xmm1
+   a:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+   e:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  12:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  16:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS XMM0, XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTB YMM1  {K1}{z}, XMM0; VPAND XMM0, XMM1, XMM1; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; VXORPS XMM0, XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.04</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 6.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
