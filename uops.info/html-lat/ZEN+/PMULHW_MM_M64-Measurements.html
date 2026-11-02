@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>PMULHW (MM, M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>PMULHW (MM, M64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (MM0, MM1, MM2, MM3, MM4, MM5, MM6, MM7)</li><li>Operand 2 (r): Memory</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 3</h3></a><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): &le;11</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): &le;11</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;10</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 3</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PMULHW MM0, qword ptr [R14]</code></li>
+<li>Code: <pre>   0:	41 0f e5 06          	pmulhw mm0,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>PXOR MM0, MM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PMULHW MM0, qword ptr [R14]&quot; -asm_init &quot;PXOR MM0, MM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.49</li>
+<li>APERF: 3.0</li>
+<li>UOPS: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>PMULHW MM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ MM0, MM0;MOVQ MM0, MM0;MOVQ MM0, MM0;MOVQ MM0, MM0;MOVQ MM0, MM0;MOVQ MM0, MM0;MOVQ MM0, MM0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	41 0f e5 06          	pmulhw mm0,QWORD PTR [r14]
+   4:	0f 6f c0             	movq   mm0,mm0
+   7:	0f 6f c0             	movq   mm0,mm0
+   a:	0f 6f c0             	movq   mm0,mm0
+   d:	0f 6f c0             	movq   mm0,mm0
+  10:	0f 6f c0             	movq   mm0,mm0
+  13:	0f 6f c0             	movq   mm0,mm0
+  16:	0f 6f c0             	movq   mm0,mm0
+</pre></li>
+<li>Init: <pre>PXOR MM0, MM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PMULHW MM0, qword ptr [R14]; MOVQ MM0, MM0; MOVQ MM0, MM0; MOVQ MM0, MM0; MOVQ MM0, MM0; MOVQ MM0, MM0; MOVQ MM0, MM0; MOVQ MM0, MM0&quot; -asm_init &quot;PXOR MM0, MM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.61</li>
+<li>APERF: 10.0</li>
+<li>UOPS: 8.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): &le;11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PMULHW MM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, MM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	41 0f e5 06          	pmulhw mm0,QWORD PTR [r14]
+   4:	49 0f 7e c4          	movq   r12,mm0
+   8:	4d 31 e6             	xor    r14,r12
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>PXOR MM0, MM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PMULHW MM0, qword ptr [R14]; MOVQ R12, MM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;PXOR MM0, MM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 15.7</li>
+<li>APERF: 18.0</li>
+<li>UOPS: 8.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): &le;11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PMULHW MM0, qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVQ R12, MM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	43 0f e5 04 2e       	pmulhw mm0,QWORD PTR [r14+r13*1]
+   5:	49 0f 7e c4          	movq   r12,mm0
+   9:	4d 31 e5             	xor    r13,r12
+   c:	4d 31 e5             	xor    r13,r12
+   f:	4d 31 e5             	xor    r13,r12
+  12:	4d 31 e5             	xor    r13,r12
+  15:	4d 31 e5             	xor    r13,r12
+  18:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>PXOR MM0, MM0;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PMULHW MM0, qword ptr [R14+R13]; MOVQ R12, MM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;PXOR MM0, MM0; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 15.64</li>
+<li>APERF: 18.0</li>
+<li>UOPS: 8.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;10</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PMULHW MM0, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>MOVQ [R14], MM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	41 0f e5 06          	pmulhw mm0,QWORD PTR [r14]
+   4:	41 0f 7f 06          	movq   QWORD PTR [r14],mm0
+</pre></li>
+<li>Init: <pre>PXOR MM0, MM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PMULHW MM0, qword ptr [R14]; MOVQ [R14], MM0&quot; -asm_init &quot;PXOR MM0, MM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.63</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>PMULHW MM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ [R14], MM0;;PXOR MM0, MM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	41 0f e5 06          	pmulhw mm0,QWORD PTR [r14]
+   4:	41 0f 7f 06          	movq   QWORD PTR [r14],mm0
+   8:	0f ef c0             	pxor   mm0,mm0
+</pre></li>
+<li>Init: <pre>PXOR MM0, MM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PMULHW MM0, qword ptr [R14]; MOVQ [R14], MM0; PXOR MM0, MM0&quot; -asm_init &quot;PXOR MM0, MM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.63</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 3.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

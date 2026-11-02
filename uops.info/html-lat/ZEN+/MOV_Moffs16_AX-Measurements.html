@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>MOV (Moffs16, AX)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>MOV (Moffs16, AX) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Memory</li><li>Operand 2 (r): Register (AX)</li></ul><hr><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: &le;7</h3></a><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: &le;7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>MOV word ptr [0xffffcf51c2ae1000], AX</code></li>
+<li>Chain instructions: <code>MOV AX, [R14];MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	66 a3 00 10 ae c2 51 	movabs ds:0xffffcf51c2ae1000,ax
+   7:	cf ff ff 
+   a:	66 41 8b 06          	mov    ax,WORD PTR [r14]
+   e:	48 0f bf c0          	movsx  rax,ax
+  12:	48 0f bf c0          	movsx  rax,ax
+  16:	48 0f bf c0          	movsx  rax,ax
+  1a:	48 0f bf c0          	movsx  rax,ax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOV word ptr [0xffffcf51c2ae1000], AX; MOV AX, [R14]; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 10.48</li>
+<li>APERF: 12.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
