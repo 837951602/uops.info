@@ -1,0 +1,1874 @@
+<html>
+<head>
+<title>ROR (M8, 1)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>ROR (M8, 1) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 7.5</li>
+<li>Reference cycles: 7.5</li>
+<li>UOPS_RETIRED.ALL: 5.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 6.08</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.9</li>
+<li>UOPS_PORT_3: 1.09</li>
+<li>UOPS_PORT_4: 1.66</li>
+<li>UOPS_PORT_5: 1.5</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500, no inner loop, and 1 NOP</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	90                   	nop
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1;  nop&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.86</li>
+<li>Reference cycles: 6.86</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+<li>RETIRE_SLOTS: 5.0</li>
+<li>UOPS_MITE: 5.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 3.1</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.89</li>
+<li>UOPS_PORT_3: 1.11</li>
+<li>UOPS_PORT_4: 3.42</li>
+<li>UOPS_PORT_5: 3.29</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 7.21</li>
+<li>Reference cycles: 7.21</li>
+<li>UOPS_RETIRED.ALL: 5.1</li>
+<li>RETIRE_SLOTS: 4.1</li>
+<li>UOPS_MITE: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.62</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.89</li>
+<li>UOPS_PORT_3: 1.11</li>
+<li>UOPS_PORT_4: 2.62</li>
+<li>UOPS_PORT_5: 2.2</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 7.26</li>
+<li>Reference cycles: 7.26</li>
+<li>UOPS_RETIRED.ALL: 5.1</li>
+<li>RETIRE_SLOTS: 4.1</li>
+<li>UOPS_MITE: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.57</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.9</li>
+<li>UOPS_PORT_3: 1.1</li>
+<li>UOPS_PORT_4: 2.53</li>
+<li>UOPS_PORT_5: 2.19</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 7.26</li>
+<li>Reference cycles: 7.26</li>
+<li>UOPS_RETIRED.ALL: 5.01</li>
+<li>RETIRE_SLOTS: 4.01</li>
+<li>UOPS_MITE: 4.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.76</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.89</li>
+<li>UOPS_PORT_3: 1.11</li>
+<li>UOPS_PORT_4: 2.53</li>
+<li>UOPS_PORT_5: 1.95</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 7.25</li>
+<li>Reference cycles: 7.25</li>
+<li>UOPS_RETIRED.ALL: 5.01</li>
+<li>RETIRE_SLOTS: 4.01</li>
+<li>UOPS_MITE: 4.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.7</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.89</li>
+<li>UOPS_PORT_3: 1.11</li>
+<li>UOPS_PORT_4: 2.65</li>
+<li>UOPS_PORT_5: 1.91</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 7.03</li>
+<li>Reference cycles: 7.08</li>
+<li>UOPS_RETIRED.ALL: 20.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.63</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.9</li>
+<li>UOPS_PORT_3: 4.1</li>
+<li>UOPS_PORT_4: 4.27</li>
+<li>UOPS_PORT_5: 4.08</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 7.07</li>
+<li>Reference cycles: 7.06</li>
+<li>UOPS_RETIRED.ALL: 20.5</li>
+<li>RETIRE_SLOTS: 16.5</li>
+<li>UOPS_MITE: 16.53</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.98</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.86</li>
+<li>UOPS_PORT_3: 4.14</li>
+<li>UOPS_PORT_4: 4.41</li>
+<li>UOPS_PORT_5: 4.98</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.51</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+1], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+2], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+3], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 7.06</li>
+<li>Reference cycles: 7.07</li>
+<li>UOPS_RETIRED.ALL: 20.5</li>
+<li>RETIRE_SLOTS: 16.5</li>
+<li>UOPS_MITE: 16.53</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.99</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.85</li>
+<li>UOPS_PORT_3: 4.15</li>
+<li>UOPS_PORT_4: 4.41</li>
+<li>UOPS_PORT_5: 4.98</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.51</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 7.08</li>
+<li>Reference cycles: 7.08</li>
+<li>UOPS_RETIRED.ALL: 20.05</li>
+<li>RETIRE_SLOTS: 16.05</li>
+<li>UOPS_MITE: 16.07</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.86</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.88</li>
+<li>UOPS_PORT_3: 4.12</li>
+<li>UOPS_PORT_4: 4.38</li>
+<li>UOPS_PORT_5: 4.49</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.06</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+1], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+2], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+3], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 7.08</li>
+<li>Reference cycles: 7.08</li>
+<li>UOPS_RETIRED.ALL: 20.05</li>
+<li>RETIRE_SLOTS: 16.05</li>
+<li>UOPS_MITE: 16.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.84</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.88</li>
+<li>UOPS_PORT_3: 4.12</li>
+<li>UOPS_PORT_4: 4.38</li>
+<li>UOPS_PORT_5: 4.49</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.06</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+   f:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  13:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  17:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  1b:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1; ROR byte ptr [R14+4], 1; ROR byte ptr [R14+5], 1; ROR byte ptr [R14+6], 1; ROR byte ptr [R14+7], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.52</li>
+<li>Reference cycles: 8.44</li>
+<li>UOPS_RETIRED.ALL: 40.0</li>
+<li>RETIRE_SLOTS: 32.0</li>
+<li>UOPS_MITE: 32.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.21</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.91</li>
+<li>UOPS_PORT_3: 8.07</li>
+<li>UOPS_PORT_4: 8.05</li>
+<li>UOPS_PORT_5: 7.99</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+   f:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  13:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  17:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  1b:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1; ROR byte ptr [R14+4], 1; ROR byte ptr [R14+5], 1; ROR byte ptr [R14+6], 1; ROR byte ptr [R14+7], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 10.37</li>
+<li>Reference cycles: 10.37</li>
+<li>UOPS_RETIRED.ALL: 41.0</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 33.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.06</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.88</li>
+<li>UOPS_PORT_3: 8.14</li>
+<li>UOPS_PORT_4: 8.32</li>
+<li>UOPS_PORT_5: 8.62</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+1], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+2], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+3], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+4], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+5], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+6], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+7], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 10.36</li>
+<li>Reference cycles: 10.37</li>
+<li>UOPS_RETIRED.ALL: 41.0</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 33.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.09</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.78</li>
+<li>UOPS_PORT_3: 8.23</li>
+<li>UOPS_PORT_4: 8.35</li>
+<li>UOPS_PORT_5: 8.65</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+   f:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  13:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  17:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  1b:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1; ROR byte ptr [R14+4], 1; ROR byte ptr [R14+5], 1; ROR byte ptr [R14+6], 1; ROR byte ptr [R14+7], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 9.77</li>
+<li>Reference cycles: 9.78</li>
+<li>UOPS_RETIRED.ALL: 40.1</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 32.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.67</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.81</li>
+<li>UOPS_PORT_3: 8.21</li>
+<li>UOPS_PORT_4: 8.16</li>
+<li>UOPS_PORT_5: 7.98</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.12</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+1], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+2], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+3], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+4], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+5], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+6], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+7], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 9.82</li>
+<li>Reference cycles: 9.83</li>
+<li>UOPS_RETIRED.ALL: 40.1</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 32.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.67</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.8</li>
+<li>UOPS_PORT_3: 8.22</li>
+<li>UOPS_PORT_4: 8.16</li>
+<li>UOPS_PORT_5: 7.97</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.12</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+   f:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  13:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  17:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  1b:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+  1f:	41 d0 4e 08          	ror    BYTE PTR [r14+0x8],1
+  23:	41 d0 4e 09          	ror    BYTE PTR [r14+0x9],1
+  27:	41 d0 4e 0a          	ror    BYTE PTR [r14+0xa],1
+  2b:	41 d0 4e 0b          	ror    BYTE PTR [r14+0xb],1
+  2f:	41 d0 4e 0c          	ror    BYTE PTR [r14+0xc],1
+  33:	41 d0 4e 0d          	ror    BYTE PTR [r14+0xd],1
+  37:	41 d0 4e 0e          	ror    BYTE PTR [r14+0xe],1
+  3b:	41 d0 4e 0f          	ror    BYTE PTR [r14+0xf],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1; ROR byte ptr [R14+4], 1; ROR byte ptr [R14+5], 1; ROR byte ptr [R14+6], 1; ROR byte ptr [R14+7], 1; ROR byte ptr [R14+8], 1; ROR byte ptr [R14+9], 1; ROR byte ptr [R14+10], 1; ROR byte ptr [R14+11], 1; ROR byte ptr [R14+12], 1; ROR byte ptr [R14+13], 1; ROR byte ptr [R14+14], 1; ROR byte ptr [R14+15], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 21.36</li>
+<li>Reference cycles: 21.36</li>
+<li>UOPS_RETIRED.ALL: 80.0</li>
+<li>RETIRE_SLOTS: 64.0</li>
+<li>UOPS_MITE: 64.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.48</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.69</li>
+<li>UOPS_PORT_3: 16.29</li>
+<li>UOPS_PORT_4: 16.36</li>
+<li>UOPS_PORT_5: 15.86</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+   f:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  13:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  17:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  1b:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+  1f:	41 d0 4e 08          	ror    BYTE PTR [r14+0x8],1
+  23:	41 d0 4e 09          	ror    BYTE PTR [r14+0x9],1
+  27:	41 d0 4e 0a          	ror    BYTE PTR [r14+0xa],1
+  2b:	41 d0 4e 0b          	ror    BYTE PTR [r14+0xb],1
+  2f:	41 d0 4e 0c          	ror    BYTE PTR [r14+0xc],1
+  33:	41 d0 4e 0d          	ror    BYTE PTR [r14+0xd],1
+  37:	41 d0 4e 0e          	ror    BYTE PTR [r14+0xe],1
+  3b:	41 d0 4e 0f          	ror    BYTE PTR [r14+0xf],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1; ROR byte ptr [R14+4], 1; ROR byte ptr [R14+5], 1; ROR byte ptr [R14+6], 1; ROR byte ptr [R14+7], 1; ROR byte ptr [R14+8], 1; ROR byte ptr [R14+9], 1; ROR byte ptr [R14+10], 1; ROR byte ptr [R14+11], 1; ROR byte ptr [R14+12], 1; ROR byte ptr [R14+13], 1; ROR byte ptr [R14+14], 1; ROR byte ptr [R14+15], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 21.41</li>
+<li>Reference cycles: 21.42</li>
+<li>UOPS_RETIRED.ALL: 81.0</li>
+<li>RETIRE_SLOTS: 65.0</li>
+<li>UOPS_MITE: 65.06</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.57</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.66</li>
+<li>UOPS_PORT_3: 16.35</li>
+<li>UOPS_PORT_4: 16.35</li>
+<li>UOPS_PORT_5: 16.63</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	41 d0 4e 08          	ror    BYTE PTR [r14+0x8],1
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	40                   	rex
+  55:	41 d0 4e 09          	ror    BYTE PTR [r14+0x9],1
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	41 d0 4e 0a          	ror    BYTE PTR [r14+0xa],1
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	40                   	rex
+  67:	41 d0 4e 0b          	ror    BYTE PTR [r14+0xb],1
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	41 d0 4e 0c          	ror    BYTE PTR [r14+0xc],1
+  74:	40                   	rex
+  75:	40                   	rex
+  76:	40                   	rex
+  77:	40                   	rex
+  78:	40                   	rex
+  79:	41 d0 4e 0d          	ror    BYTE PTR [r14+0xd],1
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	41 d0 4e 0e          	ror    BYTE PTR [r14+0xe],1
+  86:	40                   	rex
+  87:	40                   	rex
+  88:	40                   	rex
+  89:	40                   	rex
+  8a:	40                   	rex
+  8b:	41 d0 4e 0f          	ror    BYTE PTR [r14+0xf],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+1], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+2], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+3], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+4], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+5], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+6], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+7], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+8], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+9], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+10], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+11], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+12], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+13], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+15], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 21.41</li>
+<li>Reference cycles: 21.41</li>
+<li>UOPS_RETIRED.ALL: 81.0</li>
+<li>RETIRE_SLOTS: 65.0</li>
+<li>UOPS_MITE: 65.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.64</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.58</li>
+<li>UOPS_PORT_3: 16.42</li>
+<li>UOPS_PORT_4: 16.35</li>
+<li>UOPS_PORT_5: 16.63</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	41 d0 0e             	ror    BYTE PTR [r14],1
+   3:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+   7:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+   b:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+   f:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  13:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  17:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  1b:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+  1f:	41 d0 4e 08          	ror    BYTE PTR [r14+0x8],1
+  23:	41 d0 4e 09          	ror    BYTE PTR [r14+0x9],1
+  27:	41 d0 4e 0a          	ror    BYTE PTR [r14+0xa],1
+  2b:	41 d0 4e 0b          	ror    BYTE PTR [r14+0xb],1
+  2f:	41 d0 4e 0c          	ror    BYTE PTR [r14+0xc],1
+  33:	41 d0 4e 0d          	ror    BYTE PTR [r14+0xd],1
+  37:	41 d0 4e 0e          	ror    BYTE PTR [r14+0xe],1
+  3b:	41 d0 4e 0f          	ror    BYTE PTR [r14+0xf],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14], 1; ROR byte ptr [R14+1], 1; ROR byte ptr [R14+2], 1; ROR byte ptr [R14+3], 1; ROR byte ptr [R14+4], 1; ROR byte ptr [R14+5], 1; ROR byte ptr [R14+6], 1; ROR byte ptr [R14+7], 1; ROR byte ptr [R14+8], 1; ROR byte ptr [R14+9], 1; ROR byte ptr [R14+10], 1; ROR byte ptr [R14+11], 1; ROR byte ptr [R14+12], 1; ROR byte ptr [R14+13], 1; ROR byte ptr [R14+14], 1; ROR byte ptr [R14+15], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 21.33</li>
+<li>Reference cycles: 21.32</li>
+<li>UOPS_RETIRED.ALL: 80.1</li>
+<li>RETIRE_SLOTS: 64.1</li>
+<li>UOPS_MITE: 64.15</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.53</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.7</li>
+<li>UOPS_PORT_3: 16.31</li>
+<li>UOPS_PORT_4: 16.42</li>
+<li>UOPS_PORT_5: 15.96</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.12</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	41 d0 0e             	ror    BYTE PTR [r14],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	41 d0 4e 01          	ror    BYTE PTR [r14+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	41 d0 4e 02          	ror    BYTE PTR [r14+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	41 d0 4e 03          	ror    BYTE PTR [r14+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	41 d0 4e 04          	ror    BYTE PTR [r14+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	41 d0 4e 05          	ror    BYTE PTR [r14+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	41 d0 4e 06          	ror    BYTE PTR [r14+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	41 d0 4e 07          	ror    BYTE PTR [r14+0x7],1
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	41 d0 4e 08          	ror    BYTE PTR [r14+0x8],1
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	40                   	rex
+  55:	41 d0 4e 09          	ror    BYTE PTR [r14+0x9],1
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	41 d0 4e 0a          	ror    BYTE PTR [r14+0xa],1
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	40                   	rex
+  67:	41 d0 4e 0b          	ror    BYTE PTR [r14+0xb],1
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	41 d0 4e 0c          	ror    BYTE PTR [r14+0xc],1
+  74:	40                   	rex
+  75:	40                   	rex
+  76:	40                   	rex
+  77:	40                   	rex
+  78:	40                   	rex
+  79:	41 d0 4e 0d          	ror    BYTE PTR [r14+0xd],1
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	41 d0 4e 0e          	ror    BYTE PTR [r14+0xe],1
+  86:	40                   	rex
+  87:	40                   	rex
+  88:	40                   	rex
+  89:	40                   	rex
+  8a:	40                   	rex
+  8b:	41 d0 4e 0f          	ror    BYTE PTR [r14+0xf],1
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+1], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+2], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+3], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+4], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+5], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+6], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+7], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+8], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+9], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+10], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+11], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+12], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+13], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+14], 1; .byte 0x40,0x40,0x40,0x40,0x40; ROR byte ptr [R14+15], 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 21.38</li>
+<li>Reference cycles: 21.4</li>
+<li>UOPS_RETIRED.ALL: 80.1</li>
+<li>RETIRE_SLOTS: 64.1</li>
+<li>UOPS_MITE: 64.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.43</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.69</li>
+<li>UOPS_PORT_3: 16.32</li>
+<li>UOPS_PORT_4: 16.43</li>
+<li>UOPS_PORT_5: 15.99</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.12</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 6.56</li>
+<li>Reference cycles: 6.56</li>
+<li>UOPS_RETIRED.ALL: 5.0</li>
+<li>RETIRE_SLOTS: 5.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.55</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.85</li>
+<li>UOPS_PORT_3: 1.14</li>
+<li>UOPS_PORT_4: 3.97</li>
+<li>UOPS_PORT_5: 1.92</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500, no inner loop, and 1 NOP</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	90                   	nop
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1;  nop&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.13</li>
+<li>Reference cycles: 6.15</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+<li>RETIRE_SLOTS: 6.0</li>
+<li>UOPS_MITE: 5.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 3.34</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.85</li>
+<li>UOPS_PORT_3: 1.14</li>
+<li>UOPS_PORT_4: 3.03</li>
+<li>UOPS_PORT_5: 3.51</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 6.1</li>
+<li>Reference cycles: 6.1</li>
+<li>UOPS_RETIRED.ALL: 5.1</li>
+<li>RETIRE_SLOTS: 5.1</li>
+<li>UOPS_MITE: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.24</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.87</li>
+<li>UOPS_PORT_3: 1.13</li>
+<li>UOPS_PORT_4: 4.25</li>
+<li>UOPS_PORT_5: 2.15</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 6.14</li>
+<li>Reference cycles: 6.14</li>
+<li>UOPS_RETIRED.ALL: 5.1</li>
+<li>RETIRE_SLOTS: 5.1</li>
+<li>UOPS_MITE: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.28</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.87</li>
+<li>UOPS_PORT_3: 1.13</li>
+<li>UOPS_PORT_4: 4.43</li>
+<li>UOPS_PORT_5: 2.11</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 6.02</li>
+<li>Reference cycles: 6.02</li>
+<li>UOPS_RETIRED.ALL: 5.01</li>
+<li>RETIRE_SLOTS: 5.01</li>
+<li>UOPS_MITE: 4.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.19</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.85</li>
+<li>UOPS_PORT_3: 1.15</li>
+<li>UOPS_PORT_4: 4.48</li>
+<li>UOPS_PORT_5: 1.97</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 6.02</li>
+<li>Reference cycles: 6.02</li>
+<li>UOPS_RETIRED.ALL: 5.01</li>
+<li>RETIRE_SLOTS: 5.01</li>
+<li>UOPS_MITE: 4.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.19</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 0.85</li>
+<li>UOPS_PORT_3: 1.15</li>
+<li>UOPS_PORT_4: 4.47</li>
+<li>UOPS_PORT_5: 1.97</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 7.1</li>
+<li>Reference cycles: 7.11</li>
+<li>UOPS_RETIRED.ALL: 20.0</li>
+<li>RETIRE_SLOTS: 20.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 4.96</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.9</li>
+<li>UOPS_PORT_3: 4.1</li>
+<li>UOPS_PORT_4: 4.47</li>
+<li>UOPS_PORT_5: 4.93</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 7.03</li>
+<li>Reference cycles: 7.04</li>
+<li>UOPS_RETIRED.ALL: 20.5</li>
+<li>RETIRE_SLOTS: 20.5</li>
+<li>UOPS_MITE: 16.52</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.11</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.88</li>
+<li>UOPS_PORT_3: 4.13</li>
+<li>UOPS_PORT_4: 4.44</li>
+<li>UOPS_PORT_5: 5.18</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.51</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+1], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+2], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+3], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 7.04</li>
+<li>Reference cycles: 7.03</li>
+<li>UOPS_RETIRED.ALL: 20.5</li>
+<li>RETIRE_SLOTS: 20.5</li>
+<li>UOPS_MITE: 16.52</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.1</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.9</li>
+<li>UOPS_PORT_3: 4.1</li>
+<li>UOPS_PORT_4: 4.43</li>
+<li>UOPS_PORT_5: 5.18</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.51</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 7.0</li>
+<li>UOPS_RETIRED.ALL: 20.05</li>
+<li>RETIRE_SLOTS: 20.05</li>
+<li>UOPS_MITE: 16.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.03</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.9</li>
+<li>UOPS_PORT_3: 4.1</li>
+<li>UOPS_PORT_4: 4.48</li>
+<li>UOPS_PORT_5: 4.98</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.06</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+1], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+2], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+3], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 7.01</li>
+<li>UOPS_RETIRED.ALL: 20.05</li>
+<li>RETIRE_SLOTS: 20.05</li>
+<li>UOPS_MITE: 16.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.03</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 3.9</li>
+<li>UOPS_PORT_3: 4.1</li>
+<li>UOPS_PORT_4: 4.49</li>
+<li>UOPS_PORT_5: 4.98</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.06</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  13:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  18:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  1d:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  22:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1; ROR byte ptr [R14+R13+4], 1; ROR byte ptr [R14+R13+5], 1; ROR byte ptr [R14+R13+6], 1; ROR byte ptr [R14+R13+7], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.71</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_RETIRED.ALL: 40.0</li>
+<li>RETIRE_SLOTS: 40.0</li>
+<li>UOPS_MITE: 32.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.56</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.73</li>
+<li>UOPS_PORT_3: 8.27</li>
+<li>UOPS_PORT_4: 8.23</li>
+<li>UOPS_PORT_5: 8.34</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  13:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  18:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  1d:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  22:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1; ROR byte ptr [R14+R13+4], 1; ROR byte ptr [R14+R13+5], 1; ROR byte ptr [R14+R13+6], 1; ROR byte ptr [R14+R13+7], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 11.03</li>
+<li>Reference cycles: 11.03</li>
+<li>UOPS_RETIRED.ALL: 41.0</li>
+<li>RETIRE_SLOTS: 41.0</li>
+<li>UOPS_MITE: 33.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 8.01</li>
+<li>UOPS_PORT_3: 8.01</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 8.51</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+1], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+2], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+3], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+4], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+5], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+6], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+7], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 11.03</li>
+<li>Reference cycles: 11.03</li>
+<li>UOPS_RETIRED.ALL: 41.0</li>
+<li>RETIRE_SLOTS: 41.0</li>
+<li>UOPS_MITE: 33.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.99</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.87</li>
+<li>UOPS_PORT_3: 8.14</li>
+<li>UOPS_PORT_4: 8.24</li>
+<li>UOPS_PORT_5: 9.22</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  13:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  18:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  1d:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  22:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1; ROR byte ptr [R14+R13+4], 1; ROR byte ptr [R14+R13+5], 1; ROR byte ptr [R14+R13+6], 1; ROR byte ptr [R14+R13+7], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 10.85</li>
+<li>Reference cycles: 10.87</li>
+<li>UOPS_RETIRED.ALL: 40.1</li>
+<li>RETIRE_SLOTS: 40.1</li>
+<li>UOPS_MITE: 32.17</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.58</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.81</li>
+<li>UOPS_PORT_3: 8.22</li>
+<li>UOPS_PORT_4: 8.23</li>
+<li>UOPS_PORT_5: 8.46</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.12</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+1], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+2], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+3], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+4], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+5], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+6], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+7], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 10.86</li>
+<li>Reference cycles: 10.87</li>
+<li>UOPS_RETIRED.ALL: 40.1</li>
+<li>RETIRE_SLOTS: 40.1</li>
+<li>UOPS_MITE: 32.17</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.58</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 7.81</li>
+<li>UOPS_PORT_3: 8.22</li>
+<li>UOPS_PORT_4: 8.25</li>
+<li>UOPS_PORT_5: 8.47</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.12</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  13:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  18:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  1d:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  22:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+  27:	43 d0 4c 2e 08       	ror    BYTE PTR [r14+r13*1+0x8],1
+  2c:	43 d0 4c 2e 09       	ror    BYTE PTR [r14+r13*1+0x9],1
+  31:	43 d0 4c 2e 0a       	ror    BYTE PTR [r14+r13*1+0xa],1
+  36:	43 d0 4c 2e 0b       	ror    BYTE PTR [r14+r13*1+0xb],1
+  3b:	43 d0 4c 2e 0c       	ror    BYTE PTR [r14+r13*1+0xc],1
+  40:	43 d0 4c 2e 0d       	ror    BYTE PTR [r14+r13*1+0xd],1
+  45:	43 d0 4c 2e 0e       	ror    BYTE PTR [r14+r13*1+0xe],1
+  4a:	43 d0 4c 2e 0f       	ror    BYTE PTR [r14+r13*1+0xf],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1; ROR byte ptr [R14+R13+4], 1; ROR byte ptr [R14+R13+5], 1; ROR byte ptr [R14+R13+6], 1; ROR byte ptr [R14+R13+7], 1; ROR byte ptr [R14+R13+8], 1; ROR byte ptr [R14+R13+9], 1; ROR byte ptr [R14+R13+10], 1; ROR byte ptr [R14+R13+11], 1; ROR byte ptr [R14+R13+12], 1; ROR byte ptr [R14+R13+13], 1; ROR byte ptr [R14+R13+14], 1; ROR byte ptr [R14+R13+15], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 22.13</li>
+<li>Reference cycles: 22.21</li>
+<li>UOPS_RETIRED.ALL: 80.0</li>
+<li>RETIRE_SLOTS: 80.0</li>
+<li>UOPS_MITE: 64.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.42</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.57</li>
+<li>UOPS_PORT_3: 16.41</li>
+<li>UOPS_PORT_4: 16.42</li>
+<li>UOPS_PORT_5: 16.93</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  13:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  18:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  1d:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  22:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+  27:	43 d0 4c 2e 08       	ror    BYTE PTR [r14+r13*1+0x8],1
+  2c:	43 d0 4c 2e 09       	ror    BYTE PTR [r14+r13*1+0x9],1
+  31:	43 d0 4c 2e 0a       	ror    BYTE PTR [r14+r13*1+0xa],1
+  36:	43 d0 4c 2e 0b       	ror    BYTE PTR [r14+r13*1+0xb],1
+  3b:	43 d0 4c 2e 0c       	ror    BYTE PTR [r14+r13*1+0xc],1
+  40:	43 d0 4c 2e 0d       	ror    BYTE PTR [r14+r13*1+0xd],1
+  45:	43 d0 4c 2e 0e       	ror    BYTE PTR [r14+r13*1+0xe],1
+  4a:	43 d0 4c 2e 0f       	ror    BYTE PTR [r14+r13*1+0xf],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1; ROR byte ptr [R14+R13+4], 1; ROR byte ptr [R14+R13+5], 1; ROR byte ptr [R14+R13+6], 1; ROR byte ptr [R14+R13+7], 1; ROR byte ptr [R14+R13+8], 1; ROR byte ptr [R14+R13+9], 1; ROR byte ptr [R14+R13+10], 1; ROR byte ptr [R14+R13+11], 1; ROR byte ptr [R14+R13+12], 1; ROR byte ptr [R14+R13+13], 1; ROR byte ptr [R14+R13+14], 1; ROR byte ptr [R14+R13+15], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 22.15</li>
+<li>Reference cycles: 22.16</li>
+<li>UOPS_RETIRED.ALL: 81.0</li>
+<li>RETIRE_SLOTS: 81.0</li>
+<li>UOPS_MITE: 65.06</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.59</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.58</li>
+<li>UOPS_PORT_3: 16.43</li>
+<li>UOPS_PORT_4: 16.34</li>
+<li>UOPS_PORT_5: 17.28</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	43 d0 4c 2e 08       	ror    BYTE PTR [r14+r13*1+0x8],1
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	43 d0 4c 2e 09       	ror    BYTE PTR [r14+r13*1+0x9],1
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	43 d0 4c 2e 0a       	ror    BYTE PTR [r14+r13*1+0xa],1
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	43 d0 4c 2e 0b       	ror    BYTE PTR [r14+r13*1+0xb],1
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	43 d0 4c 2e 0c       	ror    BYTE PTR [r14+r13*1+0xc],1
+  74:	40                   	rex
+  75:	40                   	rex
+  76:	40                   	rex
+  77:	40                   	rex
+  78:	43 d0 4c 2e 0d       	ror    BYTE PTR [r14+r13*1+0xd],1
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	43 d0 4c 2e 0e       	ror    BYTE PTR [r14+r13*1+0xe],1
+  86:	40                   	rex
+  87:	40                   	rex
+  88:	40                   	rex
+  89:	40                   	rex
+  8a:	43 d0 4c 2e 0f       	ror    BYTE PTR [r14+r13*1+0xf],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+1], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+2], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+3], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+4], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+5], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+6], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+7], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+8], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+9], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+10], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+11], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+12], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+14], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+15], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 22.15</li>
+<li>Reference cycles: 22.15</li>
+<li>UOPS_RETIRED.ALL: 81.0</li>
+<li>RETIRE_SLOTS: 81.0</li>
+<li>UOPS_MITE: 65.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.59</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.58</li>
+<li>UOPS_PORT_3: 16.43</li>
+<li>UOPS_PORT_4: 16.36</li>
+<li>UOPS_PORT_5: 17.36</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   4:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+   9:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+   e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  13:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  18:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  1d:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  22:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+  27:	43 d0 4c 2e 08       	ror    BYTE PTR [r14+r13*1+0x8],1
+  2c:	43 d0 4c 2e 09       	ror    BYTE PTR [r14+r13*1+0x9],1
+  31:	43 d0 4c 2e 0a       	ror    BYTE PTR [r14+r13*1+0xa],1
+  36:	43 d0 4c 2e 0b       	ror    BYTE PTR [r14+r13*1+0xb],1
+  3b:	43 d0 4c 2e 0c       	ror    BYTE PTR [r14+r13*1+0xc],1
+  40:	43 d0 4c 2e 0d       	ror    BYTE PTR [r14+r13*1+0xd],1
+  45:	43 d0 4c 2e 0e       	ror    BYTE PTR [r14+r13*1+0xe],1
+  4a:	43 d0 4c 2e 0f       	ror    BYTE PTR [r14+r13*1+0xf],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROR byte ptr [R14+R13], 1; ROR byte ptr [R14+R13+1], 1; ROR byte ptr [R14+R13+2], 1; ROR byte ptr [R14+R13+3], 1; ROR byte ptr [R14+R13+4], 1; ROR byte ptr [R14+R13+5], 1; ROR byte ptr [R14+R13+6], 1; ROR byte ptr [R14+R13+7], 1; ROR byte ptr [R14+R13+8], 1; ROR byte ptr [R14+R13+9], 1; ROR byte ptr [R14+R13+10], 1; ROR byte ptr [R14+R13+11], 1; ROR byte ptr [R14+R13+12], 1; ROR byte ptr [R14+R13+13], 1; ROR byte ptr [R14+R13+14], 1; ROR byte ptr [R14+R13+15], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 22.16</li>
+<li>Reference cycles: 22.16</li>
+<li>UOPS_RETIRED.ALL: 80.1</li>
+<li>RETIRE_SLOTS: 80.1</li>
+<li>UOPS_MITE: 64.15</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.4</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.53</li>
+<li>UOPS_PORT_3: 16.49</li>
+<li>UOPS_PORT_4: 16.48</li>
+<li>UOPS_PORT_5: 17.06</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.12</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	43 d0 0c 2e          	ror    BYTE PTR [r14+r13*1],1
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	43 d0 4c 2e 01       	ror    BYTE PTR [r14+r13*1+0x1],1
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	43 d0 4c 2e 02       	ror    BYTE PTR [r14+r13*1+0x2],1
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	43 d0 4c 2e 03       	ror    BYTE PTR [r14+r13*1+0x3],1
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	43 d0 4c 2e 04       	ror    BYTE PTR [r14+r13*1+0x4],1
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	43 d0 4c 2e 05       	ror    BYTE PTR [r14+r13*1+0x5],1
+  35:	40                   	rex
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	43 d0 4c 2e 06       	ror    BYTE PTR [r14+r13*1+0x6],1
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	43 d0 4c 2e 07       	ror    BYTE PTR [r14+r13*1+0x7],1
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	43 d0 4c 2e 08       	ror    BYTE PTR [r14+r13*1+0x8],1
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	43 d0 4c 2e 09       	ror    BYTE PTR [r14+r13*1+0x9],1
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	43 d0 4c 2e 0a       	ror    BYTE PTR [r14+r13*1+0xa],1
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	43 d0 4c 2e 0b       	ror    BYTE PTR [r14+r13*1+0xb],1
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	43 d0 4c 2e 0c       	ror    BYTE PTR [r14+r13*1+0xc],1
+  74:	40                   	rex
+  75:	40                   	rex
+  76:	40                   	rex
+  77:	40                   	rex
+  78:	43 d0 4c 2e 0d       	ror    BYTE PTR [r14+r13*1+0xd],1
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	43 d0 4c 2e 0e       	ror    BYTE PTR [r14+r13*1+0xe],1
+  86:	40                   	rex
+  87:	40                   	rex
+  88:	40                   	rex
+  89:	40                   	rex
+  8a:	43 d0 4c 2e 0f       	ror    BYTE PTR [r14+r13*1+0xf],1
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+1], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+2], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+3], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+4], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+5], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+6], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+7], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+8], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+9], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+10], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+11], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+12], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+13], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+14], 1; .byte 0x40,0x40,0x40,0x40; ROR byte ptr [R14+R13+15], 1&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 22.17</li>
+<li>Reference cycles: 22.17</li>
+<li>UOPS_RETIRED.ALL: 80.1</li>
+<li>RETIRE_SLOTS: 80.1</li>
+<li>UOPS_MITE: 64.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 17.39</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_2: 15.53</li>
+<li>UOPS_PORT_3: 16.48</li>
+<li>UOPS_PORT_4: 16.46</li>
+<li>UOPS_PORT_5: 17.04</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.12</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
