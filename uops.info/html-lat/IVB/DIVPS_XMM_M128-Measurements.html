@@ -1,0 +1,1498 @@
+<html>
+<head>
+<title>DIVPS (XMM, M128)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>DIVPS (XMM, M128) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li><li>Operand 2 (r): Memory</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: &le;10</h3></a><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): &le;16</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): &le;16</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: &le;10</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>ORPS XMM3, XMM1; ANDPS XMM3, XMM1; ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3</code></li>
+<li>Chain latency: &ge;12</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	0f 56 d9             	orps   xmm3,xmm1
+   7:	0f 54 d9             	andps  xmm3,xmm1
+   a:	0f 56 db             	orps   xmm3,xmm3
+   d:	0f 56 db             	orps   xmm3,xmm3
+  10:	0f 56 db             	orps   xmm3,xmm3
+  13:	0f 56 db             	orps   xmm3,xmm3
+  16:	0f 56 db             	orps   xmm3,xmm3
+  19:	0f 56 db             	orps   xmm3,xmm3
+  1c:	0f 56 db             	orps   xmm3,xmm3
+  1f:	0f 56 db             	orps   xmm3,xmm3
+  22:	0f 56 db             	orps   xmm3,xmm3
+  25:	0f 56 db             	orps   xmm3,xmm3
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; ORPS XMM3, XMM1;  ANDPS XMM3, XMM1;  ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 25.0</li>
+<li>Reference cycles: 24.16</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 9.65</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3;ORPS XMM3, XMM3</code></li>
+<li>Chain latency: &ge;10</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	0f 56 db             	orps   xmm3,xmm3
+   7:	0f 56 db             	orps   xmm3,xmm3
+   a:	0f 56 db             	orps   xmm3,xmm3
+   d:	0f 56 db             	orps   xmm3,xmm3
+  10:	0f 56 db             	orps   xmm3,xmm3
+  13:	0f 56 db             	orps   xmm3,xmm3
+  16:	0f 56 db             	orps   xmm3,xmm3
+  19:	0f 56 db             	orps   xmm3,xmm3
+  1c:	0f 56 db             	orps   xmm3,xmm3
+  1f:	0f 56 db             	orps   xmm3,xmm3
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3; ORPS XMM3, XMM3&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 11.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 19.15</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): &le;16</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>EXTRACTPS R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 17 dc 02 	extractps r12d,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; EXTRACTPS R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 31.0</li>
+<li>Reference cycles: 29.97</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVD R12D, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 7e dc       	movd   r12d,xmm3
+   9:	0f 10 d9             	movups xmm3,xmm1
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+  27:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVD R12D, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 30.0</li>
+<li>Reference cycles: 29.07</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVMSKPS R12D, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	44 0f 50 e3          	movmskps r12d,xmm3
+   8:	0f 10 d9             	movups xmm3,xmm1
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVMSKPS R12D, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 31.0</li>
+<li>Reference cycles: 30.19</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 7e dc       	movq   r12,xmm3
+   9:	0f 10 d9             	movups xmm3,xmm1
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+  27:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVQ R12, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 30.0</li>
+<li>Reference cycles: 29.12</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRB R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 14 dc 02 	pextrb r12d,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRB R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 31.04</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRD R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 16 dc 02 	pextrd r12d,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRD R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 31.04</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRQ R12, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 3a 16 dc 02 	pextrq r12,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRQ R12, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 31.15</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRW R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f c5 e3 02    	pextrw r12d,xmm3,0x2
+   a:	0f 10 d9             	movups xmm3,xmm1
+   d:	4d 31 e6             	xor    r14,r12
+  10:	4d 31 e6             	xor    r14,r12
+  13:	4d 31 e6             	xor    r14,r12
+  16:	4d 31 e6             	xor    r14,r12
+  19:	4d 31 e6             	xor    r14,r12
+  1c:	4d 31 e6             	xor    r14,r12
+  1f:	4d 31 e6             	xor    r14,r12
+  22:	4d 31 e6             	xor    r14,r12
+  25:	4d 31 e6             	xor    r14,r12
+  28:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRW R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 31.09</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PMOVMSKB R12D, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f d7 e3       	pmovmskb r12d,xmm3
+   9:	0f 10 d9             	movups xmm3,xmm1
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+  27:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PMOVMSKB R12D, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 31.0</li>
+<li>Reference cycles: 29.97</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>EXTRACTPS R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 17 dc 02 	extractps r12d,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; EXTRACTPS R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 28.0</li>
+<li>Reference cycles: 27.15</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVD R12D, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 7e dc       	movd   r12d,xmm3
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVD R12D, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 27.0</li>
+<li>Reference cycles: 26.19</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVMSKPS R12D, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	44 0f 50 e3          	movmskps r12d,xmm3
+   8:	4d 31 e6             	xor    r14,r12
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVMSKPS R12D, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 28.0</li>
+<li>Reference cycles: 27.2</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 7e dc       	movq   r12,xmm3
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVQ R12, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 27.0</li>
+<li>Reference cycles: 26.24</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRB R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 14 dc 02 	pextrb r12d,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRB R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRD R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 16 dc 02 	pextrd r12d,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRD R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 16</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRQ R12, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 3a 16 dc 02 	pextrq r12,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRQ R12, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 17</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRW R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f c5 e3 02    	pextrw r12d,xmm3,0x2
+   a:	4d 31 e6             	xor    r14,r12
+   d:	4d 31 e6             	xor    r14,r12
+  10:	4d 31 e6             	xor    r14,r12
+  13:	4d 31 e6             	xor    r14,r12
+  16:	4d 31 e6             	xor    r14,r12
+  19:	4d 31 e6             	xor    r14,r12
+  1c:	4d 31 e6             	xor    r14,r12
+  1f:	4d 31 e6             	xor    r14,r12
+  22:	4d 31 e6             	xor    r14,r12
+  25:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRW R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 18</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PMOVMSKB R12D, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f d7 e3       	pmovmskb r12d,xmm3
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PMOVMSKB R12D, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 28.0</li>
+<li>Reference cycles: 30.88</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): &le;16</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>EXTRACTPS R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 17 dc 02 	extractps r12d,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; EXTRACTPS R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 31.0</li>
+<li>Reference cycles: 34.24</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVD R12D, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 7e dc       	movd   r12d,xmm3
+   9:	0f 10 d9             	movups xmm3,xmm1
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+  27:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVD R12D, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 30.0</li>
+<li>Reference cycles: 33.07</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVMSKPS R12D, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	44 0f 50 e3          	movmskps r12d,xmm3
+   8:	0f 10 d9             	movups xmm3,xmm1
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVMSKPS R12D, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 31.0</li>
+<li>Reference cycles: 34.24</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 7e dc       	movq   r12,xmm3
+   9:	0f 10 d9             	movups xmm3,xmm1
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+  27:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVQ R12, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 30.0</li>
+<li>Reference cycles: 33.12</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRB R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 14 dc 02 	pextrb r12d,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRB R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 35.25</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRD R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 16 dc 02 	pextrd r12d,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRD R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 35.15</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRQ R12, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 3a 16 dc 02 	pextrq r12,xmm3,0x2
+   b:	0f 10 d9             	movups xmm3,xmm1
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+  29:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRQ R12, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 35.47</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRW R12D, XMM3, 2; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f c5 e3 02    	pextrw r12d,xmm3,0x2
+   a:	0f 10 d9             	movups xmm3,xmm1
+   d:	4d 31 e6             	xor    r14,r12
+  10:	4d 31 e6             	xor    r14,r12
+  13:	4d 31 e6             	xor    r14,r12
+  16:	4d 31 e6             	xor    r14,r12
+  19:	4d 31 e6             	xor    r14,r12
+  1c:	4d 31 e6             	xor    r14,r12
+  1f:	4d 31 e6             	xor    r14,r12
+  22:	4d 31 e6             	xor    r14,r12
+  25:	4d 31 e6             	xor    r14,r12
+  28:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRW R12D, XMM3, 2;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 32.0</li>
+<li>Reference cycles: 35.47</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PMOVMSKB R12D, XMM3; MOVUPS XMM3, XMM1; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f d7 e3       	pmovmskb r12d,xmm3
+   9:	0f 10 d9             	movups xmm3,xmm1
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+  27:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x54ed392654ed3926;
+MOV RBX, 0x3f99f4c03f99f4c0;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PMOVMSKB R12D, XMM3;  MOVUPS XMM3, XMM1;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x54ed392654ed3926; MOV RBX, 0x3f99f4c03f99f4c0; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 31.0</li>
+<li>Reference cycles: 34.24</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>EXTRACTPS R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 17 dc 02 	extractps r12d,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; EXTRACTPS R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 28.0</li>
+<li>Reference cycles: 30.72</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVD R12D, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 7e dc       	movd   r12d,xmm3
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVD R12D, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 27.0</li>
+<li>Reference cycles: 29.49</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVMSKPS R12D, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	44 0f 50 e3          	movmskps r12d,xmm3
+   8:	4d 31 e6             	xor    r14,r12
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVMSKPS R12D, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 28.0</li>
+<li>Reference cycles: 30.83</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 7e dc       	movq   r12,xmm3
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; MOVQ R12, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 27.0</li>
+<li>Reference cycles: 29.76</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRB R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 14 dc 02 	pextrb r12d,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRB R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRD R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 41 0f 3a 16 dc 02 	pextrd r12d,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRD R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 16</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRQ R12, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 49 0f 3a 16 dc 02 	pextrq r12,xmm3,0x2
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	4d 31 e6             	xor    r14,r12
+  20:	4d 31 e6             	xor    r14,r12
+  23:	4d 31 e6             	xor    r14,r12
+  26:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRQ R12, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 17</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PEXTRW R12D, XMM3, 2; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f c5 e3 02    	pextrw r12d,xmm3,0x2
+   a:	4d 31 e6             	xor    r14,r12
+   d:	4d 31 e6             	xor    r14,r12
+  10:	4d 31 e6             	xor    r14,r12
+  13:	4d 31 e6             	xor    r14,r12
+  16:	4d 31 e6             	xor    r14,r12
+  19:	4d 31 e6             	xor    r14,r12
+  1c:	4d 31 e6             	xor    r14,r12
+  1f:	4d 31 e6             	xor    r14,r12
+  22:	4d 31 e6             	xor    r14,r12
+  25:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PEXTRW R12D, XMM3, 2;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 29.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 18</h3>
+<ul>
+<li>Instruction: <code>DIVPS XMM3, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PMOVMSKB R12D, XMM3; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; </code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	41 0f 5e 1e          	divps  xmm3,XMMWORD PTR [r14]
+   4:	66 44 0f d7 e3       	pmovmskb r12d,xmm3
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+  1b:	4d 31 e6             	xor    r14,r12
+  1e:	4d 31 e6             	xor    r14,r12
+  21:	4d 31 e6             	xor    r14,r12
+  24:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV RBX, 0x3f8000003f800000;
+MOV [R14+0], RBX;
+MOV [R14+8], RBX;
+MOV [R14+64], RAX;
+MOV [R14+72], RAX;
+MOVUPS XMM1, [R14+64];
+MOVUPS XMM2, [R14];
+MOVUPS XMM3, [R14+64];
+MOVUPS XMM4, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;DIVPS XMM3, xmmword ptr [R14]; PMOVMSKB R12D, XMM3;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x3f8000003f800000; MOV RBX, 0x3f8000003f800000; MOV [R14+0], RBX; MOV [R14+8], RBX; MOV [R14+64], RAX; MOV [R14+72], RAX; MOVUPS XMM1, [R14+64]; MOVUPS XMM2, [R14]; MOVUPS XMM3, [R14+64]; MOVUPS XMM4, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 28.0</li>
+<li>Reference cycles: 30.72</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
