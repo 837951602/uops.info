@@ -1,0 +1,583 @@
+<html>
+<head>
+<title>PSUBUSB (XMM, XMM)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>PSUBUSB (XMM, XMM) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li><li>Operand 2 (r): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 1</h3></a><a href="#lat1->1_same_reg"><h3>Latency operand 1 &rarr; 1, with the same register for different operands: 0</h3></a><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 1</h3></a><a href="#lat2->1_same_reg"><h3>Latency operand 2 &rarr; 1, with the same register for different operands: 0</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Code: <pre>   0:	66 0f d8 c1          	psubusb xmm0,xmm1
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM1&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.01</li>
+<li>Reference cycles: 0.67</li>
+<li>UOPS_EXECUTED.THREAD: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c1          	psubusb xmm0,xmm1
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM1; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.47</li>
+<li>UOPS_EXECUTED.THREAD: 5.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c1          	psubusb xmm0,xmm1
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM1; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.6</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Code: <pre>   0:	66 0f d8 c1          	psubusb xmm0,xmm1
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PSUBUSB XMM0, XMM1;
+PSUBUSB XMM1, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM1&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PSUBUSB XMM0, XMM1; PSUBUSB XMM1, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.01</li>
+<li>Reference cycles: 0.4</li>
+<li>UOPS_EXECUTED.THREAD: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c1          	psubusb xmm0,xmm1
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PSUBUSB XMM0, XMM1;
+PSUBUSB XMM1, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM1; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PSUBUSB XMM0, XMM1; PSUBUSB XMM1, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.6</li>
+<li>UOPS_EXECUTED.THREAD: 5.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c1          	psubusb xmm0,xmm1
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PSUBUSB XMM0, XMM1;
+PSUBUSB XMM1, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM1; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PSUBUSB XMM0, XMM1; PSUBUSB XMM1, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.87</li>
+<li>UOPS_EXECUTED.THREAD: 5.98</li>
+</ul>
+</li></ul>
+</div><h2 id="lat1->1_same_reg">Latency operand 1 &rarr; 1, with the same register for different operands: 0</h2><div style="margin-left: 50px"><h3>Experiment 7 (with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.2</li>
+<li>Reference cycles: 0.0</li>
+<li>UOPS_EXECUTED.THREAD: -0.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 2.51</li>
+<li>Reference cycles: 1.73</li>
+<li>UOPS_EXECUTED.THREAD: 5.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 1.75</li>
+<li>Reference cycles: 1.07</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (source registers initialized by an instruction of the same kind, with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.22</li>
+<li>Reference cycles: 0.0</li>
+<li>UOPS_EXECUTED.THREAD: -0.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (source registers initialized by an instruction of the same kind, with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 2.51</li>
+<li>Reference cycles: 1.33</li>
+<li>UOPS_EXECUTED.THREAD: 5.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (source registers initialized by an instruction of the same kind, with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 1.74</li>
+<li>Reference cycles: 0.93</li>
+<li>UOPS_EXECUTED.THREAD: 4.99</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM1, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f c6 c1 00       	shufpd xmm0,xmm1,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; SHUFPD XMM0, XMM1, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.73</li>
+<li>UOPS_EXECUTED.THREAD: 5.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM1, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f 70 c1 00       	pshufd xmm0,xmm1,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; PSHUFD XMM0, XMM1, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.87</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM1, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f c6 c1 00       	shufpd xmm0,xmm1,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0;
+PSUBUSB XMM1, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; SHUFPD XMM0, XMM1, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0; PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 4.0</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM1, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f 70 c1 00       	pshufd xmm0,xmm1,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0;
+PSUBUSB XMM1, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; PSHUFD XMM0, XMM1, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0; PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 3.33</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f d8 c1          	psubusb xmm0,xmm1
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 1.99</li>
+<li>Reference cycles: 0.93</li>
+<li>UOPS_EXECUTED.THREAD: 2.02</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instructions: <code>PSUBUSB XMM0, XMM1;PXOR XMM1, XMM1</code></li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f d8 c1          	psubusb xmm0,xmm1
+   8:	66 0f ef c9          	pxor   xmm1,xmm1
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1; PXOR XMM1, XMM1&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 2.04</li>
+<li>Reference cycles: 0.93</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instruction: <code>PSUBUSB XMM0, XMM1</code></li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f d8 c1          	psubusb xmm0,xmm1
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0;
+PSUBUSB XMM1, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0; PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.6</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM1, XMM0</code></li>
+<li>Chain instructions: <code>PSUBUSB XMM0, XMM1;PXOR XMM1, XMM1</code></li>
+<li>Code: <pre>   0:	66 0f d8 c8          	psubusb xmm1,xmm0
+   4:	66 0f d8 c1          	psubusb xmm0,xmm1
+   8:	66 0f ef c9          	pxor   xmm1,xmm1
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM1, XMM1;
+PXOR XMM0, XMM0;
+PSUBUSB XMM1, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1; PXOR XMM1, XMM1&quot; -asm_init &quot;VZEROALL; PXOR XMM1, XMM1; PXOR XMM0, XMM0; PSUBUSB XMM1, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 2.0</li>
+<li>Reference cycles: 1.6</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+</div><h2 id="lat2->1_same_reg">Latency operand 2 &rarr; 1, with the same register for different operands: 0</h2><div style="margin-left: 50px"><h3>Experiment 9 (with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.23</li>
+<li>Reference cycles: 0.0</li>
+<li>UOPS_EXECUTED.THREAD: 0.02</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 2.52</li>
+<li>Reference cycles: 1.07</li>
+<li>UOPS_EXECUTED.THREAD: 5.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 1.89</li>
+<li>Reference cycles: 0.8</li>
+<li>UOPS_EXECUTED.THREAD: 5.04</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (source registers initialized by an instruction of the same kind, with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.08</li>
+<li>Reference cycles: 0.0</li>
+<li>UOPS_EXECUTED.THREAD: 0.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (source registers initialized by an instruction of the same kind, with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 2.52</li>
+<li>Reference cycles: 1.73</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (source registers initialized by an instruction of the same kind, with the same register for different operands)</h3>
+<ul>
+<li>Instruction: <code>PSUBUSB XMM0, XMM0</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 0f d8 c0          	psubusb xmm0,xmm0
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PSUBUSB XMM0, XMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PSUBUSB XMM0, XMM0; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PSUBUSB XMM0, XMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 1.75</li>
+<li>Reference cycles: 0.93</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
