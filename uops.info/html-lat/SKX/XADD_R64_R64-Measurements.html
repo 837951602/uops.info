@@ -1,0 +1,469 @@
+<html>
+<head>
+<title>XADD (R64, R64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XADD (R64, R64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (RAX, RCX, RDX, RBX, RSP, RBP, RSI, RDI, R8, R9, R10, R11, R12, R13, R14, R15)</li><li>Operand 2 (r/w): Register (RAX, RCX, RDX, RBX, RSP, RBP, RSI, RDI, R8, R9, R10, R11, R12, R13, R14, R15)</li><li>Operand 3 (w, suppressed): Flags (AF: w, CF: w, OF: w, PF: w, SF: w, ZF: w)</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 2</h3></a><a href="#lat1->2"><h3>Latency operand 1 &rarr; 2: 1</h3></a><a href="#lat1->3"><h3>Latency operand 1 &rarr; 3: 1</h3></a><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 2</h3></a><a href="#lat2->2"><h3>Latency operand 2 &rarr; 2: 1</h3></a><a href="#lat2->3"><h3>Latency operand 2 &rarr; 3: 1</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 63 c0             	movsxd r8,r8d
+   7:	4d 63 c0             	movsxd r8,r8d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+  16:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 9.02</li>
+<li>Reference cycles: 7.06</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.04</li>
+<li>Reference cycles: 1.7</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instruction: <code>MOV R9, 0</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	49 c7 c1 00 00 00 00 	mov    r9,0x0
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; MOV R9, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 2.02</li>
+<li>Reference cycles: 1.46</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->2">Latency operand 1 &rarr; 2: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>MOVSX R8, R9D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 63 c1             	movsxd r8,r9d
+   7:	4d 63 c0             	movsxd r8,r8d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+  16:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; MOVSX R8, R9D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.23</li>
+<li>Reference cycles: 7.06</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instruction: <code>XADD R9, R8</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f c1 c1          	xadd   r9,r8
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; XADD R9, R8&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 4.06</li>
+<li>Reference cycles: 2.92</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>XADD R9, R8;MOV R9, 0</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f c1 c1          	xadd   r9,r8
+   8:	49 c7 c1 00 00 00 00 	mov    r9,0x0
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; XADD R9, R8; MOV R9, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 3.41</li>
+<li>Reference cycles: 2.92</li>
+<li>UOPS_EXECUTED.THREAD: 7.01</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3">Latency operand 1 &rarr; 3: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>CMOVS R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f 48 ff          	cmovs  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; CMOVS R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.15</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>CMOVC R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f 42 ff          	cmovb  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; CMOVC R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.15</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>CMOVZ R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f 44 ff          	cmove  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; CMOVZ R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.15</li>
+<li>Reference cycles: 7.54</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>CMOVO R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f 40 ff          	cmovo  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; CMOVO R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.16</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>XADD R8, R9</code></li>
+<li>Chain instructions: <code>CMOVP R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c8          	xadd   r8,r9
+   4:	4d 0f 4a ff          	cmovp  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R8, R9; CMOVP R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.16</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>MOVSX R8, R9D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 63 c1             	movsxd r8,r9d
+   7:	4d 63 c0             	movsxd r8,r8d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+  16:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; MOVSX R8, R9D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 7.54</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instruction: <code>XADD R8, R9</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f c1 c8          	xadd   r8,r9
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; XADD R8, R9&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 4.07</li>
+<li>Reference cycles: 3.41</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>XADD R8, R9;MOV R9, 0</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f c1 c8          	xadd   r8,r9
+   8:	49 c7 c1 00 00 00 00 	mov    r9,0x0
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; XADD R8, R9; MOV R9, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 4.03</li>
+<li>Reference cycles: 2.92</li>
+<li>UOPS_EXECUTED.THREAD: 7.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->2">Latency operand 2 &rarr; 2: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 63 c0             	movsxd r8,r8d
+   7:	4d 63 c0             	movsxd r8,r8d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+  16:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.14</li>
+<li>Reference cycles: 7.06</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.04</li>
+<li>Reference cycles: 1.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instruction: <code>MOV R9, 0</code></li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	49 c7 c1 00 00 00 00 	mov    r9,0x0
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; MOV R9, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 1.02</li>
+<li>Reference cycles: 0.49</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3">Latency operand 2 &rarr; 3: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>CMOVS R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f 48 ff          	cmovs  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; CMOVS R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.16</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>CMOVC R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f 42 ff          	cmovb  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; CMOVC R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.16</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>CMOVZ R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f 44 ff          	cmove  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; CMOVZ R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.27</li>
+<li>Reference cycles: 8.03</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>CMOVO R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f 40 ff          	cmovo  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; CMOVO R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.15</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>XADD R9, R8</code></li>
+<li>Chain instructions: <code>CMOVP R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	4d 0f c1 c1          	xadd   r9,r8
+   4:	4d 0f 4a ff          	cmovp  r15,r15
+   8:	4d 63 c7             	movsxd r8,r15d
+   b:	4d 63 c0             	movsxd r8,r8d
+   e:	4d 63 c0             	movsxd r8,r8d
+  11:	4d 63 c0             	movsxd r8,r8d
+  14:	4d 63 c0             	movsxd r8,r8d
+  17:	4d 63 c0             	movsxd r8,r8d
+  1a:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD R9, R8; CMOVP R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.15</li>
+<li>Reference cycles: 7.3</li>
+<li>UOPS_EXECUTED.THREAD: 11.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

@@ -1,0 +1,1002 @@
+<html>
+<head>
+<title>VPBROADCASTQ_Z (ZMM, K, R64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VPBROADCASTQ_Z (ZMM, K, R64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (ZMM0, ZMM1, ZMM2, ZMM3, ZMM4, ZMM5, ZMM6, ZMM7, ZMM8, ZMM9, ZMM10, ZMM11, ZMM12, ZMM13, ZMM14, ZMM15, ZMM16, ZMM17, ZMM18, ZMM19, ZMM20, ZMM21, ZMM22, ZMM23, ZMM24, ZMM25, ZMM26, ZMM27, ZMM28, ZMM29, ZMM30, ZMM31)</li><li>Operand 2 (r): Register (K1, K2, K3, K4, K5, K6, K7)</li><li>Operand 3 (r): Register (RAX, RCX, RDX, RBX, RSP, RBP, RSI, RDI, R8, R9, R10, R11, R12, R13, R14, R15)</li></ul><hr><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 3</h3></a><a href="#lat3->1"><h3>Latency operand 3 &rarr; 1: &le;5</h3></a><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 3</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VPMOVQ2M K1, ZMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 f2 fe 48 39 c8    	vpmovq2m k1,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VPMOVQ2M K1, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VPTESTNMQ K1 {K1}, ZMM0, ZMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 f2 fe 49 27 c8    	vptestnmq k1{k1},zmm0,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VPTESTNMQ K1 {K1}, ZMM0, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VPMOVQ2M K1, ZMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 f2 fe 48 39 c8    	vpmovq2m k1,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VPMOVQ2M K1, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VPTESTNMQ K1 {K1}, ZMM0, ZMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 f2 fe 49 27 c8    	vptestnmq k1{k1},zmm0,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VPTESTNMQ K1 {K1}, ZMM0, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1">Latency operand 3 &rarr; 1: &le;5</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSD2SI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 08 2d c0    	{evex} vcvtsd2si r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSD2SI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.22</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSD2SI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 08 2d c0    	{evex} vcvtsd2si r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSD2SI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSD2SI R8D, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 18 2d c0    	vcvtsd2si r8d,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSD2SI R8D, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSD2SI R8, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 18 2d c0    	vcvtsd2si r8,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSD2SI R8, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSD2USI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 08 79 c0    	vcvtsd2usi r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSD2USI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSD2USI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 08 79 c0    	vcvtsd2usi r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSD2USI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.08</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 2.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 7</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSD2USI R8D, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 18 79 c0    	vcvtsd2usi r8d,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSD2USI R8D, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.98</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSD2USI R8, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 18 79 c0    	vcvtsd2usi r8,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSD2USI R8, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSS2SI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 08 2d c0    	{evex} vcvtss2si r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSS2SI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.06</li>
+<li>Reference cycles: 10.22</li>
+<li>UOPS_EXECUTED.THREAD: 2.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 10</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSS2SI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 08 2d c0    	{evex} vcvtss2si r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSS2SI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.24</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSS2SI R8D, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 18 2d c0    	vcvtss2si r8d,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSS2SI R8D, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.04</li>
+<li>Reference cycles: 10.22</li>
+<li>UOPS_EXECUTED.THREAD: 2.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 12</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTSS2SI R8, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 18 2d c0    	vcvtss2si r8,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTSS2SI R8, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.26</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSS2USI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 08 79 c0    	vcvtss2usi r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSS2USI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSS2USI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 08 79 c0    	vcvtss2usi r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSS2USI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.31</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSS2USI R8D, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 18 79 c0    	vcvtss2usi r8d,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSS2USI R8D, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 16</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTSS2USI R8, XMM0, {rn-sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 18 79 c0    	vcvtss2usi r8,xmm0{rn-sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTSS2USI R8, XMM0, {rn-sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.33</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 17</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSD2SI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 08 2c c0    	{evex} vcvttsd2si r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSD2SI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.22</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 18</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSD2SI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 08 2c c0    	{evex} vcvttsd2si r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSD2SI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.97</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 19</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSD2SI R8D, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 18 2c c0    	vcvttsd2si r8d,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSD2SI R8D, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 3.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 20</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSD2SI R8, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 18 2c c0    	vcvttsd2si r8,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSD2SI R8, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.04</li>
+<li>Reference cycles: 10.22</li>
+<li>UOPS_EXECUTED.THREAD: 2.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 21</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSD2USI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 08 78 c0    	vcvttsd2usi r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSD2USI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.04</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 2.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 22</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSD2USI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 08 78 c0    	vcvttsd2usi r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSD2USI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.98</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 23</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSD2USI R8D, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7f 18 78 c0    	vcvttsd2usi r8d,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSD2USI R8D, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.97</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 24</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSD2USI R8, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 ff 18 78 c0    	vcvttsd2usi r8,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSD2USI R8, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 25</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSS2SI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 08 2c c0    	{evex} vcvttss2si r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSS2SI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.98</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 26</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSS2SI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 08 2c c0    	{evex} vcvttss2si r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSS2SI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.26</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 27</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSS2SI R8D, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 18 2c c0    	vcvttss2si r8d,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSS2SI R8D, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.96</li>
+<li>Reference cycles: 10.22</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 28</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VCVTTSS2SI R8, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 18 2c c0    	vcvttss2si r8,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VCVTTSS2SI R8, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.26</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 29</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSS2USI R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 08 78 c0    	vcvttss2usi r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSS2USI R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.98</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 30</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSS2USI R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 08 78 c0    	vcvttss2usi r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSS2USI R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.24</li>
+<li>Reference cycles: 10.95</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 31</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSS2USI R8D, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7e 18 78 c0    	vcvttss2usi r8d,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSS2USI R8D, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.02</li>
+<li>Reference cycles: 10.46</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 32</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>VCVTTSS2USI R8, XMM0, {sae}</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 fe 18 78 c0    	vcvttss2usi r8,xmm0{sae}
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; VCVTTSS2USI R8, XMM0, {sae}&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 11.33</li>
+<li>Reference cycles: 10.71</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 33</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VEXTRACTPS R8D, XMM0, 2</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 d3 7d 08 17 c0 02 	{evex} vextractps r8d,xmm0,0x2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VEXTRACTPS R8D, XMM0, 2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 34</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VMOVD R8D, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 d1 7d 08 7e c0    	{evex} vmovd r8d,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VMOVD R8D, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 35</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VMOVQ R8, XMM0</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 d1 fd 08 7e c0    	{evex} vmovq r8,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VMOVQ R8, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_EXECUTED.THREAD: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 36</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VPEXTRB R8D, XMM0, 2</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 d3 7d 08 14 c0 02 	{evex} vpextrb r8d,xmm0,0x2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VPEXTRB R8D, XMM0, 2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 6.08</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 37</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VPEXTRD R8D, XMM0, 2</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 d3 7d 08 16 c0 02 	{evex} vpextrd r8d,xmm0,0x2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VPEXTRD R8D, XMM0, 2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 6.33</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 38</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VPEXTRQ R8, XMM0, 2</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 d3 fd 08 16 c0 02 	{evex} vpextrq r8,xmm0,0x2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VPEXTRQ R8, XMM0, 2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 6.81</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 39</h3>
+<ul>
+<li>Instruction: <code>VPBROADCASTQ ZMM0  {K1}{z}, R8</code></li>
+<li>Chain instruction: <code>{evex} VPEXTRW R8D, XMM0, 2</code></li>
+<li>Chain latency: &ge;1</li>
+<li>Code: <pre>   0:	62 d2 fd c9 7c c0    	vpbroadcastq zmm0{k1}{z},r8
+   6:	62 71 7d 08 c5 c0 02 	{evex} vpextrw r8d,xmm0,0x2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPBROADCASTQ ZMM0  {K1}{z}, R8; {evex} VPEXTRW R8D, XMM0, 2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 6.08</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
