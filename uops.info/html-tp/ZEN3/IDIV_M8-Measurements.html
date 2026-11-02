@@ -1,0 +1,393 @@
+<html>
+<head>
+<title>IDIV (M8)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>IDIV (M8) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h2>Fast division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.23</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 4.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+  11:	0f ae e8             	lfence
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]; lfence&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 21.61</li>
+<li>APERF: 27.0</li>
+<li>UOPS: 6.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.2</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.1</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.2</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.01</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 4.0</li>
+</ul>
+</li></ul>
+</div><h2>Slow division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.83</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+   7:	0f ae e8             	lfence
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]; lfence&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 21.56</li>
+<li>APERF: 27.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.85</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 4.1</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.8</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 4.01</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h2>Fast division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.21</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 4.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+  11:	0f ae e8             	lfence
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]; lfence&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 21.56</li>
+<li>APERF: 27.0</li>
+<li>UOPS: 6.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.2</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.1</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+   7:	48 c7 c2 00 00 00 00 	mov    rdx,0x0
+   e:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV byte ptr [R14], 1;
+MOV RAX, 0;
+MOV RDX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV RAX, 0;  MOV RDX, 0; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV byte ptr [R14], 1; MOV RAX, 0; MOV RDX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.2</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.01</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 4.0</li>
+</ul>
+</li></ul>
+</div><h2>Slow division</h2>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.81</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+   7:	0f ae e8             	lfence
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]; lfence&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 21.57</li>
+<li>APERF: 27.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.85</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 4.1</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 b8 01 33          	mov    ax,0x3301
+   4:	41 f6 3e             	idiv   BYTE PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R8B, 123;
+MOV byte ptr [R14], R8B</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV AX, 13057; IDIV byte ptr [R14]&quot; -asm_init &quot;MOV R8B, 123; MOV byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.8</li>
+<li>APERF: 11.0</li>
+<li>UOPS: 4.01</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.0</li>
+<li>FpuPipeAssignment.Total4: 0.0</li>
+<li>FpuPipeAssignment.Total5: 0.0</li>
+<li>DIV_CYCLES: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
