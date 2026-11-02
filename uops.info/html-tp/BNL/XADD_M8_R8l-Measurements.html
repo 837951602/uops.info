@@ -1,0 +1,346 @@
+<html>
+<head>
+<title>XADD (M8, R8l)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XADD (M8, R8l) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 6.0</li>
+<li>UOPS_RETIRED.ANY: 4.0</li>
+<li>UOPS_MS: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 6.1</li>
+<li>Reference cycles: 6.1</li>
+<li>UOPS_RETIRED.ANY: 4.2</li>
+<li>UOPS_MS: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 6.01</li>
+<li>UOPS_RETIRED.ANY: 4.02</li>
+<li>UOPS_MS: 4.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+   4:	45 0f c0 4e 01       	xadd   BYTE PTR [r14+0x1],r9b
+   9:	45 0f c0 56 02       	xadd   BYTE PTR [r14+0x2],r10b
+   e:	45 0f c0 5e 03       	xadd   BYTE PTR [r14+0x3],r11b
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B; XADD byte ptr [R14+1], R9B; XADD byte ptr [R14+2], R10B; XADD byte ptr [R14+3], R11B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 40.01</li>
+<li>Reference cycles: 40.03</li>
+<li>UOPS_RETIRED.ANY: 16.0</li>
+<li>UOPS_MS: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+   4:	45 0f c0 4e 01       	xadd   BYTE PTR [r14+0x1],r9b
+   9:	45 0f c0 56 02       	xadd   BYTE PTR [r14+0x2],r10b
+   e:	45 0f c0 5e 03       	xadd   BYTE PTR [r14+0x3],r11b
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B; XADD byte ptr [R14+1], R9B; XADD byte ptr [R14+2], R10B; XADD byte ptr [R14+3], R11B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 40.55</li>
+<li>Reference cycles: 40.55</li>
+<li>UOPS_RETIRED.ANY: 17.0</li>
+<li>UOPS_MS: 16.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+   4:	45 0f c0 4e 01       	xadd   BYTE PTR [r14+0x1],r9b
+   9:	45 0f c0 56 02       	xadd   BYTE PTR [r14+0x2],r10b
+   e:	45 0f c0 5e 03       	xadd   BYTE PTR [r14+0x3],r11b
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B; XADD byte ptr [R14+1], R9B; XADD byte ptr [R14+2], R10B; XADD byte ptr [R14+3], R11B&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 40.09</li>
+<li>Reference cycles: 40.09</li>
+<li>UOPS_RETIRED.ANY: 16.1</li>
+<li>UOPS_MS: 16.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+   4:	45 0f c0 4e 01       	xadd   BYTE PTR [r14+0x1],r9b
+   9:	45 0f c0 56 02       	xadd   BYTE PTR [r14+0x2],r10b
+   e:	45 0f c0 5e 03       	xadd   BYTE PTR [r14+0x3],r11b
+  13:	45 0f c0 66 04       	xadd   BYTE PTR [r14+0x4],r12b
+  18:	41 0f c0 5e 05       	xadd   BYTE PTR [r14+0x5],bl
+  1d:	41 0f c0 4e 06       	xadd   BYTE PTR [r14+0x6],cl
+  22:	41 0f c0 56 07       	xadd   BYTE PTR [r14+0x7],dl
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B; XADD byte ptr [R14+1], R9B; XADD byte ptr [R14+2], R10B; XADD byte ptr [R14+3], R11B; XADD byte ptr [R14+4], R12B; XADD byte ptr [R14+5], BL; XADD byte ptr [R14+6], CL; XADD byte ptr [R14+7], DL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 66.06</li>
+<li>Reference cycles: 66.06</li>
+<li>UOPS_RETIRED.ANY: 32.0</li>
+<li>UOPS_MS: 31.98</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+   4:	45 0f c0 4e 01       	xadd   BYTE PTR [r14+0x1],r9b
+   9:	45 0f c0 56 02       	xadd   BYTE PTR [r14+0x2],r10b
+   e:	45 0f c0 5e 03       	xadd   BYTE PTR [r14+0x3],r11b
+  13:	45 0f c0 66 04       	xadd   BYTE PTR [r14+0x4],r12b
+  18:	41 0f c0 5e 05       	xadd   BYTE PTR [r14+0x5],bl
+  1d:	41 0f c0 4e 06       	xadd   BYTE PTR [r14+0x6],cl
+  22:	41 0f c0 56 07       	xadd   BYTE PTR [r14+0x7],dl
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B; XADD byte ptr [R14+1], R9B; XADD byte ptr [R14+2], R10B; XADD byte ptr [R14+3], R11B; XADD byte ptr [R14+4], R12B; XADD byte ptr [R14+5], BL; XADD byte ptr [R14+6], CL; XADD byte ptr [R14+7], DL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 67.1</li>
+<li>Reference cycles: 67.1</li>
+<li>UOPS_RETIRED.ANY: 34.0</li>
+<li>UOPS_MS: 32.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f c0 06          	xadd   BYTE PTR [r14],r8b
+   4:	45 0f c0 4e 01       	xadd   BYTE PTR [r14+0x1],r9b
+   9:	45 0f c0 56 02       	xadd   BYTE PTR [r14+0x2],r10b
+   e:	45 0f c0 5e 03       	xadd   BYTE PTR [r14+0x3],r11b
+  13:	45 0f c0 66 04       	xadd   BYTE PTR [r14+0x4],r12b
+  18:	41 0f c0 5e 05       	xadd   BYTE PTR [r14+0x5],bl
+  1d:	41 0f c0 4e 06       	xadd   BYTE PTR [r14+0x6],cl
+  22:	41 0f c0 56 07       	xadd   BYTE PTR [r14+0x7],dl
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14], R8B; XADD byte ptr [R14+1], R9B; XADD byte ptr [R14+2], R10B; XADD byte ptr [R14+3], R11B; XADD byte ptr [R14+4], R12B; XADD byte ptr [R14+5], BL; XADD byte ptr [R14+6], CL; XADD byte ptr [R14+7], DL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 66.2</li>
+<li>Reference cycles: 66.2</li>
+<li>UOPS_RETIRED.ANY: 32.2</li>
+<li>UOPS_MS: 32.02</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 6.0</li>
+<li>UOPS_RETIRED.ANY: 4.0</li>
+<li>UOPS_MS: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 6.1</li>
+<li>Reference cycles: 6.1</li>
+<li>UOPS_RETIRED.ANY: 4.2</li>
+<li>UOPS_MS: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 6.01</li>
+<li>Reference cycles: 6.01</li>
+<li>UOPS_RETIRED.ANY: 4.02</li>
+<li>UOPS_MS: 4.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+   5:	47 0f c0 4c 2e 01    	xadd   BYTE PTR [r14+r13*1+0x1],r9b
+   b:	47 0f c0 54 2e 02    	xadd   BYTE PTR [r14+r13*1+0x2],r10b
+  11:	47 0f c0 5c 2e 03    	xadd   BYTE PTR [r14+r13*1+0x3],r11b
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B; XADD byte ptr [R14+R13+1], R9B; XADD byte ptr [R14+R13+2], R10B; XADD byte ptr [R14+R13+3], R11B&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 40.02</li>
+<li>Reference cycles: 40.0</li>
+<li>UOPS_RETIRED.ANY: 16.0</li>
+<li>UOPS_MS: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+   5:	47 0f c0 4c 2e 01    	xadd   BYTE PTR [r14+r13*1+0x1],r9b
+   b:	47 0f c0 54 2e 02    	xadd   BYTE PTR [r14+r13*1+0x2],r10b
+  11:	47 0f c0 5c 2e 03    	xadd   BYTE PTR [r14+r13*1+0x3],r11b
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B; XADD byte ptr [R14+R13+1], R9B; XADD byte ptr [R14+R13+2], R10B; XADD byte ptr [R14+R13+3], R11B&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 40.54</li>
+<li>Reference cycles: 40.55</li>
+<li>UOPS_RETIRED.ANY: 17.0</li>
+<li>UOPS_MS: 16.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+   5:	47 0f c0 4c 2e 01    	xadd   BYTE PTR [r14+r13*1+0x1],r9b
+   b:	47 0f c0 54 2e 02    	xadd   BYTE PTR [r14+r13*1+0x2],r10b
+  11:	47 0f c0 5c 2e 03    	xadd   BYTE PTR [r14+r13*1+0x3],r11b
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B; XADD byte ptr [R14+R13+1], R9B; XADD byte ptr [R14+R13+2], R10B; XADD byte ptr [R14+R13+3], R11B&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 40.08</li>
+<li>Reference cycles: 40.09</li>
+<li>UOPS_RETIRED.ANY: 16.1</li>
+<li>UOPS_MS: 16.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+   5:	47 0f c0 4c 2e 01    	xadd   BYTE PTR [r14+r13*1+0x1],r9b
+   b:	47 0f c0 54 2e 02    	xadd   BYTE PTR [r14+r13*1+0x2],r10b
+  11:	47 0f c0 5c 2e 03    	xadd   BYTE PTR [r14+r13*1+0x3],r11b
+  17:	47 0f c0 64 2e 04    	xadd   BYTE PTR [r14+r13*1+0x4],r12b
+  1d:	43 0f c0 5c 2e 05    	xadd   BYTE PTR [r14+r13*1+0x5],bl
+  23:	43 0f c0 4c 2e 06    	xadd   BYTE PTR [r14+r13*1+0x6],cl
+  29:	43 0f c0 54 2e 07    	xadd   BYTE PTR [r14+r13*1+0x7],dl
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B; XADD byte ptr [R14+R13+1], R9B; XADD byte ptr [R14+R13+2], R10B; XADD byte ptr [R14+R13+3], R11B; XADD byte ptr [R14+R13+4], R12B; XADD byte ptr [R14+R13+5], BL; XADD byte ptr [R14+R13+6], CL; XADD byte ptr [R14+R13+7], DL&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 66.05</li>
+<li>Reference cycles: 66.11</li>
+<li>UOPS_RETIRED.ANY: 32.0</li>
+<li>UOPS_MS: 31.98</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+   5:	47 0f c0 4c 2e 01    	xadd   BYTE PTR [r14+r13*1+0x1],r9b
+   b:	47 0f c0 54 2e 02    	xadd   BYTE PTR [r14+r13*1+0x2],r10b
+  11:	47 0f c0 5c 2e 03    	xadd   BYTE PTR [r14+r13*1+0x3],r11b
+  17:	47 0f c0 64 2e 04    	xadd   BYTE PTR [r14+r13*1+0x4],r12b
+  1d:	43 0f c0 5c 2e 05    	xadd   BYTE PTR [r14+r13*1+0x5],bl
+  23:	43 0f c0 4c 2e 06    	xadd   BYTE PTR [r14+r13*1+0x6],cl
+  29:	43 0f c0 54 2e 07    	xadd   BYTE PTR [r14+r13*1+0x7],dl
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B; XADD byte ptr [R14+R13+1], R9B; XADD byte ptr [R14+R13+2], R10B; XADD byte ptr [R14+R13+3], R11B; XADD byte ptr [R14+R13+4], R12B; XADD byte ptr [R14+R13+5], BL; XADD byte ptr [R14+R13+6], CL; XADD byte ptr [R14+R13+7], DL&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 67.1</li>
+<li>Reference cycles: 67.1</li>
+<li>UOPS_RETIRED.ANY: 34.0</li>
+<li>UOPS_MS: 32.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f c0 04 2e       	xadd   BYTE PTR [r14+r13*1],r8b
+   5:	47 0f c0 4c 2e 01    	xadd   BYTE PTR [r14+r13*1+0x1],r9b
+   b:	47 0f c0 54 2e 02    	xadd   BYTE PTR [r14+r13*1+0x2],r10b
+  11:	47 0f c0 5c 2e 03    	xadd   BYTE PTR [r14+r13*1+0x3],r11b
+  17:	47 0f c0 64 2e 04    	xadd   BYTE PTR [r14+r13*1+0x4],r12b
+  1d:	43 0f c0 5c 2e 05    	xadd   BYTE PTR [r14+r13*1+0x5],bl
+  23:	43 0f c0 4c 2e 06    	xadd   BYTE PTR [r14+r13*1+0x6],cl
+  29:	43 0f c0 54 2e 07    	xadd   BYTE PTR [r14+r13*1+0x7],dl
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XADD byte ptr [R14+R13], R8B; XADD byte ptr [R14+R13+1], R9B; XADD byte ptr [R14+R13+2], R10B; XADD byte ptr [R14+R13+3], R11B; XADD byte ptr [R14+R13+4], R12B; XADD byte ptr [R14+R13+5], BL; XADD byte ptr [R14+R13+6], CL; XADD byte ptr [R14+R13+7], DL&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 66.2</li>
+<li>Reference cycles: 66.2</li>
+<li>UOPS_RETIRED.ANY: 32.2</li>
+<li>UOPS_MS: 32.02</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
