@@ -1,0 +1,398 @@
+<html>
+<head>
+<title>CVTPI2PS (XMM, M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CVTPI2PS (XMM, M64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li><li>Operand 2 (r): Memory</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 3</h3></a><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): &le;9</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): &le;9</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;8</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 3</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 3.0</li>
+<li>Reference cycles: 2.67</li>
+<li>UOPS_EXECUTED.CORE: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  1d:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  22:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 8.96</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+  19:	66 0f db c0          	pand   xmm0,xmm0
+  1d:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 11.0</li>
+<li>Reference cycles: 10.19</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 3.0</li>
+<li>Reference cycles: 2.67</li>
+<li>UOPS_EXECUTED.CORE: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   9:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   e:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  13:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  18:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  1d:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  22:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 8.96</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   9:	66 0f db c0          	pand   xmm0,xmm0
+   d:	66 0f db c0          	pand   xmm0,xmm0
+  11:	66 0f db c0          	pand   xmm0,xmm0
+  15:	66 0f db c0          	pand   xmm0,xmm0
+  19:	66 0f db c0          	pand   xmm0,xmm0
+  1d:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 11.0</li>
+<li>Reference cycles: 10.45</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): &le;9</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 49 0f 7e c4       	movq   r12,xmm0
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; MOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.19</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 49 0f 7e c4       	movq   r12,xmm0
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+  18:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; MOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.24</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): &le;9</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	43 0f 2a 04 2e       	cvtpi2ps xmm0,QWORD PTR [r14+r13*1]
+   5:	66 49 0f 7e c4       	movq   r12,xmm0
+   a:	4d 31 e5             	xor    r13,r12
+   d:	4d 31 e5             	xor    r13,r12
+  10:	4d 31 e5             	xor    r13,r12
+  13:	4d 31 e5             	xor    r13,r12
+  16:	4d 31 e5             	xor    r13,r12
+  19:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14+R13]; MOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.19</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	43 0f 2a 04 2e       	cvtpi2ps xmm0,QWORD PTR [r14+r13*1]
+   5:	66 49 0f 7e c4       	movq   r12,xmm0
+   a:	4d 31 e5             	xor    r13,r12
+   d:	4d 31 e5             	xor    r13,r12
+  10:	4d 31 e5             	xor    r13,r12
+  13:	4d 31 e5             	xor    r13,r12
+  16:	4d 31 e5             	xor    r13,r12
+  19:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+XOR R13, R13;
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14+R13]; MOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; XOR R13, R13; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.19</li>
+<li>UOPS_EXECUTED.CORE: 9.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;8</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM13, XMM0, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;MOVSD [R14], XMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 44 0f c6 e8 00    	shufpd xmm13,xmm0,0x0
+   a:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  10:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  16:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  1c:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  22:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  28:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  2e:	f2 45 0f 11 2e       	movsd  QWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; SHUFPD XMM13, XMM0, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; MOVSD [R14], XMM13&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.61</li>
+<li>UOPS_EXECUTED.CORE: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM13, XMM0, 0;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;MOVQ [R14], XMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 44 0f 70 e8 00    	pshufd xmm13,xmm0,0x0
+   a:	66 45 0f db ed       	pand   xmm13,xmm13
+   f:	66 45 0f db ed       	pand   xmm13,xmm13
+  14:	66 45 0f db ed       	pand   xmm13,xmm13
+  19:	66 45 0f db ed       	pand   xmm13,xmm13
+  1e:	66 45 0f db ed       	pand   xmm13,xmm13
+  23:	66 45 0f db ed       	pand   xmm13,xmm13
+  28:	66 45 0f d6 2e       	movq   QWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; PSHUFD XMM13, XMM0, 0; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; MOVQ [R14], XMM13&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 16.01</li>
+<li>Reference cycles: 14.24</li>
+<li>UOPS_EXECUTED.CORE: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM13, XMM0, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;MOVSD [R14], XMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 44 0f c6 e8 00    	shufpd xmm13,xmm0,0x0
+   a:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  10:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  16:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  1c:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  22:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  28:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  2e:	f2 45 0f 11 2e       	movsd  QWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; SHUFPD XMM13, XMM0, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; MOVSD [R14], XMM13&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.08</li>
+<li>UOPS_EXECUTED.CORE: 11.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>CVTPI2PS XMM0, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM13, XMM0, 0;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;MOVQ [R14], XMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	41 0f 2a 06          	cvtpi2ps xmm0,QWORD PTR [r14]
+   4:	66 44 0f 70 e8 00    	pshufd xmm13,xmm0,0x0
+   a:	66 45 0f db ed       	pand   xmm13,xmm13
+   f:	66 45 0f db ed       	pand   xmm13,xmm13
+  14:	66 45 0f db ed       	pand   xmm13,xmm13
+  19:	66 45 0f db ed       	pand   xmm13,xmm13
+  1e:	66 45 0f db ed       	pand   xmm13,xmm13
+  23:	66 45 0f db ed       	pand   xmm13,xmm13
+  28:	66 45 0f d6 2e       	movq   QWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+MOVUPD XMM0, [R14];
+CVTPI2PS XMM0, qword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CVTPI2PS XMM0, qword ptr [R14]; PSHUFD XMM13, XMM0, 0; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; MOVQ [R14], XMM13&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; MOVUPD XMM0, [R14]; CVTPI2PS XMM0, qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 15.99</li>
+<li>Reference cycles: 14.08</li>
+<li>UOPS_EXECUTED.CORE: 11.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
