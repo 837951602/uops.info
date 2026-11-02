@@ -1,0 +1,241 @@
+<html>
+<head>
+<title>SBB (R64, M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>SBB (R64, M64) - Throughput and Uops (IACA 2.2)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 0.5    0.5  | 0.5    0.5  | 0.0  | 0.5  | 0.5  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3^   | 0.5       | 0.5 | 0.5   0.5 | 0.5   0.5 |     | 0.5 | 0.5 |     | CP | sbb r8, qword ptr [r14]
+Total Num Of Uops: 3
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.6    0.0  | 0.8  | 0.5    0.5  | 0.5    0.5  | 0.0  | 0.9  | 0.8  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3^   | 0.6       | 0.3 | 0.5   0.5 | 0.5   0.5 |     | 0.5 | 0.6 |     | CP | sbb r8, qword ptr [r14]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+Total Num Of Uops: 4
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 4.0    0.0  | 4.0  | 4.0    4.0  | 4.0    4.0  | 0.0  | 4.0  | 4.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3^   |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb r8, qword ptr [r14]
+|   3^   | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb r9, qword ptr [r14+0x8]
+|   3^   |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb r10, qword ptr [r14+0x10]
+|   3^   | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb r11, qword ptr [r14+0x18]
+|   3^   |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb r12, qword ptr [r14+0x20]
+|   3^   | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb rbx, qword ptr [r14+0x28]
+|   3^   |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb rcx, qword ptr [r14+0x30]
+|   3^   | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb rdx, qword ptr [r14+0x38]
+Total Num Of Uops: 24
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 6.10 Cycles       Throughput Bottleneck: FrontEnd, Port1, Port5, Port6
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 5.8    0.0  | 6.1  | 4.0    4.0  | 4.0    4.0  | 0.0  | 6.1  | 6.1  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3^   | 0.8       | 0.6 | 1.0   1.0 |           |     | 0.3 | 0.3 |     | CP | sbb r8, qword ptr [r14]
+|   1    |           | 0.2 |           |           |     | 0.6 | 0.2 |     | CP | test r15, r15
+|   3^   | 0.9       | 0.2 |           | 1.0   1.0 |     | 0.2 | 0.8 |     | CP | sbb r9, qword ptr [r14+0x8]
+|   1    |           | 0.8 |           |           |     | 0.2 | 0.1 |     | CP | test r15, r15
+|   3^   | 0.3       | 0.1 | 1.0   1.0 |           |     | 0.8 | 0.9 |     | CP | sbb r10, qword ptr [r14+0x10]
+|   1    |           | 0.8 |           |           |     | 0.1 | 0.2 |     | CP | test r15, r15
+|   3^   | 0.9       | 0.2 |           | 1.0   1.0 |     | 0.8 | 0.2 |     | CP | sbb r11, qword ptr [r14+0x18]
+|   1    |           | 0.2 |           |           |     | 0.2 | 0.6 |     | CP | test r15, r15
+|   3^   | 0.9       | 0.6 | 1.0   1.0 |           |     | 0.2 | 0.3 |     | CP | sbb r12, qword ptr [r14+0x20]
+|   1    |           | 0.3 |           |           |     | 0.6 | 0.1 |     | CP | test r15, r15
+|   3^   | 0.9       | 0.1 |           | 1.0   1.0 |     | 0.3 | 0.8 |     | CP | sbb rbx, qword ptr [r14+0x28]
+|   1    |           | 0.8 |           |           |     | 0.1 | 0.2 |     | CP | test r15, r15
+|   3^   | 0.3       | 0.2 | 1.0   1.0 |           |     | 0.8 | 0.8 |     | CP | sbb rcx, qword ptr [r14+0x30]
+|   1    |           | 0.8 |           |           |     | 0.2 | 0.1 |     | CP | test r15, r15
+|   3^   | 0.9       | 0.1 |           | 1.0   1.0 |     | 0.8 | 0.2 |     | CP | sbb rdx, qword ptr [r14+0x38]
+|   1    |           | 0.2 |           |           |     | 0.1 | 0.6 |     | CP | test r15, r15
+Total Num Of Uops: 32
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 0.5    0.5  | 0.5    0.5  | 0.0  | 0.5  | 0.5  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3    | 0.5       | 0.5 | 0.5   0.5 | 0.5   0.5 |     | 0.5 | 0.5 |     | CP | sbb r8, qword ptr [r14+r13*1]
+Total Num Of Uops: 3
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.6    0.0  | 0.8  | 0.5    0.5  | 0.5    0.5  | 0.0  | 0.8  | 0.8  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3    | 0.6       | 0.3 | 0.5   0.5 | 0.5   0.5 |     | 0.4 | 0.6 |     | CP | sbb r8, qword ptr [r14+r13*1]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+Total Num Of Uops: 4
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 4.0    0.0  | 4.0  | 4.0    4.0  | 4.0    4.0  | 0.0  | 4.0  | 4.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3    |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb r8, qword ptr [r14+r13*1]
+|   3    | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb r9, qword ptr [r14+r13*1+0x8]
+|   3    |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb r10, qword ptr [r14+r13*1+0x10]
+|   3    | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb r11, qword ptr [r14+r13*1+0x18]
+|   3    |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb r12, qword ptr [r14+r13*1+0x20]
+|   3    | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb rbx, qword ptr [r14+r13*1+0x28]
+|   3    |           |     | 1.0   1.0 |           |     | 1.0 | 1.0 |     | CP | sbb rcx, qword ptr [r14+r13*1+0x30]
+|   3    | 1.0       | 1.0 |           | 1.0   1.0 |     |     |     |     | CP | sbb rdx, qword ptr [r14+r13*1+0x38]
+Total Num Of Uops: 24
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 8.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 5.3    0.0  | 6.2  | 4.0    4.0  | 4.0    4.0  | 0.0  | 6.2  | 6.2  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3    | 0.6       | 0.3 | 1.0   1.0 |           |     | 0.5 | 0.6 |     |    | sbb r8, qword ptr [r14+r13*1]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+|   3    | 0.7       | 0.3 |           | 1.0   1.0 |     | 0.4 | 0.5 |     |    | sbb r9, qword ptr [r14+r13*1+0x8]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+|   3    | 0.7       | 0.3 | 1.0   1.0 |           |     | 0.4 | 0.6 |     |    | sbb r10, qword ptr [r14+r13*1+0x10]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+|   3    | 0.6       | 0.3 |           | 1.0   1.0 |     | 0.4 | 0.6 |     |    | sbb r11, qword ptr [r14+r13*1+0x18]
+|   1    |           | 0.5 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+|   3    | 0.6       | 0.3 | 1.0   1.0 |           |     | 0.5 | 0.6 |     |    | sbb r12, qword ptr [r14+r13*1+0x20]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+|   3    | 0.6       | 0.3 |           | 1.0   1.0 |     | 0.4 | 0.6 |     |    | sbb rbx, qword ptr [r14+r13*1+0x28]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+|   3    | 0.6       | 0.4 | 1.0   1.0 |           |     | 0.4 | 0.6 |     |    | sbb rcx, qword ptr [r14+r13*1+0x30]
+|   1    |           | 0.4 |           |           |     | 0.4 | 0.2 |     |    | test r15, r15
+|   3    | 0.7       | 0.3 |           | 1.0   1.0 |     | 0.4 | 0.6 |     |    | sbb rdx, qword ptr [r14+r13*1+0x38]
+|   1    |           | 0.4 |           |           |     | 0.3 | 0.2 |     |    | test r15, r15
+Total Num Of Uops: 32
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 0.50 Cycles       Throughput Bottleneck: FrontEnd, Port0, Port1, PORT2_AGU, Port2_DATA, PORT3_AGU, Port3_DATA, Port5, Port
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 0.5    0.5  | 0.5    0.5  | 0.0  | 0.5  | 0.5  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   3^   | 0.5       | 0.5 | 0.5   0.5 | 0.5   0.5 |     | 0.5 | 0.5 |     | CP | sbb r8, qword ptr [r14]
+Total Num Of Uops: 3
+</pre>
+</body>
+</html>

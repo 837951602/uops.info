@@ -1,0 +1,4825 @@
+<html>
+<head>
+<title>XCHG (R64, RAX)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XCHG (R64, RAX) - Throughput and Uops</h1>
+<hr>
+<h2 id="distinctRegs">With different registers for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.5</li>
+<li>Reference cycles: 1.34</li>
+<li>UOPS_EXECUTED.CORE: 3.0</li>
+<li>RETIRE_SLOTS: 3.0</li>
+<li>UOPS_MITE: 3.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.73</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.77</li>
+<li>UOPS_PORT_6: 0.77</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500, no inner loop, and 1 NOP</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	90                   	nop
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XCHG R8, RAX;  nop&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 2.0</li>
+<li>Reference cycles: 1.77</li>
+<li>UOPS_EXECUTED.CORE: 3.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.6</li>
+<li>UOPS_PORT_1: 0.8</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.8</li>
+<li>UOPS_PORT_6: 0.8</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.57</li>
+<li>Reference cycles: 1.4</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 3.1</li>
+<li>UOPS_MITE: 3.11</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.74</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.84</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.5</li>
+<li>Reference cycles: 1.34</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 3.1</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.75</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.75</li>
+<li>UOPS_PORT_6: 0.85</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.52</li>
+<li>Reference cycles: 1.35</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 3.01</li>
+<li>UOPS_MITE: 3.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.77</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.52</li>
+<li>Reference cycles: 1.39</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 3.01</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.78</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 2.0</li>
+<li>Reference cycles: 1.77</li>
+<li>UOPS_EXECUTED.CORE: 3.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.67</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.79</li>
+<li>UOPS_PORT_6: 0.79</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 2.1</li>
+<li>Reference cycles: 1.92</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 4.1</li>
+<li>UOPS_MITE: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.66</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.82</li>
+<li>UOPS_PORT_6: 0.89</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 1.1</li>
+<li>Reference cycles: 0.98</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 4.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.76</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.79</li>
+<li>UOPS_PORT_6: 0.82</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.79</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 4.01</li>
+<li>UOPS_MITE: 4.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.65</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.8</li>
+<li>UOPS_PORT_6: 0.81</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 1.11</li>
+<li>Reference cycles: 0.98</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 4.01</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.78</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 4.32</li>
+<li>Reference cycles: 3.84</li>
+<li>UOPS_EXECUTED.CORE: 12.0</li>
+<li>RETIRE_SLOTS: 12.0</li>
+<li>UOPS_MITE: 12.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.95</li>
+<li>UOPS_PORT_1: 2.99</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.03</li>
+<li>UOPS_PORT_6: 3.07</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 4.51</li>
+<li>Reference cycles: 4.01</li>
+<li>UOPS_EXECUTED.CORE: 12.51</li>
+<li>RETIRE_SLOTS: 12.5</li>
+<li>UOPS_MITE: 12.52</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 3.0</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.0</li>
+<li>UOPS_PORT_6: 3.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.51</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 4.27</li>
+<li>Reference cycles: 3.79</li>
+<li>UOPS_EXECUTED.CORE: 12.5</li>
+<li>RETIRE_SLOTS: 12.5</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.98</li>
+<li>UOPS_PORT_1: 3.03</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.07</li>
+<li>UOPS_PORT_6: 3.42</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 4.29</li>
+<li>Reference cycles: 3.81</li>
+<li>UOPS_EXECUTED.CORE: 12.05</li>
+<li>RETIRE_SLOTS: 12.05</li>
+<li>UOPS_MITE: 12.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.94</li>
+<li>UOPS_PORT_1: 2.98</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.03</li>
+<li>UOPS_PORT_6: 3.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.06</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 4.28</li>
+<li>Reference cycles: 3.81</li>
+<li>UOPS_EXECUTED.CORE: 12.05</li>
+<li>RETIRE_SLOTS: 12.05</li>
+<li>UOPS_MITE: 0.12</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.94</li>
+<li>UOPS_PORT_1: 2.98</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.03</li>
+<li>UOPS_PORT_6: 3.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.0</li>
+<li>Reference cycles: 7.15</li>
+<li>UOPS_EXECUTED.CORE: 12.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.66</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.18</li>
+<li>UOPS_PORT_6: 3.17</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 8.5</li>
+<li>Reference cycles: 7.56</li>
+<li>UOPS_EXECUTED.CORE: 12.5</li>
+<li>RETIRE_SLOTS: 16.5</li>
+<li>UOPS_MITE: 16.51</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.5</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.5</li>
+<li>UOPS_PORT_6: 3.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 4.51</li>
+<li>Reference cycles: 4.01</li>
+<li>UOPS_EXECUTED.CORE: 12.51</li>
+<li>RETIRE_SLOTS: 16.5</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.94</li>
+<li>UOPS_PORT_1: 3.04</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.17</li>
+<li>UOPS_PORT_6: 3.37</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 8.05</li>
+<li>Reference cycles: 7.16</li>
+<li>UOPS_EXECUTED.CORE: 12.05</li>
+<li>RETIRE_SLOTS: 16.05</li>
+<li>UOPS_MITE: 16.06</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.65</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.2</li>
+<li>UOPS_PORT_6: 3.2</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.06</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 4.06</li>
+<li>Reference cycles: 3.61</li>
+<li>UOPS_EXECUTED.CORE: 12.06</li>
+<li>RETIRE_SLOTS: 16.05</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.82</li>
+<li>UOPS_PORT_1: 2.91</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.14</li>
+<li>UOPS_PORT_6: 3.19</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.08</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.04</li>
+<li>Reference cycles: 7.15</li>
+<li>UOPS_EXECUTED.CORE: 24.0</li>
+<li>RETIRE_SLOTS: 24.0</li>
+<li>UOPS_MITE: 24.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.86</li>
+<li>UOPS_PORT_1: 5.94</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.98</li>
+<li>UOPS_PORT_6: 6.22</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 9.01</li>
+<li>Reference cycles: 8.02</li>
+<li>UOPS_EXECUTED.CORE: 25.01</li>
+<li>RETIRE_SLOTS: 25.0</li>
+<li>UOPS_MITE: 25.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 6.0</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.01</li>
+<li>UOPS_PORT_6: 7.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 8.03</li>
+<li>Reference cycles: 7.35</li>
+<li>UOPS_EXECUTED.CORE: 25.0</li>
+<li>RETIRE_SLOTS: 25.0</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.97</li>
+<li>UOPS_PORT_1: 6.06</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.16</li>
+<li>UOPS_PORT_6: 6.81</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 8.12</li>
+<li>Reference cycles: 7.42</li>
+<li>UOPS_EXECUTED.CORE: 24.12</li>
+<li>RETIRE_SLOTS: 24.11</li>
+<li>UOPS_MITE: 24.14</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.67</li>
+<li>UOPS_PORT_1: 5.86</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.22</li>
+<li>UOPS_PORT_6: 6.36</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 8.04</li>
+<li>Reference cycles: 7.15</li>
+<li>UOPS_EXECUTED.CORE: 24.1</li>
+<li>RETIRE_SLOTS: 24.1</li>
+<li>UOPS_MITE: 0.24</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.83</li>
+<li>UOPS_PORT_1: 5.96</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.07</li>
+<li>UOPS_PORT_6: 6.24</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.08</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.29</li>
+<li>UOPS_EXECUTED.CORE: 24.0</li>
+<li>RETIRE_SLOTS: 32.0</li>
+<li>UOPS_MITE: 32.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.32</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.35</li>
+<li>UOPS_PORT_6: 6.33</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 17.0</li>
+<li>Reference cycles: 15.12</li>
+<li>UOPS_EXECUTED.CORE: 25.01</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 33.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.0</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 7.0</li>
+<li>UOPS_PORT_6: 7.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 9.02</li>
+<li>Reference cycles: 8.03</li>
+<li>UOPS_EXECUTED.CORE: 25.02</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.87</li>
+<li>UOPS_PORT_1: 6.08</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.33</li>
+<li>UOPS_PORT_6: 6.74</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 16.1</li>
+<li>Reference cycles: 14.31</li>
+<li>UOPS_EXECUTED.CORE: 24.11</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 32.12</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.3</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.4</li>
+<li>UOPS_PORT_6: 6.4</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 8.12</li>
+<li>Reference cycles: 7.22</li>
+<li>UOPS_EXECUTED.CORE: 24.11</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 0.32</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.64</li>
+<li>UOPS_PORT_1: 5.83</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.27</li>
+<li>UOPS_PORT_6: 6.37</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.16</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+  10:	48 91                	xchg   rcx,rax
+  12:	48 92                	xchg   rdx,rax
+  14:	48 97                	xchg   rdi,rax
+  16:	48 96                	xchg   rsi,rax
+  18:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX; XCHG RCX, RAX; XCHG RDX, RAX; XCHG RDI, RAX; XCHG RSI, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 13.0</li>
+<li>Reference cycles: 11.57</li>
+<li>UOPS_EXECUTED.CORE: 39.0</li>
+<li>RETIRE_SLOTS: 39.0</li>
+<li>UOPS_MITE: 39.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.82</li>
+<li>UOPS_PORT_1: 10.26</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.32</li>
+<li>UOPS_PORT_6: 9.6</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 13.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+  10:	48 91                	xchg   rcx,rax
+  12:	48 92                	xchg   rdx,rax
+  14:	48 97                	xchg   rdi,rax
+  16:	48 96                	xchg   rsi,rax
+  18:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX; XCHG RCX, RAX; XCHG RDX, RAX; XCHG RDI, RAX; XCHG RSI, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 14.02</li>
+<li>Reference cycles: 12.45</li>
+<li>UOPS_EXECUTED.CORE: 40.02</li>
+<li>RETIRE_SLOTS: 40.0</li>
+<li>UOPS_MITE: 40.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.41</li>
+<li>UOPS_PORT_1: 9.8</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.14</li>
+<li>UOPS_PORT_6: 10.68</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 14.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	40                   	rex
+  44:	40                   	rex
+  45:	40                   	rex
+  46:	48 91                	xchg   rcx,rax
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	48 92                	xchg   rdx,rax
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	40                   	rex
+  55:	40                   	rex
+  56:	48 97                	xchg   rdi,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	48 96                	xchg   rsi,rax
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 13.04</li>
+<li>Reference cycles: 11.58</li>
+<li>UOPS_EXECUTED.CORE: 40.0</li>
+<li>RETIRE_SLOTS: 40.0</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.69</li>
+<li>UOPS_PORT_1: 9.81</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 9.95</li>
+<li>UOPS_PORT_6: 10.54</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+  10:	48 91                	xchg   rcx,rax
+  12:	48 92                	xchg   rdx,rax
+  14:	48 97                	xchg   rdi,rax
+  16:	48 96                	xchg   rsi,rax
+  18:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX; XCHG RCX, RAX; XCHG RDX, RAX; XCHG RDI, RAX; XCHG RSI, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.2</li>
+<li>Core cycles: 13.11</li>
+<li>Reference cycles: 11.66</li>
+<li>UOPS_EXECUTED.CORE: 39.11</li>
+<li>RETIRE_SLOTS: 39.1</li>
+<li>UOPS_MITE: 39.13</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.19</li>
+<li>UOPS_PORT_1: 9.57</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.05</li>
+<li>UOPS_PORT_6: 10.3</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 13.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	40                   	rex
+  44:	40                   	rex
+  45:	40                   	rex
+  46:	48 91                	xchg   rcx,rax
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	48 92                	xchg   rdx,rax
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	40                   	rex
+  55:	40                   	rex
+  56:	48 97                	xchg   rdi,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	48 96                	xchg   rsi,rax
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.2</li>
+<li>Core cycles: 13.05</li>
+<li>Reference cycles: 11.61</li>
+<li>UOPS_EXECUTED.CORE: 39.1</li>
+<li>RETIRE_SLOTS: 39.1</li>
+<li>UOPS_MITE: 0.4</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.58</li>
+<li>UOPS_PORT_1: 9.72</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 9.81</li>
+<li>UOPS_PORT_6: 10.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.13</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+  28:	48 31 c0             	xor    rax,rax
+  2b:	48 91                	xchg   rcx,rax
+  2d:	48 31 c0             	xor    rax,rax
+  30:	48 92                	xchg   rdx,rax
+  32:	48 31 c0             	xor    rax,rax
+  35:	48 97                	xchg   rdi,rax
+  37:	48 31 c0             	xor    rax,rax
+  3a:	48 96                	xchg   rsi,rax
+  3c:	48 31 c0             	xor    rax,rax
+  3f:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX; XOR RAX, RAX; XCHG RCX, RAX; XOR RAX, RAX; XCHG RDX, RAX; XOR RAX, RAX; XCHG RDI, RAX; XOR RAX, RAX; XCHG RSI, RAX; XOR RAX, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 23.04</li>
+<li>UOPS_EXECUTED.CORE: 39.0</li>
+<li>RETIRE_SLOTS: 52.0</li>
+<li>UOPS_MITE: 52.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.67</li>
+<li>UOPS_PORT_1: 9.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.28</li>
+<li>UOPS_PORT_6: 10.3</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 26.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+  28:	48 31 c0             	xor    rax,rax
+  2b:	48 91                	xchg   rcx,rax
+  2d:	48 31 c0             	xor    rax,rax
+  30:	48 92                	xchg   rdx,rax
+  32:	48 31 c0             	xor    rax,rax
+  35:	48 97                	xchg   rdi,rax
+  37:	48 31 c0             	xor    rax,rax
+  3a:	48 96                	xchg   rsi,rax
+  3c:	48 31 c0             	xor    rax,rax
+  3f:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX; XOR RAX, RAX; XCHG RCX, RAX; XOR RAX, RAX; XCHG RDX, RAX; XOR RAX, RAX; XCHG RDI, RAX; XOR RAX, RAX; XCHG RSI, RAX; XOR RAX, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.0</li>
+<li>Core cycles: 27.0</li>
+<li>Reference cycles: 24.0</li>
+<li>UOPS_EXECUTED.CORE: 40.01</li>
+<li>RETIRE_SLOTS: 53.01</li>
+<li>UOPS_MITE: 53.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.67</li>
+<li>UOPS_PORT_1: 9.67</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.5</li>
+<li>UOPS_PORT_6: 11.17</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 27.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+  88:	48 31 c0             	xor    rax,rax
+  8b:	40                   	rex
+  8c:	40                   	rex
+  8d:	40                   	rex
+  8e:	40                   	rex
+  8f:	40                   	rex
+  90:	40                   	rex
+  91:	40                   	rex
+  92:	40                   	rex
+  93:	40                   	rex
+  94:	40                   	rex
+  95:	40                   	rex
+  96:	40                   	rex
+  97:	48 91                	xchg   rcx,rax
+  99:	48 31 c0             	xor    rax,rax
+  9c:	40                   	rex
+  9d:	40                   	rex
+  9e:	40                   	rex
+  9f:	40                   	rex
+  a0:	40                   	rex
+  a1:	40                   	rex
+  a2:	40                   	rex
+  a3:	40                   	rex
+  a4:	40                   	rex
+  a5:	40                   	rex
+  a6:	40                   	rex
+  a7:	40                   	rex
+  a8:	48 92                	xchg   rdx,rax
+  aa:	48 31 c0             	xor    rax,rax
+  ad:	40                   	rex
+  ae:	40                   	rex
+  af:	40                   	rex
+  b0:	40                   	rex
+  b1:	40                   	rex
+  b2:	40                   	rex
+  b3:	40                   	rex
+  b4:	40                   	rex
+  b5:	40                   	rex
+  b6:	40                   	rex
+  b7:	40                   	rex
+  b8:	40                   	rex
+  b9:	48 97                	xchg   rdi,rax
+  bb:	48 31 c0             	xor    rax,rax
+  be:	40                   	rex
+  bf:	40                   	rex
+  c0:	40                   	rex
+  c1:	40                   	rex
+  c2:	40                   	rex
+  c3:	40                   	rex
+  c4:	40                   	rex
+  c5:	40                   	rex
+  c6:	40                   	rex
+  c7:	40                   	rex
+  c8:	40                   	rex
+  c9:	40                   	rex
+  ca:	48 96                	xchg   rsi,rax
+  cc:	48 31 c0             	xor    rax,rax
+  cf:	40                   	rex
+  d0:	40                   	rex
+  d1:	40                   	rex
+  d2:	40                   	rex
+  d3:	40                   	rex
+  d4:	40                   	rex
+  d5:	40                   	rex
+  d6:	40                   	rex
+  d7:	40                   	rex
+  d8:	40                   	rex
+  d9:	40                   	rex
+  da:	40                   	rex
+  db:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.0</li>
+<li>Core cycles: 14.0</li>
+<li>Reference cycles: 12.45</li>
+<li>UOPS_EXECUTED.CORE: 40.02</li>
+<li>RETIRE_SLOTS: 53.0</li>
+<li>UOPS_MITE: 0.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.26</li>
+<li>UOPS_PORT_1: 9.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.25</li>
+<li>UOPS_PORT_6: 10.75</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.03</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+  28:	48 31 c0             	xor    rax,rax
+  2b:	48 91                	xchg   rcx,rax
+  2d:	48 31 c0             	xor    rax,rax
+  30:	48 92                	xchg   rdx,rax
+  32:	48 31 c0             	xor    rax,rax
+  35:	48 97                	xchg   rdi,rax
+  37:	48 31 c0             	xor    rax,rax
+  3a:	48 96                	xchg   rsi,rax
+  3c:	48 31 c0             	xor    rax,rax
+  3f:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX; XOR RAX, RAX; XCHG RCX, RAX; XOR RAX, RAX; XCHG RDX, RAX; XOR RAX, RAX; XCHG RDI, RAX; XOR RAX, RAX; XCHG RSI, RAX; XOR RAX, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.2</li>
+<li>Core cycles: 26.1</li>
+<li>Reference cycles: 23.2</li>
+<li>UOPS_EXECUTED.CORE: 39.11</li>
+<li>RETIRE_SLOTS: 52.1</li>
+<li>UOPS_MITE: 52.12</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.59</li>
+<li>UOPS_PORT_1: 9.73</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.37</li>
+<li>UOPS_PORT_6: 10.42</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 26.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+  88:	48 31 c0             	xor    rax,rax
+  8b:	40                   	rex
+  8c:	40                   	rex
+  8d:	40                   	rex
+  8e:	40                   	rex
+  8f:	40                   	rex
+  90:	40                   	rex
+  91:	40                   	rex
+  92:	40                   	rex
+  93:	40                   	rex
+  94:	40                   	rex
+  95:	40                   	rex
+  96:	40                   	rex
+  97:	48 91                	xchg   rcx,rax
+  99:	48 31 c0             	xor    rax,rax
+  9c:	40                   	rex
+  9d:	40                   	rex
+  9e:	40                   	rex
+  9f:	40                   	rex
+  a0:	40                   	rex
+  a1:	40                   	rex
+  a2:	40                   	rex
+  a3:	40                   	rex
+  a4:	40                   	rex
+  a5:	40                   	rex
+  a6:	40                   	rex
+  a7:	40                   	rex
+  a8:	48 92                	xchg   rdx,rax
+  aa:	48 31 c0             	xor    rax,rax
+  ad:	40                   	rex
+  ae:	40                   	rex
+  af:	40                   	rex
+  b0:	40                   	rex
+  b1:	40                   	rex
+  b2:	40                   	rex
+  b3:	40                   	rex
+  b4:	40                   	rex
+  b5:	40                   	rex
+  b6:	40                   	rex
+  b7:	40                   	rex
+  b8:	40                   	rex
+  b9:	48 97                	xchg   rdi,rax
+  bb:	48 31 c0             	xor    rax,rax
+  be:	40                   	rex
+  bf:	40                   	rex
+  c0:	40                   	rex
+  c1:	40                   	rex
+  c2:	40                   	rex
+  c3:	40                   	rex
+  c4:	40                   	rex
+  c5:	40                   	rex
+  c6:	40                   	rex
+  c7:	40                   	rex
+  c8:	40                   	rex
+  c9:	40                   	rex
+  ca:	48 96                	xchg   rsi,rax
+  cc:	48 31 c0             	xor    rax,rax
+  cf:	40                   	rex
+  d0:	40                   	rex
+  d1:	40                   	rex
+  d2:	40                   	rex
+  d3:	40                   	rex
+  d4:	40                   	rex
+  d5:	40                   	rex
+  d6:	40                   	rex
+  d7:	40                   	rex
+  d8:	40                   	rex
+  d9:	40                   	rex
+  da:	40                   	rex
+  db:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.2</li>
+<li>Core cycles: 13.25</li>
+<li>Reference cycles: 11.78</li>
+<li>UOPS_EXECUTED.CORE: 39.11</li>
+<li>RETIRE_SLOTS: 52.1</li>
+<li>UOPS_MITE: 0.9</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.15</li>
+<li>UOPS_PORT_1: 9.5</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.15</li>
+<li>UOPS_PORT_6: 10.31</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.42</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="sameReg">With the same register for for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.5</li>
+<li>Reference cycles: 1.34</li>
+<li>UOPS_EXECUTED.CORE: 3.0</li>
+<li>RETIRE_SLOTS: 3.0</li>
+<li>UOPS_MITE: 3.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.73</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.77</li>
+<li>UOPS_PORT_6: 0.77</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500, no inner loop, and 1 NOP</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	90                   	nop
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XCHG R8, RAX;  nop&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 2.0</li>
+<li>Reference cycles: 1.77</li>
+<li>UOPS_EXECUTED.CORE: 3.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.6</li>
+<li>UOPS_PORT_1: 0.8</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.8</li>
+<li>UOPS_PORT_6: 0.8</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.57</li>
+<li>Reference cycles: 1.4</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 3.1</li>
+<li>UOPS_MITE: 3.11</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.74</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.84</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.5</li>
+<li>Reference cycles: 1.34</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 3.1</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.75</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.75</li>
+<li>UOPS_PORT_6: 0.85</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.52</li>
+<li>Reference cycles: 1.35</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 3.01</li>
+<li>UOPS_MITE: 3.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.77</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.52</li>
+<li>Reference cycles: 1.35</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 3.01</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.78</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 2.0</li>
+<li>Reference cycles: 1.77</li>
+<li>UOPS_EXECUTED.CORE: 3.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.67</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.79</li>
+<li>UOPS_PORT_6: 0.79</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 2.1</li>
+<li>Reference cycles: 1.87</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 4.1</li>
+<li>UOPS_MITE: 4.1</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.66</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.82</li>
+<li>UOPS_PORT_6: 0.89</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 1.1</li>
+<li>Reference cycles: 0.98</li>
+<li>UOPS_EXECUTED.CORE: 3.1</li>
+<li>RETIRE_SLOTS: 4.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.76</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.79</li>
+<li>UOPS_PORT_6: 0.82</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 2.01</li>
+<li>Reference cycles: 1.79</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 4.01</li>
+<li>UOPS_MITE: 4.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.65</li>
+<li>UOPS_PORT_1: 0.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.8</li>
+<li>UOPS_PORT_6: 0.81</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 1.11</li>
+<li>Reference cycles: 0.98</li>
+<li>UOPS_EXECUTED.CORE: 3.01</li>
+<li>RETIRE_SLOTS: 4.01</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.73</li>
+<li>UOPS_PORT_1: 0.74</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 0.76</li>
+<li>UOPS_PORT_6: 0.78</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 4.32</li>
+<li>Reference cycles: 3.81</li>
+<li>UOPS_EXECUTED.CORE: 12.0</li>
+<li>RETIRE_SLOTS: 12.0</li>
+<li>UOPS_MITE: 12.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.95</li>
+<li>UOPS_PORT_1: 2.99</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.03</li>
+<li>UOPS_PORT_6: 3.07</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 4.51</li>
+<li>Reference cycles: 4.01</li>
+<li>UOPS_EXECUTED.CORE: 12.51</li>
+<li>RETIRE_SLOTS: 12.5</li>
+<li>UOPS_MITE: 12.52</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 3.0</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.0</li>
+<li>UOPS_PORT_6: 3.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.51</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 4.27</li>
+<li>Reference cycles: 3.79</li>
+<li>UOPS_EXECUTED.CORE: 12.5</li>
+<li>RETIRE_SLOTS: 12.5</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.98</li>
+<li>UOPS_PORT_1: 3.03</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.07</li>
+<li>UOPS_PORT_6: 3.42</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 4.29</li>
+<li>Reference cycles: 3.81</li>
+<li>UOPS_EXECUTED.CORE: 12.05</li>
+<li>RETIRE_SLOTS: 12.05</li>
+<li>UOPS_MITE: 12.08</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.94</li>
+<li>UOPS_PORT_1: 2.98</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.03</li>
+<li>UOPS_PORT_6: 3.09</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.06</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 4.28</li>
+<li>Reference cycles: 3.81</li>
+<li>UOPS_EXECUTED.CORE: 12.05</li>
+<li>RETIRE_SLOTS: 12.05</li>
+<li>UOPS_MITE: 0.12</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.94</li>
+<li>UOPS_PORT_1: 2.98</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.03</li>
+<li>UOPS_PORT_6: 3.1</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.0</li>
+<li>Reference cycles: 7.12</li>
+<li>UOPS_EXECUTED.CORE: 12.0</li>
+<li>RETIRE_SLOTS: 16.0</li>
+<li>UOPS_MITE: 16.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.66</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.18</li>
+<li>UOPS_PORT_6: 3.17</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 8.5</li>
+<li>Reference cycles: 7.55</li>
+<li>UOPS_EXECUTED.CORE: 12.5</li>
+<li>RETIRE_SLOTS: 16.5</li>
+<li>UOPS_MITE: 16.51</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.5</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.5</li>
+<li>UOPS_PORT_6: 3.5</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 4.51</li>
+<li>Reference cycles: 4.01</li>
+<li>UOPS_EXECUTED.CORE: 12.51</li>
+<li>RETIRE_SLOTS: 16.5</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.94</li>
+<li>UOPS_PORT_1: 3.04</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.17</li>
+<li>UOPS_PORT_6: 3.37</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 8.05</li>
+<li>Reference cycles: 7.15</li>
+<li>UOPS_EXECUTED.CORE: 12.05</li>
+<li>RETIRE_SLOTS: 16.05</li>
+<li>UOPS_MITE: 16.06</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.65</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.2</li>
+<li>UOPS_PORT_6: 3.2</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.06</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 4.06</li>
+<li>Reference cycles: 3.61</li>
+<li>UOPS_EXECUTED.CORE: 12.06</li>
+<li>RETIRE_SLOTS: 16.05</li>
+<li>UOPS_MITE: 0.16</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.82</li>
+<li>UOPS_PORT_1: 2.91</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 3.14</li>
+<li>UOPS_PORT_6: 3.19</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.08</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 8.04</li>
+<li>Reference cycles: 7.25</li>
+<li>UOPS_EXECUTED.CORE: 24.0</li>
+<li>RETIRE_SLOTS: 24.0</li>
+<li>UOPS_MITE: 24.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.86</li>
+<li>UOPS_PORT_1: 5.94</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 5.98</li>
+<li>UOPS_PORT_6: 6.22</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 9.01</li>
+<li>Reference cycles: 8.02</li>
+<li>UOPS_EXECUTED.CORE: 25.01</li>
+<li>RETIRE_SLOTS: 25.0</li>
+<li>UOPS_MITE: 25.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 6.0</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.01</li>
+<li>UOPS_PORT_6: 7.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 8.03</li>
+<li>Reference cycles: 7.14</li>
+<li>UOPS_EXECUTED.CORE: 25.0</li>
+<li>RETIRE_SLOTS: 25.0</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.97</li>
+<li>UOPS_PORT_1: 6.06</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.16</li>
+<li>UOPS_PORT_6: 6.81</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 8.12</li>
+<li>Reference cycles: 7.22</li>
+<li>UOPS_EXECUTED.CORE: 24.12</li>
+<li>RETIRE_SLOTS: 24.11</li>
+<li>UOPS_MITE: 24.14</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.67</li>
+<li>UOPS_PORT_1: 5.86</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.22</li>
+<li>UOPS_PORT_6: 6.36</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 8.04</li>
+<li>Reference cycles: 7.14</li>
+<li>UOPS_EXECUTED.CORE: 24.1</li>
+<li>RETIRE_SLOTS: 24.1</li>
+<li>UOPS_MITE: 0.24</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.83</li>
+<li>UOPS_PORT_1: 5.96</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.07</li>
+<li>UOPS_PORT_6: 6.24</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.08</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 16.0</li>
+<li>Reference cycles: 14.24</li>
+<li>UOPS_EXECUTED.CORE: 24.0</li>
+<li>RETIRE_SLOTS: 32.0</li>
+<li>UOPS_MITE: 32.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.32</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.35</li>
+<li>UOPS_PORT_6: 6.33</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 17.0</li>
+<li>Reference cycles: 15.12</li>
+<li>UOPS_EXECUTED.CORE: 25.01</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 33.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.0</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 7.0</li>
+<li>UOPS_PORT_6: 7.0</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 9.02</li>
+<li>Reference cycles: 8.03</li>
+<li>UOPS_EXECUTED.CORE: 25.02</li>
+<li>RETIRE_SLOTS: 33.0</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.87</li>
+<li>UOPS_PORT_1: 6.08</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.33</li>
+<li>UOPS_PORT_6: 6.74</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 16.1</li>
+<li>Reference cycles: 14.31</li>
+<li>UOPS_EXECUTED.CORE: 24.11</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 32.12</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.3</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.4</li>
+<li>UOPS_PORT_6: 6.4</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 8.12</li>
+<li>Reference cycles: 7.22</li>
+<li>UOPS_EXECUTED.CORE: 24.11</li>
+<li>RETIRE_SLOTS: 32.1</li>
+<li>UOPS_MITE: 0.32</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 5.64</li>
+<li>UOPS_PORT_1: 5.83</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 6.27</li>
+<li>UOPS_PORT_6: 6.37</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.16</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+  10:	48 91                	xchg   rcx,rax
+  12:	48 92                	xchg   rdx,rax
+  14:	48 97                	xchg   rdi,rax
+  16:	48 96                	xchg   rsi,rax
+  18:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX; XCHG RCX, RAX; XCHG RDX, RAX; XCHG RDI, RAX; XCHG RSI, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 13.0</li>
+<li>Reference cycles: 11.52</li>
+<li>UOPS_EXECUTED.CORE: 39.0</li>
+<li>RETIRE_SLOTS: 39.0</li>
+<li>UOPS_MITE: 39.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.82</li>
+<li>UOPS_PORT_1: 10.26</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.32</li>
+<li>UOPS_PORT_6: 9.6</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 13.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+  10:	48 91                	xchg   rcx,rax
+  12:	48 92                	xchg   rdx,rax
+  14:	48 97                	xchg   rdi,rax
+  16:	48 96                	xchg   rsi,rax
+  18:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX; XCHG RCX, RAX; XCHG RDX, RAX; XCHG RDI, RAX; XCHG RSI, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 14.02</li>
+<li>Reference cycles: 12.46</li>
+<li>UOPS_EXECUTED.CORE: 40.02</li>
+<li>RETIRE_SLOTS: 40.0</li>
+<li>UOPS_MITE: 40.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.41</li>
+<li>UOPS_PORT_1: 9.8</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.14</li>
+<li>UOPS_PORT_6: 10.68</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 14.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	40                   	rex
+  44:	40                   	rex
+  45:	40                   	rex
+  46:	48 91                	xchg   rcx,rax
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	48 92                	xchg   rdx,rax
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	40                   	rex
+  55:	40                   	rex
+  56:	48 97                	xchg   rdi,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	48 96                	xchg   rsi,rax
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 15.0</li>
+<li>Core cycles: 13.04</li>
+<li>Reference cycles: 11.58</li>
+<li>UOPS_EXECUTED.CORE: 40.0</li>
+<li>RETIRE_SLOTS: 40.0</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.69</li>
+<li>UOPS_PORT_1: 9.81</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 9.95</li>
+<li>UOPS_PORT_6: 10.54</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	49 90                	xchg   r8,rax
+   2:	49 91                	xchg   r9,rax
+   4:	49 92                	xchg   r10,rax
+   6:	49 93                	xchg   r11,rax
+   8:	49 94                	xchg   r12,rax
+   a:	49 95                	xchg   r13,rax
+   c:	49 96                	xchg   r14,rax
+   e:	48 93                	xchg   rbx,rax
+  10:	48 91                	xchg   rcx,rax
+  12:	48 92                	xchg   rdx,rax
+  14:	48 97                	xchg   rdi,rax
+  16:	48 96                	xchg   rsi,rax
+  18:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XCHG R8, RAX; XCHG R9, RAX; XCHG R10, RAX; XCHG R11, RAX; XCHG R12, RAX; XCHG R13, RAX; XCHG R14, RAX; XCHG RBX, RAX; XCHG RCX, RAX; XCHG RDX, RAX; XCHG RDI, RAX; XCHG RSI, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.2</li>
+<li>Core cycles: 13.11</li>
+<li>Reference cycles: 11.65</li>
+<li>UOPS_EXECUTED.CORE: 39.11</li>
+<li>RETIRE_SLOTS: 39.1</li>
+<li>UOPS_MITE: 39.13</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.19</li>
+<li>UOPS_PORT_1: 9.57</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.05</li>
+<li>UOPS_PORT_6: 10.3</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 13.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	49 90                	xchg   r8,rax
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	49 91                	xchg   r9,rax
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	40                   	rex
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	49 92                	xchg   r10,rax
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	49 93                	xchg   r11,rax
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	40                   	rex
+  24:	40                   	rex
+  25:	40                   	rex
+  26:	49 94                	xchg   r12,rax
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	49 95                	xchg   r13,rax
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	40                   	rex
+  34:	40                   	rex
+  35:	40                   	rex
+  36:	49 96                	xchg   r14,rax
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	48 93                	xchg   rbx,rax
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	40                   	rex
+  43:	40                   	rex
+  44:	40                   	rex
+  45:	40                   	rex
+  46:	48 91                	xchg   rcx,rax
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	48 92                	xchg   rdx,rax
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	40                   	rex
+  54:	40                   	rex
+  55:	40                   	rex
+  56:	48 97                	xchg   rdi,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	48 96                	xchg   rsi,rax
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	40                   	rex
+  66:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.2</li>
+<li>Core cycles: 13.05</li>
+<li>Reference cycles: 11.61</li>
+<li>UOPS_EXECUTED.CORE: 39.1</li>
+<li>RETIRE_SLOTS: 39.1</li>
+<li>UOPS_MITE: 0.4</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.6</li>
+<li>UOPS_PORT_1: 9.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 9.79</li>
+<li>UOPS_PORT_6: 9.96</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.13</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+  28:	48 31 c0             	xor    rax,rax
+  2b:	48 91                	xchg   rcx,rax
+  2d:	48 31 c0             	xor    rax,rax
+  30:	48 92                	xchg   rdx,rax
+  32:	48 31 c0             	xor    rax,rax
+  35:	48 97                	xchg   rdi,rax
+  37:	48 31 c0             	xor    rax,rax
+  3a:	48 96                	xchg   rsi,rax
+  3c:	48 31 c0             	xor    rax,rax
+  3f:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX; XOR RAX, RAX; XCHG RCX, RAX; XOR RAX, RAX; XCHG RDX, RAX; XOR RAX, RAX; XCHG RDI, RAX; XOR RAX, RAX; XCHG RSI, RAX; XOR RAX, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 23.04</li>
+<li>UOPS_EXECUTED.CORE: 39.0</li>
+<li>RETIRE_SLOTS: 52.0</li>
+<li>UOPS_MITE: 52.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.67</li>
+<li>UOPS_PORT_1: 9.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.28</li>
+<li>UOPS_PORT_6: 10.3</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 26.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+  28:	48 31 c0             	xor    rax,rax
+  2b:	48 91                	xchg   rcx,rax
+  2d:	48 31 c0             	xor    rax,rax
+  30:	48 92                	xchg   rdx,rax
+  32:	48 31 c0             	xor    rax,rax
+  35:	48 97                	xchg   rdi,rax
+  37:	48 31 c0             	xor    rax,rax
+  3a:	48 96                	xchg   rsi,rax
+  3c:	48 31 c0             	xor    rax,rax
+  3f:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX; XOR RAX, RAX; XCHG RCX, RAX; XOR RAX, RAX; XCHG RDX, RAX; XOR RAX, RAX; XCHG RDI, RAX; XOR RAX, RAX; XCHG RSI, RAX; XOR RAX, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.0</li>
+<li>Core cycles: 27.0</li>
+<li>Reference cycles: 24.0</li>
+<li>UOPS_EXECUTED.CORE: 40.01</li>
+<li>RETIRE_SLOTS: 53.01</li>
+<li>UOPS_MITE: 53.02</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.67</li>
+<li>UOPS_PORT_1: 9.67</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.5</li>
+<li>UOPS_PORT_6: 11.17</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 27.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+  88:	48 31 c0             	xor    rax,rax
+  8b:	40                   	rex
+  8c:	40                   	rex
+  8d:	40                   	rex
+  8e:	40                   	rex
+  8f:	40                   	rex
+  90:	40                   	rex
+  91:	40                   	rex
+  92:	40                   	rex
+  93:	40                   	rex
+  94:	40                   	rex
+  95:	40                   	rex
+  96:	40                   	rex
+  97:	48 91                	xchg   rcx,rax
+  99:	48 31 c0             	xor    rax,rax
+  9c:	40                   	rex
+  9d:	40                   	rex
+  9e:	40                   	rex
+  9f:	40                   	rex
+  a0:	40                   	rex
+  a1:	40                   	rex
+  a2:	40                   	rex
+  a3:	40                   	rex
+  a4:	40                   	rex
+  a5:	40                   	rex
+  a6:	40                   	rex
+  a7:	40                   	rex
+  a8:	48 92                	xchg   rdx,rax
+  aa:	48 31 c0             	xor    rax,rax
+  ad:	40                   	rex
+  ae:	40                   	rex
+  af:	40                   	rex
+  b0:	40                   	rex
+  b1:	40                   	rex
+  b2:	40                   	rex
+  b3:	40                   	rex
+  b4:	40                   	rex
+  b5:	40                   	rex
+  b6:	40                   	rex
+  b7:	40                   	rex
+  b8:	40                   	rex
+  b9:	48 97                	xchg   rdi,rax
+  bb:	48 31 c0             	xor    rax,rax
+  be:	40                   	rex
+  bf:	40                   	rex
+  c0:	40                   	rex
+  c1:	40                   	rex
+  c2:	40                   	rex
+  c3:	40                   	rex
+  c4:	40                   	rex
+  c5:	40                   	rex
+  c6:	40                   	rex
+  c7:	40                   	rex
+  c8:	40                   	rex
+  c9:	40                   	rex
+  ca:	48 96                	xchg   rsi,rax
+  cc:	48 31 c0             	xor    rax,rax
+  cf:	40                   	rex
+  d0:	40                   	rex
+  d1:	40                   	rex
+  d2:	40                   	rex
+  d3:	40                   	rex
+  d4:	40                   	rex
+  d5:	40                   	rex
+  d6:	40                   	rex
+  d7:	40                   	rex
+  d8:	40                   	rex
+  d9:	40                   	rex
+  da:	40                   	rex
+  db:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 28.0</li>
+<li>Core cycles: 14.0</li>
+<li>Reference cycles: 12.45</li>
+<li>UOPS_EXECUTED.CORE: 40.02</li>
+<li>RETIRE_SLOTS: 53.0</li>
+<li>UOPS_MITE: 0.05</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.26</li>
+<li>UOPS_PORT_1: 9.75</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.25</li>
+<li>UOPS_PORT_6: 10.75</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.03</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	49 90                	xchg   r8,rax
+   5:	48 31 c0             	xor    rax,rax
+   8:	49 91                	xchg   r9,rax
+   a:	48 31 c0             	xor    rax,rax
+   d:	49 92                	xchg   r10,rax
+   f:	48 31 c0             	xor    rax,rax
+  12:	49 93                	xchg   r11,rax
+  14:	48 31 c0             	xor    rax,rax
+  17:	49 94                	xchg   r12,rax
+  19:	48 31 c0             	xor    rax,rax
+  1c:	49 95                	xchg   r13,rax
+  1e:	48 31 c0             	xor    rax,rax
+  21:	49 96                	xchg   r14,rax
+  23:	48 31 c0             	xor    rax,rax
+  26:	48 93                	xchg   rbx,rax
+  28:	48 31 c0             	xor    rax,rax
+  2b:	48 91                	xchg   rcx,rax
+  2d:	48 31 c0             	xor    rax,rax
+  30:	48 92                	xchg   rdx,rax
+  32:	48 31 c0             	xor    rax,rax
+  35:	48 97                	xchg   rdi,rax
+  37:	48 31 c0             	xor    rax,rax
+  3a:	48 96                	xchg   rsi,rax
+  3c:	48 31 c0             	xor    rax,rax
+  3f:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; XCHG R8, RAX; XOR RAX, RAX; XCHG R9, RAX; XOR RAX, RAX; XCHG R10, RAX; XOR RAX, RAX; XCHG R11, RAX; XOR RAX, RAX; XCHG R12, RAX; XOR RAX, RAX; XCHG R13, RAX; XOR RAX, RAX; XCHG R14, RAX; XOR RAX, RAX; XCHG RBX, RAX; XOR RAX, RAX; XCHG RCX, RAX; XOR RAX, RAX; XCHG RDX, RAX; XOR RAX, RAX; XCHG RDI, RAX; XOR RAX, RAX; XCHG RSI, RAX; XOR RAX, RAX; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.2</li>
+<li>Core cycles: 26.1</li>
+<li>Reference cycles: 23.2</li>
+<li>UOPS_EXECUTED.CORE: 39.11</li>
+<li>RETIRE_SLOTS: 52.1</li>
+<li>UOPS_MITE: 52.12</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 8.59</li>
+<li>UOPS_PORT_1: 9.73</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.37</li>
+<li>UOPS_PORT_6: 10.42</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 26.11</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	40                   	rex
+   4:	40                   	rex
+   5:	40                   	rex
+   6:	40                   	rex
+   7:	40                   	rex
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	40                   	rex
+   c:	40                   	rex
+   d:	40                   	rex
+   e:	40                   	rex
+   f:	49 90                	xchg   r8,rax
+  11:	48 31 c0             	xor    rax,rax
+  14:	40                   	rex
+  15:	40                   	rex
+  16:	40                   	rex
+  17:	40                   	rex
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	40                   	rex
+  1c:	40                   	rex
+  1d:	40                   	rex
+  1e:	40                   	rex
+  1f:	40                   	rex
+  20:	49 91                	xchg   r9,rax
+  22:	48 31 c0             	xor    rax,rax
+  25:	40                   	rex
+  26:	40                   	rex
+  27:	40                   	rex
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	40                   	rex
+  2c:	40                   	rex
+  2d:	40                   	rex
+  2e:	40                   	rex
+  2f:	40                   	rex
+  30:	40                   	rex
+  31:	49 92                	xchg   r10,rax
+  33:	48 31 c0             	xor    rax,rax
+  36:	40                   	rex
+  37:	40                   	rex
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	40                   	rex
+  3c:	40                   	rex
+  3d:	40                   	rex
+  3e:	40                   	rex
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	49 93                	xchg   r11,rax
+  44:	48 31 c0             	xor    rax,rax
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	40                   	rex
+  4a:	40                   	rex
+  4b:	40                   	rex
+  4c:	40                   	rex
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	40                   	rex
+  51:	40                   	rex
+  52:	40                   	rex
+  53:	49 94                	xchg   r12,rax
+  55:	48 31 c0             	xor    rax,rax
+  58:	40                   	rex
+  59:	40                   	rex
+  5a:	40                   	rex
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	40                   	rex
+  5f:	40                   	rex
+  60:	40                   	rex
+  61:	40                   	rex
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	49 95                	xchg   r13,rax
+  66:	48 31 c0             	xor    rax,rax
+  69:	40                   	rex
+  6a:	40                   	rex
+  6b:	40                   	rex
+  6c:	40                   	rex
+  6d:	40                   	rex
+  6e:	40                   	rex
+  6f:	40                   	rex
+  70:	40                   	rex
+  71:	40                   	rex
+  72:	40                   	rex
+  73:	40                   	rex
+  74:	40                   	rex
+  75:	49 96                	xchg   r14,rax
+  77:	48 31 c0             	xor    rax,rax
+  7a:	40                   	rex
+  7b:	40                   	rex
+  7c:	40                   	rex
+  7d:	40                   	rex
+  7e:	40                   	rex
+  7f:	40                   	rex
+  80:	40                   	rex
+  81:	40                   	rex
+  82:	40                   	rex
+  83:	40                   	rex
+  84:	40                   	rex
+  85:	40                   	rex
+  86:	48 93                	xchg   rbx,rax
+  88:	48 31 c0             	xor    rax,rax
+  8b:	40                   	rex
+  8c:	40                   	rex
+  8d:	40                   	rex
+  8e:	40                   	rex
+  8f:	40                   	rex
+  90:	40                   	rex
+  91:	40                   	rex
+  92:	40                   	rex
+  93:	40                   	rex
+  94:	40                   	rex
+  95:	40                   	rex
+  96:	40                   	rex
+  97:	48 91                	xchg   rcx,rax
+  99:	48 31 c0             	xor    rax,rax
+  9c:	40                   	rex
+  9d:	40                   	rex
+  9e:	40                   	rex
+  9f:	40                   	rex
+  a0:	40                   	rex
+  a1:	40                   	rex
+  a2:	40                   	rex
+  a3:	40                   	rex
+  a4:	40                   	rex
+  a5:	40                   	rex
+  a6:	40                   	rex
+  a7:	40                   	rex
+  a8:	48 92                	xchg   rdx,rax
+  aa:	48 31 c0             	xor    rax,rax
+  ad:	40                   	rex
+  ae:	40                   	rex
+  af:	40                   	rex
+  b0:	40                   	rex
+  b1:	40                   	rex
+  b2:	40                   	rex
+  b3:	40                   	rex
+  b4:	40                   	rex
+  b5:	40                   	rex
+  b6:	40                   	rex
+  b7:	40                   	rex
+  b8:	40                   	rex
+  b9:	48 97                	xchg   rdi,rax
+  bb:	48 31 c0             	xor    rax,rax
+  be:	40                   	rex
+  bf:	40                   	rex
+  c0:	40                   	rex
+  c1:	40                   	rex
+  c2:	40                   	rex
+  c3:	40                   	rex
+  c4:	40                   	rex
+  c5:	40                   	rex
+  c6:	40                   	rex
+  c7:	40                   	rex
+  c8:	40                   	rex
+  c9:	40                   	rex
+  ca:	48 96                	xchg   rsi,rax
+  cc:	48 31 c0             	xor    rax,rax
+  cf:	40                   	rex
+  d0:	40                   	rex
+  d1:	40                   	rex
+  d2:	40                   	rex
+  d3:	40                   	rex
+  d4:	40                   	rex
+  d5:	40                   	rex
+  d6:	40                   	rex
+  d7:	40                   	rex
+  d8:	40                   	rex
+  d9:	40                   	rex
+  da:	40                   	rex
+  db:	48 95                	xchg   rbp,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R8, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R9, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R10, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R11, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R12, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R13, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG R14, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RCX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDX, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RDI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RSI, RAX; XOR RAX, RAX; .byte 0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40; XCHG RBP, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 26.2</li>
+<li>Core cycles: 13.22</li>
+<li>Reference cycles: 11.76</li>
+<li>UOPS_EXECUTED.CORE: 39.11</li>
+<li>RETIRE_SLOTS: 52.1</li>
+<li>UOPS_MITE: 0.71</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 9.16</li>
+<li>UOPS_PORT_1: 9.49</li>
+<li>UOPS_PORT_2: 0.0</li>
+<li>UOPS_PORT_3: 0.0</li>
+<li>UOPS_PORT_4: 0.0</li>
+<li>UOPS_PORT_5: 10.15</li>
+<li>UOPS_PORT_6: 10.31</li>
+<li>UOPS_PORT_7: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.39</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

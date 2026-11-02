@@ -1,0 +1,129 @@
+<html>
+<head>
+<title>XCHG (M16, R16)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XCHG (M16, R16) - Throughput and Uops (IACA 2.2)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 3.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.8    0.0  | 0.8  | 0.7    0.5  | 0.8    0.5  | 1.0  | 0.8  | 0.8  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   6^   | 0.8       | 0.8 | 0.7   0.5 | 0.8   0.5 | 1.0 | 0.8 | 0.8 | 0.6 | CP | xchg word ptr [r14], r8w
+Total Num Of Uops: 6
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 10.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 6.0    0.0  | 6.0  | 6.0    4.0  | 6.0    4.0  | 8.0  | 6.0  | 6.0  | 4.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   6^   | 1.0       | 1.0 | 1.0   1.0 |           | 1.0 | 1.0 |     | 1.0 |    | xchg word ptr [r14], r8w
+|   6^   | 1.0       | 1.0 |           | 1.0   1.0 | 1.0 |     | 1.0 | 1.0 |    | xchg word ptr [r14+0x2], r9w
+|   6^   | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+0x4], r10w
+|   6^   |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+0x6], r11w
+|   6^   | 1.0       | 1.0 | 1.0   1.0 |           | 1.0 | 1.0 |     | 1.0 |    | xchg word ptr [r14+0x8], r12w
+|   6^   | 1.0       | 1.0 |           | 1.0   1.0 | 1.0 |     | 1.0 | 1.0 |    | xchg word ptr [r14+0xa], bx
+|   6^   | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+0xc], cx
+|   6^   |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+0xe], dx
+Total Num Of Uops: 48
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 3.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.8    0.0  | 0.8  | 1.0    0.5  | 1.0    0.5  | 1.0  | 0.8  | 0.8  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   6    | 0.8       | 0.8 | 1.0   0.5 | 1.0   0.5 | 1.0 | 0.8 | 0.8 |     | CP | xchg word ptr [r14+r13*1], r8w
+Total Num Of Uops: 6
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 12.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 6.0    0.0  | 6.0  | 8.0    4.0  | 8.0    4.0  | 8.0  | 6.0  | 6.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   6    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |     |     |    | xchg word ptr [r14+r13*1], r8w
+|   6    | 1.0       | 1.0 | 1.0       | 1.0   1.0 | 1.0 |     | 1.0 |     |    | xchg word ptr [r14+r13*1+0x2], r9w
+|   6    | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+r13*1+0x4], r10w
+|   6    |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+r13*1+0x6], r11w
+|   6    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |     |     |    | xchg word ptr [r14+r13*1+0x8], r12w
+|   6    | 1.0       | 1.0 | 1.0       | 1.0   1.0 | 1.0 |     | 1.0 |     |    | xchg word ptr [r14+r13*1+0xa], bx
+|   6    | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+r13*1+0xc], cx
+|   6    |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xchg word ptr [r14+r13*1+0xe], dx
+Total Num Of Uops: 48
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.48 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.8    0.0  | 0.8  | 0.7    0.5  | 0.8    0.5  | 1.0  | 0.8  | 0.8  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   6^   | 0.8       | 0.8 | 0.7   0.5 | 0.8   0.5 | 1.0 | 0.8 | 0.8 | 0.6 |    | xchg word ptr [r14], r8w
+Total Num Of Uops: 6
+</pre>
+</body>
+</html>

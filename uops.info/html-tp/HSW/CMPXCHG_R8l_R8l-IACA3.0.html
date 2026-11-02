@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>CMPXCHG (R8l, R8l)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMPXCHG (R8l, R8l) - Throughput and Uops (IACA 3.0)</h1>
+<hr>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.80 Cycles       Throughput Bottleneck: Backend
+Loop Count:  28
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.2     0.0  |  1.2  |  0.0     0.0  |  0.0     0.0  |  0.0  |  1.3  |  1.2  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.2         | 1.2  |             |             |      | 1.3  | 1.2  |      | cmpxchg r8b, r9b
+Total Num Of Uops: 5
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.84 Cycles       Throughput Bottleneck: Backend
+Loop Count:  28
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.5     0.0  |  0.5  |  0.0     0.0  |  0.0     0.0  |  0.0  |  1.5  |  1.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.5         | 0.5  |             |             |      | 1.5  | 1.5  |      | cmpxchg r8b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+Total Num Of Uops: 6
+</pre>
+<h3>With 12 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 59.74 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles | 15.0     0.0  | 15.0  |  0.0     0.0  |  0.0     0.0  |  0.0  | 15.0  | 15.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg r8b, r9b
+|   5      | 1.0         | 1.0  |             |             |      | 1.0  | 2.0  |      | cmpxchg r10b, r9b
+|   5      | 2.0         | 1.0  |             |             |      | 1.0  | 1.0  |      | cmpxchg r11b, r9b
+|   5      | 1.0         | 2.0  |             |             |      | 1.0  | 1.0  |      | cmpxchg r12b, r9b
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg r13b, r9b
+|   5      | 1.0         | 1.0  |             |             |      | 1.0  | 2.0  |      | cmpxchg r14b, r9b
+|   5      | 2.0         | 1.0  |             |             |      | 1.0  | 1.0  |      | cmpxchg bl, r9b
+|   5      | 1.0         | 2.0  |             |             |      | 1.0  | 1.0  |      | cmpxchg cl, r9b
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg dl, r9b
+|   5      | 1.0         | 1.0  |             |             |      | 1.0  | 2.0  |      | cmpxchg dil, r9b
+|   5      | 2.0         | 1.0  |             |             |      | 1.0  | 1.0  |      | cmpxchg sil, r9b
+|   5      | 1.0         | 2.0  |             |             |      | 1.0  | 1.0  |      | cmpxchg bpl, r9b
+Total Num Of Uops: 60
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 18.00 Cycles       Throughput Bottleneck: FrontEnd
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles | 18.0     0.0  |  6.0  |  0.0     0.0  |  0.0     0.0  |  0.0  | 18.0  | 18.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg r8b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg r10b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg r11b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg r12b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg r13b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg r14b, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg bl, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg cl, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg dl, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg dil, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg sil, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg bpl, r9b
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+Total Num Of Uops: 72
+</pre>
+</body>
+</html>

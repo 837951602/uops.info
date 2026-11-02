@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>XADD (M8, R8h)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XADD (M8, R8h) - Throughput and Uops (IACA 2.1)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 0.6    0.5  | 0.7    0.5  | 1.0  | 0.5  | 0.5  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5^   | 0.5       | 0.5 | 0.6   0.5 | 0.7   0.5 | 1.0 | 0.5 | 0.5 | 0.6 | CP | xadd byte ptr [rdi], bh
+Total Num Of Uops: 5
+</pre>
+<h3>With 4 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.00 Cycles       Throughput Bottleneck: Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.0    0.0  | 2.0  | 2.7    2.0  | 2.7    2.0  | 4.0  | 2.0  | 2.0  | 2.7  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xadd byte ptr [rdi], bh
+|   5^   |           |     | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 1.0 | 0.6 | CP | xadd byte ptr [rdi+0x1], ch
+|   5^   | 1.0       | 0.4 | 1.0   1.0 | 0.3       | 1.0 | 0.6 |     | 0.7 | CP | xadd byte ptr [rdi+0x2], dh
+|   5^   |           | 0.6 | 0.3       | 1.0   1.0 | 1.0 | 0.4 | 1.0 | 0.6 | CP | xadd byte ptr [rdi+0x3], ah
+Total Num Of Uops: 20
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 1.0    0.5  | 1.0    0.5  | 1.0  | 0.5  | 0.5  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5    | 0.5       | 0.5 | 1.0   0.5 | 1.0   0.5 | 1.0 | 0.5 | 0.5 |     | CP | xadd byte ptr [rdi+rsi*1], bh
+Total Num Of Uops: 5
+</pre>
+<h3>With 4 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 5.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.0    0.0  | 2.0  | 4.0    2.0  | 4.0    2.0  | 4.0  | 2.0  | 2.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |     |     |    | xadd byte ptr [rdi+rsi*1], bh
+|   5    |           |     | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xadd byte ptr [rdi+rsi*1+0x1], ch
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |     |     |    | xadd byte ptr [rdi+rsi*1+0x2], dh
+|   5    |           |     | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xadd byte ptr [rdi+rsi*1+0x3], ah
+Total Num Of Uops: 20
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 0.6    0.5  | 0.7    0.5  | 1.0  | 0.5  | 0.5  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5^   | 0.5       | 0.5 | 0.6   0.5 | 0.7   0.5 | 1.0 | 0.5 | 0.5 | 0.6 | CP | xadd byte ptr [rdi], bh
+Total Num Of Uops: 5
+</pre>
+</body>
+</html>

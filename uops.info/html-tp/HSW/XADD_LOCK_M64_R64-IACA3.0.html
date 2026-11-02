@@ -1,0 +1,105 @@
+<html>
+<head>
+<title>XADD_LOCK (M64, R64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XADD_LOCK (M64, R64) - Throughput and Uops (IACA 3.0)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.3     0.0  |  1.4  |  0.7     0.7  |  0.6     0.6  |  1.0  |  1.3  |  2.0  |  0.7  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   9^     | 1.3         | 1.4  | 0.7     0.7 | 0.6     0.6 | 1.0  | 1.3  | 2.0  | 0.7  | lock xadd qword ptr [r14], r8
+Total Num Of Uops: 9
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles | 10.7     0.0  | 10.6  |  5.3     5.3  |  5.4     5.4  |  8.0  | 10.7  | 16.0  |  5.3  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   9^     | 1.3         | 1.3  | 0.6     0.6 | 0.7     0.7 | 1.0  | 1.4  | 2.0  | 0.7  | lock xadd qword ptr [r14], r8
+|   9^     | 1.4         | 1.3  | 0.7     0.7 | 0.7     0.7 | 1.0  | 1.3  | 2.0  | 0.6  | lock xadd qword ptr [r14+0x8], r9
+|   9^     | 1.3         | 1.4  | 0.7     0.7 | 0.6     0.6 | 1.0  | 1.3  | 2.0  | 0.7  | lock xadd qword ptr [r14+0x10], r10
+|   9^     | 1.3         | 1.3  | 0.6     0.6 | 0.7     0.7 | 1.0  | 1.4  | 2.0  | 0.7  | lock xadd qword ptr [r14+0x18], r11
+|   9^     | 1.4         | 1.3  | 0.7     0.7 | 0.7     0.7 | 1.0  | 1.3  | 2.0  | 0.6  | lock xadd qword ptr [r14+0x20], r12
+|   9^     | 1.3         | 1.4  | 0.7     0.7 | 0.6     0.6 | 1.0  | 1.3  | 2.0  | 0.7  | lock xadd qword ptr [r14+0x28], rbx
+|   9^     | 1.3         | 1.3  | 0.6     0.6 | 0.7     0.7 | 1.0  | 1.4  | 2.0  | 0.7  | lock xadd qword ptr [r14+0x30], rcx
+|   9^     | 1.4         | 1.3  | 0.7     0.7 | 0.7     0.7 | 1.0  | 1.3  | 2.0  | 0.6  | lock xadd qword ptr [r14+0x38], rdx
+Total Num Of Uops: 72
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.24 Cycles       Throughput Bottleneck: Dependency chains
+Loop Count:  24
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.3     0.0  |  1.3  |  1.0     1.0  |  1.0     1.0  |  1.0  |  1.3  |  2.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   9      | 1.3         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.3  | 2.0  |      | lock xadd qword ptr [r14+r13*1], r8
+Total Num Of Uops: 9
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 18.00 Cycles       Throughput Bottleneck: Dependency chains
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles | 10.7     0.0  | 10.6  |  8.0     8.0  |  8.0     8.0  |  8.0  | 10.7  | 16.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   9      | 1.3         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.4  | 2.0  |      | lock xadd qword ptr [r14+r13*1], r8
+|   9      | 1.4         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.3  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x8], r9
+|   9      | 1.3         | 1.4  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.3  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x10], r10
+|   9      | 1.3         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.4  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x18], r11
+|   9      | 1.4         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.3  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x20], r12
+|   9      | 1.3         | 1.4  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.3  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x28], rbx
+|   9      | 1.3         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.4  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x30], rcx
+|   9      | 1.4         | 1.3  | 1.0     1.0 | 1.0     1.0 | 1.0  | 1.3  | 2.0  |      | lock xadd qword ptr [r14+r13*1+0x38], rdx
+Total Num Of Uops: 72
+</pre>
+</body>
+</html>
