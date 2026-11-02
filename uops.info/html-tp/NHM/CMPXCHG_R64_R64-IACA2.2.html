@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>CMPXCHG (R64, R64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMPXCHG (R64, R64) - Throughput and Uops (IACA 2.2)</h1>
+<hr>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 5.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.4    0.0  | 1.3  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.4  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   4    | 1.4       | 1.3 |           |           |     | 1.4 | CP | cmpxchg r8, r9
+Total Num Of Uops: 4
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 5.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.6    0.0  | 1.6  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.7  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   4    | 1.4       | 1.2 |           |           |     | 1.4 | CP | cmpxchg r8, r9
+|   1    | 0.2       | 0.4 |           |           |     | 0.3 |    | xor rax, rax
+Total Num Of Uops: 5
+</pre>
+<h3>With 12 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 60.00 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 15.9 | 0.0    0.0  | 0.0    0.0  | 0.0  | 16.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   4    | 1.0       | 2.0 |           |           |     | 1.0 | CP | cmpxchg r8, r9
+|   4    | 1.0       | 1.0 |           |           |     | 2.0 | CP | cmpxchg r10, r9
+|   4    | 2.0       | 1.0 |           |           |     | 1.0 | CP | cmpxchg r11, r9
+|   4    | 1.0       | 2.0 |           |           |     | 1.0 | CP | cmpxchg r12, r9
+|   4    | 1.0       | 1.0 |           |           |     | 2.0 | CP | cmpxchg r13, r9
+|   4    | 2.0       | 1.0 |           |           |     | 1.0 | CP | cmpxchg r14, r9
+|   4    | 1.0       | 2.0 |           |           |     | 1.0 | CP | cmpxchg rbx, r9
+|   4    | 1.0       | 1.0 |           |           |     | 2.0 | CP | cmpxchg rcx, r9
+|   4    | 2.0       | 1.0 |           |           |     | 1.0 | CP | cmpxchg rdx, r9
+|   4    | 1.0       | 2.0 |           |           |     | 1.0 | CP | cmpxchg rdi, r9
+|   4    | 1.0       | 1.0 |           |           |     | 2.0 | CP | cmpxchg rsi, r9
+|   4    | 2.0       | 1.0 |           |           |     | 1.0 | CP | cmpxchg rbp, r9
+Total Num Of Uops: 48
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 24.20 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 18.6   0.0  | 20.7 | 0.0    0.0  | 0.0    0.0  | 0.0  | 20.6 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   4    | 1.5       | 1.1 |           |           |     | 1.3 |    | cmpxchg r8, r9
+|   1    | 0.1       | 0.6 |           |           |     | 0.2 |    | xor rax, rax
+|   4    | 1.5       | 1.2 |           |           |     | 1.3 |    | cmpxchg r10, r9
+|   1    | 0.2       | 0.2 |           |           |     | 0.6 |    | xor rax, rax
+|   4    | 0.9       | 1.6 |           |           |     | 1.5 |    | cmpxchg r11, r9
+|   1    |           | 0.3 |           |           |     | 0.6 |    | xor rax, rax
+|   4    | 1.2       | 1.4 |           |           |     | 1.4 |    | cmpxchg r12, r9
+|   1    | 0.2       | 0.6 |           |           |     | 0.3 |    | xor rax, rax
+|   4    | 1.2       | 1.2 |           |           |     | 1.6 |    | cmpxchg r13, r9
+|   1    | 0.1       | 0.6 |           |           |     | 0.2 |    | xor rax, rax
+|   4    | 1.5       | 1.2 |           |           |     | 1.4 |    | cmpxchg r14, r9
+|   1    | 0.2       | 0.6 |           |           |     | 0.2 |    | xor rax, rax
+|   4    | 1.5       | 1.2 |           |           |     | 1.3 |    | cmpxchg rbx, r9
+|   1    | 0.1       | 0.4 |           |           |     | 0.5 |    | xor rax, rax
+|   4    | 1.5       | 1.2 |           |           |     | 1.3 |    | cmpxchg rcx, r9
+|   1    | 0.2       | 0.4 |           |           |     | 0.3 |    | xor rax, rax
+|   4    | 1.6       | 1.0 |           |           |     | 1.3 |    | cmpxchg rdx, r9
+|   1    | 0.1       | 0.6 |           |           |     | 0.3 |    | xor rax, rax
+|   4    | 1.6       | 1.2 |           |           |     | 1.1 |    | cmpxchg rdi, r9
+|   1    | 0.1       | 0.5 |           |           |     | 0.4 |    | xor rax, rax
+|   4    | 1.7       | 1.1 |           |           |     | 1.2 |    | cmpxchg rsi, r9
+|   1    | 0.2       | 0.6 |           |           |     | 0.2 |    | xor rax, rax
+|   4    | 1.5       | 1.1 |           |           |     | 1.4 |    | cmpxchg rbp, r9
+|   1    | 0.2       | 0.5 |           |           |     | 0.3 |    | xor rax, rax
+Total Num Of Uops: 60
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.86 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.4    0.0  | 1.3  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.4  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   4    | 1.4       | 1.3 |           |           |     | 1.4 |    | cmpxchg r8, r9
+Total Num Of Uops: 4
+</pre>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<html>
+<head>
+<title>SHLD (M64, R64, CL)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>SHLD (M64, R64, CL) - Throughput and Uops (IACA 2.1)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: FrontEnd, Port1, PORT2_AGU, Port2_DATA, PORT3_AGU, Port4
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 1.0  | 1.0    1.0  | 1.0    0.0  | 1.0  | 0.5  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5^   | 0.5       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 0.5 | CP | shld qword ptr [r14], r8, cl
+Total Num Of Uops: 5
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.25 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 1.0    0.0  | 1.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5^   | 0.5       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 0.5 |    | shld qword ptr [r14], r8, cl
+|   1    | 0.5       |     |           |           |     | 0.5 |    | test r15, r15
+Total Num Of Uops: 6
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: FrontEnd, Port1, PORT2_AGU, Port2_DATA, PORT3_AGU, Port4
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 8.0    0.0  | 16.0 | 16.0   16.0 | 16.0   0.0  | 16.0 | 8.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x8], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x10], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x18], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x20], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x28], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x30], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x38], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x40], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x48], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x50], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x58], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x60], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x68], r8, cl
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     | CP | shld qword ptr [r14+0x70], r8, cl
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 | CP | shld qword ptr [r14+0x78], r8, cl
+Total Num Of Uops: 80
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 20.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 16.0 | 16.0   16.0 | 16.0   0.0  | 16.0 | 16.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x8], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x10], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x18], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x20], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x28], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x30], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x38], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x40], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x48], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x50], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x58], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x60], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+0x68], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x70], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+0x78], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+Total Num Of Uops: 96
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.25 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 1.0  | 1.0    1.0  | 1.0    0.0  | 1.0  | 0.5  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5    | 0.5       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 0.5 |    | shld qword ptr [r14+r13*1], r8, cl
+Total Num Of Uops: 5
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.50 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 1.0    0.0  | 1.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5    | 0.5       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 0.5 |    | shld qword ptr [r14+r13*1], r8, cl
+|   1    | 0.5       |     |           |           |     | 0.5 |    | test r15, r15
+Total Num Of Uops: 6
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 20.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 8.0    0.0  | 16.0 | 16.0   16.0 | 16.0   0.0  | 16.0 | 8.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x8], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x10], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x18], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x20], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x28], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x30], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x38], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x40], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x48], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x50], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x58], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x60], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x68], r8, cl
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x70], r8, cl
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x78], r8, cl
+Total Num Of Uops: 80
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 24.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 16.0 | 16.0   16.0 | 16.0   0.0  | 16.0 | 16.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x8], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x10], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x18], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x20], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x28], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x30], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x38], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x40], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x48], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x50], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x58], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x60], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    |           | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 1.0 |    | shld qword ptr [r14+r13*1+0x68], r8, cl
+|   1    | 1.0       |     |           |           |     |     |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x70], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |    | shld qword ptr [r14+r13*1+0x78], r8, cl
+|   1    |           |     |           |           |     | 1.0 |    | test r15, r15
+Total Num Of Uops: 96
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: FrontEnd, Port1, PORT2_AGU, Port2_DATA, PORT3_AGU, Port4
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 1.0  | 1.0    1.0  | 1.0    0.0  | 1.0  | 0.5  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   5^   | 0.5       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 0.5 | CP | shld qword ptr [r14], r8, cl
+Total Num Of Uops: 5
+</pre>
+</body>
+</html>

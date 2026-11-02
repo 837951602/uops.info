@@ -1,0 +1,1687 @@
+<html>
+<head>
+<title>CMPXCHG (M32, R32)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMPXCHG (M32, R32) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 6.0</li>
+<li>RETIRE_SLOTS: 5.0</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.61</li>
+<li>UOPS_PORT_1: 0.81</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.24</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 6.2</li>
+<li>RETIRE_SLOTS: 5.2</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.58</li>
+<li>UOPS_PORT_1: 0.9</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.2</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 6.02</li>
+<li>RETIRE_SLOTS: 5.02</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.57</li>
+<li>UOPS_PORT_1: 0.84</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.24</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 7.0</li>
+<li>RETIRE_SLOTS: 6.0</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.7</li>
+<li>UOPS_PORT_1: 2.36</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 7.2</li>
+<li>RETIRE_SLOTS: 6.2</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.17</li>
+<li>UOPS_PORT_1: 2.33</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 7.02</li>
+<li>RETIRE_SLOTS: 6.02</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.75</li>
+<li>UOPS_PORT_1: 2.33</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.0</li>
+<li>UOPS_PORT_5: 1.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 15.93</li>
+<li>Reference cycles: 13.28</li>
+<li>UOPS_RETIRED.ANY: 24.0</li>
+<li>RETIRE_SLOTS: 20.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 3.99</li>
+<li>UOPS_PORT_1: 2.67</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 16.5</li>
+<li>Reference cycles: 13.75</li>
+<li>UOPS_RETIRED.ANY: 25.0</li>
+<li>RETIRE_SLOTS: 21.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.49</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 16.5</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 16.05</li>
+<li>Reference cycles: 13.38</li>
+<li>UOPS_RETIRED.ANY: 24.1</li>
+<li>RETIRE_SLOTS: 20.1</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 2.7</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 16.68</li>
+<li>UOPS_RETIRED.ANY: 28.0</li>
+<li>RETIRE_SLOTS: 24.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 20.5</li>
+<li>Reference cycles: 17.08</li>
+<li>UOPS_RETIRED.ANY: 29.0</li>
+<li>RETIRE_SLOTS: 25.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.5</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 20.05</li>
+<li>Reference cycles: 16.71</li>
+<li>UOPS_RETIRED.ANY: 28.1</li>
+<li>RETIRE_SLOTS: 24.1</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.05</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  13:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  18:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  1d:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  22:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D; CMPXCHG dword ptr [R14+16], R8D; CMPXCHG dword ptr [R14+20], R8D; CMPXCHG dword ptr [R14+24], R8D; CMPXCHG dword ptr [R14+28], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 31.86</li>
+<li>Reference cycles: 26.6</li>
+<li>UOPS_RETIRED.ANY: 48.0</li>
+<li>RETIRE_SLOTS: 40.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 7.98</li>
+<li>UOPS_PORT_1: 5.33</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  13:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  18:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  1d:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  22:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D; CMPXCHG dword ptr [R14+16], R8D; CMPXCHG dword ptr [R14+20], R8D; CMPXCHG dword ptr [R14+24], R8D; CMPXCHG dword ptr [R14+28], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 33.0</li>
+<li>Reference cycles: 27.5</li>
+<li>UOPS_RETIRED.ANY: 50.0</li>
+<li>RETIRE_SLOTS: 42.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.99</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 33.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  13:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  18:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  1d:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  22:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D; CMPXCHG dword ptr [R14+16], R8D; CMPXCHG dword ptr [R14+20], R8D; CMPXCHG dword ptr [R14+24], R8D; CMPXCHG dword ptr [R14+28], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 32.1</li>
+<li>Reference cycles: 26.75</li>
+<li>UOPS_RETIRED.ANY: 48.2</li>
+<li>RETIRE_SLOTS: 40.2</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 5.4</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 32.1</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  1f:	48 31 c0             	xor    rax,rax
+  22:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  27:	48 31 c0             	xor    rax,rax
+  2a:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  2f:	48 31 c0             	xor    rax,rax
+  32:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  37:	48 31 c0             	xor    rax,rax
+  3a:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+28], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 40.0</li>
+<li>Reference cycles: 33.37</li>
+<li>UOPS_RETIRED.ANY: 56.0</li>
+<li>RETIRE_SLOTS: 48.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 12.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  1f:	48 31 c0             	xor    rax,rax
+  22:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  27:	48 31 c0             	xor    rax,rax
+  2a:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  2f:	48 31 c0             	xor    rax,rax
+  32:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  37:	48 31 c0             	xor    rax,rax
+  3a:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+28], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 41.0</li>
+<li>Reference cycles: 34.17</li>
+<li>UOPS_RETIRED.ANY: 58.0</li>
+<li>RETIRE_SLOTS: 50.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 9.0</li>
+<li>UOPS_PORT_1: 12.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: -0.35</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  1f:	48 31 c0             	xor    rax,rax
+  22:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  27:	48 31 c0             	xor    rax,rax
+  2a:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  2f:	48 31 c0             	xor    rax,rax
+  32:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  37:	48 31 c0             	xor    rax,rax
+  3a:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+28], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 40.1</li>
+<li>Reference cycles: 33.42</li>
+<li>UOPS_RETIRED.ANY: 56.2</li>
+<li>RETIRE_SLOTS: 48.2</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.1</li>
+<li>UOPS_PORT_1: 12.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 8.01</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  13:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  18:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  1d:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  22:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+  27:	45 0f b1 46 20       	cmpxchg DWORD PTR [r14+0x20],r8d
+  2c:	45 0f b1 46 24       	cmpxchg DWORD PTR [r14+0x24],r8d
+  31:	45 0f b1 46 28       	cmpxchg DWORD PTR [r14+0x28],r8d
+  36:	45 0f b1 46 2c       	cmpxchg DWORD PTR [r14+0x2c],r8d
+  3b:	45 0f b1 46 30       	cmpxchg DWORD PTR [r14+0x30],r8d
+  40:	45 0f b1 46 34       	cmpxchg DWORD PTR [r14+0x34],r8d
+  45:	45 0f b1 46 38       	cmpxchg DWORD PTR [r14+0x38],r8d
+  4a:	45 0f b1 46 3c       	cmpxchg DWORD PTR [r14+0x3c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D; CMPXCHG dword ptr [R14+16], R8D; CMPXCHG dword ptr [R14+20], R8D; CMPXCHG dword ptr [R14+24], R8D; CMPXCHG dword ptr [R14+28], R8D; CMPXCHG dword ptr [R14+32], R8D; CMPXCHG dword ptr [R14+36], R8D; CMPXCHG dword ptr [R14+40], R8D; CMPXCHG dword ptr [R14+44], R8D; CMPXCHG dword ptr [R14+48], R8D; CMPXCHG dword ptr [R14+52], R8D; CMPXCHG dword ptr [R14+56], R8D; CMPXCHG dword ptr [R14+60], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 63.86</li>
+<li>Reference cycles: 53.2</li>
+<li>UOPS_RETIRED.ANY: 96.0</li>
+<li>RETIRE_SLOTS: 80.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 15.98</li>
+<li>UOPS_PORT_1: 10.66</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  13:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  18:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  1d:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  22:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+  27:	45 0f b1 46 20       	cmpxchg DWORD PTR [r14+0x20],r8d
+  2c:	45 0f b1 46 24       	cmpxchg DWORD PTR [r14+0x24],r8d
+  31:	45 0f b1 46 28       	cmpxchg DWORD PTR [r14+0x28],r8d
+  36:	45 0f b1 46 2c       	cmpxchg DWORD PTR [r14+0x2c],r8d
+  3b:	45 0f b1 46 30       	cmpxchg DWORD PTR [r14+0x30],r8d
+  40:	45 0f b1 46 34       	cmpxchg DWORD PTR [r14+0x34],r8d
+  45:	45 0f b1 46 38       	cmpxchg DWORD PTR [r14+0x38],r8d
+  4a:	45 0f b1 46 3c       	cmpxchg DWORD PTR [r14+0x3c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D; CMPXCHG dword ptr [R14+16], R8D; CMPXCHG dword ptr [R14+20], R8D; CMPXCHG dword ptr [R14+24], R8D; CMPXCHG dword ptr [R14+28], R8D; CMPXCHG dword ptr [R14+32], R8D; CMPXCHG dword ptr [R14+36], R8D; CMPXCHG dword ptr [R14+40], R8D; CMPXCHG dword ptr [R14+44], R8D; CMPXCHG dword ptr [R14+48], R8D; CMPXCHG dword ptr [R14+52], R8D; CMPXCHG dword ptr [R14+56], R8D; CMPXCHG dword ptr [R14+60], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 65.0</li>
+<li>Reference cycles: 54.17</li>
+<li>UOPS_RETIRED.ANY: 98.0</li>
+<li>RETIRE_SLOTS: 82.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.99</li>
+<li>UOPS_PORT_1: 11.51</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   4:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   9:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+   e:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  13:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  18:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  1d:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  22:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+  27:	45 0f b1 46 20       	cmpxchg DWORD PTR [r14+0x20],r8d
+  2c:	45 0f b1 46 24       	cmpxchg DWORD PTR [r14+0x24],r8d
+  31:	45 0f b1 46 28       	cmpxchg DWORD PTR [r14+0x28],r8d
+  36:	45 0f b1 46 2c       	cmpxchg DWORD PTR [r14+0x2c],r8d
+  3b:	45 0f b1 46 30       	cmpxchg DWORD PTR [r14+0x30],r8d
+  40:	45 0f b1 46 34       	cmpxchg DWORD PTR [r14+0x34],r8d
+  45:	45 0f b1 46 38       	cmpxchg DWORD PTR [r14+0x38],r8d
+  4a:	45 0f b1 46 3c       	cmpxchg DWORD PTR [r14+0x3c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14], R8D; CMPXCHG dword ptr [R14+4], R8D; CMPXCHG dword ptr [R14+8], R8D; CMPXCHG dword ptr [R14+12], R8D; CMPXCHG dword ptr [R14+16], R8D; CMPXCHG dword ptr [R14+20], R8D; CMPXCHG dword ptr [R14+24], R8D; CMPXCHG dword ptr [R14+28], R8D; CMPXCHG dword ptr [R14+32], R8D; CMPXCHG dword ptr [R14+36], R8D; CMPXCHG dword ptr [R14+40], R8D; CMPXCHG dword ptr [R14+44], R8D; CMPXCHG dword ptr [R14+48], R8D; CMPXCHG dword ptr [R14+52], R8D; CMPXCHG dword ptr [R14+56], R8D; CMPXCHG dword ptr [R14+60], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 64.1</li>
+<li>Reference cycles: 53.42</li>
+<li>UOPS_RETIRED.ANY: 96.2</li>
+<li>RETIRE_SLOTS: 80.2</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.0</li>
+<li>UOPS_PORT_1: 10.8</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 16.01</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  1f:	48 31 c0             	xor    rax,rax
+  22:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  27:	48 31 c0             	xor    rax,rax
+  2a:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  2f:	48 31 c0             	xor    rax,rax
+  32:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  37:	48 31 c0             	xor    rax,rax
+  3a:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+  3f:	48 31 c0             	xor    rax,rax
+  42:	45 0f b1 46 20       	cmpxchg DWORD PTR [r14+0x20],r8d
+  47:	48 31 c0             	xor    rax,rax
+  4a:	45 0f b1 46 24       	cmpxchg DWORD PTR [r14+0x24],r8d
+  4f:	48 31 c0             	xor    rax,rax
+  52:	45 0f b1 46 28       	cmpxchg DWORD PTR [r14+0x28],r8d
+  57:	48 31 c0             	xor    rax,rax
+  5a:	45 0f b1 46 2c       	cmpxchg DWORD PTR [r14+0x2c],r8d
+  5f:	48 31 c0             	xor    rax,rax
+  62:	45 0f b1 46 30       	cmpxchg DWORD PTR [r14+0x30],r8d
+  67:	48 31 c0             	xor    rax,rax
+  6a:	45 0f b1 46 34       	cmpxchg DWORD PTR [r14+0x34],r8d
+  6f:	48 31 c0             	xor    rax,rax
+  72:	45 0f b1 46 38       	cmpxchg DWORD PTR [r14+0x38],r8d
+  77:	48 31 c0             	xor    rax,rax
+  7a:	45 0f b1 46 3c       	cmpxchg DWORD PTR [r14+0x3c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+28], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+32], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+36], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+40], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+44], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+48], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+52], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+56], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+60], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 32.0</li>
+<li>Core cycles: 80.0</li>
+<li>Reference cycles: 66.63</li>
+<li>UOPS_RETIRED.ANY: 112.0</li>
+<li>RETIRE_SLOTS: 96.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.0</li>
+<li>UOPS_PORT_1: 24.0</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  1f:	48 31 c0             	xor    rax,rax
+  22:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  27:	48 31 c0             	xor    rax,rax
+  2a:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  2f:	48 31 c0             	xor    rax,rax
+  32:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  37:	48 31 c0             	xor    rax,rax
+  3a:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+  3f:	48 31 c0             	xor    rax,rax
+  42:	45 0f b1 46 20       	cmpxchg DWORD PTR [r14+0x20],r8d
+  47:	48 31 c0             	xor    rax,rax
+  4a:	45 0f b1 46 24       	cmpxchg DWORD PTR [r14+0x24],r8d
+  4f:	48 31 c0             	xor    rax,rax
+  52:	45 0f b1 46 28       	cmpxchg DWORD PTR [r14+0x28],r8d
+  57:	48 31 c0             	xor    rax,rax
+  5a:	45 0f b1 46 2c       	cmpxchg DWORD PTR [r14+0x2c],r8d
+  5f:	48 31 c0             	xor    rax,rax
+  62:	45 0f b1 46 30       	cmpxchg DWORD PTR [r14+0x30],r8d
+  67:	48 31 c0             	xor    rax,rax
+  6a:	45 0f b1 46 34       	cmpxchg DWORD PTR [r14+0x34],r8d
+  6f:	48 31 c0             	xor    rax,rax
+  72:	45 0f b1 46 38       	cmpxchg DWORD PTR [r14+0x38],r8d
+  77:	48 31 c0             	xor    rax,rax
+  7a:	45 0f b1 46 3c       	cmpxchg DWORD PTR [r14+0x3c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+28], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+32], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+36], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+40], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+44], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+48], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+52], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+56], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+60], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 34.0</li>
+<li>Core cycles: 81.0</li>
+<li>Reference cycles: 67.5</li>
+<li>UOPS_RETIRED.ANY: 114.0</li>
+<li>RETIRE_SLOTS: 98.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 17.0</li>
+<li>UOPS_PORT_1: 24.0</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	45 0f b1 06          	cmpxchg DWORD PTR [r14],r8d
+   7:	48 31 c0             	xor    rax,rax
+   a:	45 0f b1 46 04       	cmpxchg DWORD PTR [r14+0x4],r8d
+   f:	48 31 c0             	xor    rax,rax
+  12:	45 0f b1 46 08       	cmpxchg DWORD PTR [r14+0x8],r8d
+  17:	48 31 c0             	xor    rax,rax
+  1a:	45 0f b1 46 0c       	cmpxchg DWORD PTR [r14+0xc],r8d
+  1f:	48 31 c0             	xor    rax,rax
+  22:	45 0f b1 46 10       	cmpxchg DWORD PTR [r14+0x10],r8d
+  27:	48 31 c0             	xor    rax,rax
+  2a:	45 0f b1 46 14       	cmpxchg DWORD PTR [r14+0x14],r8d
+  2f:	48 31 c0             	xor    rax,rax
+  32:	45 0f b1 46 18       	cmpxchg DWORD PTR [r14+0x18],r8d
+  37:	48 31 c0             	xor    rax,rax
+  3a:	45 0f b1 46 1c       	cmpxchg DWORD PTR [r14+0x1c],r8d
+  3f:	48 31 c0             	xor    rax,rax
+  42:	45 0f b1 46 20       	cmpxchg DWORD PTR [r14+0x20],r8d
+  47:	48 31 c0             	xor    rax,rax
+  4a:	45 0f b1 46 24       	cmpxchg DWORD PTR [r14+0x24],r8d
+  4f:	48 31 c0             	xor    rax,rax
+  52:	45 0f b1 46 28       	cmpxchg DWORD PTR [r14+0x28],r8d
+  57:	48 31 c0             	xor    rax,rax
+  5a:	45 0f b1 46 2c       	cmpxchg DWORD PTR [r14+0x2c],r8d
+  5f:	48 31 c0             	xor    rax,rax
+  62:	45 0f b1 46 30       	cmpxchg DWORD PTR [r14+0x30],r8d
+  67:	48 31 c0             	xor    rax,rax
+  6a:	45 0f b1 46 34       	cmpxchg DWORD PTR [r14+0x34],r8d
+  6f:	48 31 c0             	xor    rax,rax
+  72:	45 0f b1 46 38       	cmpxchg DWORD PTR [r14+0x38],r8d
+  77:	48 31 c0             	xor    rax,rax
+  7a:	45 0f b1 46 3c       	cmpxchg DWORD PTR [r14+0x3c],r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+28], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+32], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+36], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+40], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+44], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+48], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+52], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+56], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+60], R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 32.2</li>
+<li>Core cycles: 80.1</li>
+<li>Reference cycles: 66.75</li>
+<li>UOPS_RETIRED.ANY: 112.2</li>
+<li>RETIRE_SLOTS: 96.2</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.1</li>
+<li>UOPS_PORT_1: 24.0</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 66.69</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 6.0</li>
+<li>RETIRE_SLOTS: 6.0</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.43</li>
+<li>UOPS_PORT_1: 0.89</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.49</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 6.2</li>
+<li>RETIRE_SLOTS: 6.2</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.33</li>
+<li>UOPS_PORT_1: 0.97</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.45</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 6.02</li>
+<li>RETIRE_SLOTS: 6.02</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.26</li>
+<li>UOPS_PORT_1: 0.9</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.49</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.84</li>
+<li>UOPS_RETIRED.ANY: 7.0</li>
+<li>RETIRE_SLOTS: 7.0</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.12</li>
+<li>UOPS_PORT_1: 2.54</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.2</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 7.2</li>
+<li>RETIRE_SLOTS: 7.2</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.11</li>
+<li>UOPS_PORT_1: 2.61</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.02</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.83</li>
+<li>UOPS_RETIRED.ANY: 7.02</li>
+<li>RETIRE_SLOTS: 7.02</li>
+<li>UOPS_MS: 1.0</li>
+<li>UOPS_PORT_0: 1.13</li>
+<li>UOPS_PORT_1: 2.56</li>
+<li>UOPS_PORT_2: 1.0</li>
+<li>UOPS_PORT_3: 1.0</li>
+<li>UOPS_PORT_4: 1.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 1.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 15.94</li>
+<li>Reference cycles: 13.3</li>
+<li>UOPS_RETIRED.ANY: 24.0</li>
+<li>RETIRE_SLOTS: 24.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 3.99</li>
+<li>UOPS_PORT_1: 2.67</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 16.5</li>
+<li>Reference cycles: 13.75</li>
+<li>UOPS_RETIRED.ANY: 25.0</li>
+<li>RETIRE_SLOTS: 25.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.25</li>
+<li>UOPS_PORT_1: 3.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 16.05</li>
+<li>Reference cycles: 13.38</li>
+<li>UOPS_RETIRED.ANY: 24.1</li>
+<li>RETIRE_SLOTS: 24.1</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 2.7</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 4.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 16.7</li>
+<li>UOPS_RETIRED.ANY: 28.0</li>
+<li>RETIRE_SLOTS: 28.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.0</li>
+<li>UOPS_PORT_1: 4.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 20.5</li>
+<li>Reference cycles: 17.09</li>
+<li>UOPS_RETIRED.ANY: 29.0</li>
+<li>RETIRE_SLOTS: 29.0</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.5</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.1</li>
+<li>Core cycles: 20.05</li>
+<li>Reference cycles: 16.71</li>
+<li>UOPS_RETIRED.ANY: 28.1</li>
+<li>RETIRE_SLOTS: 28.1</li>
+<li>UOPS_MS: 4.0</li>
+<li>UOPS_PORT_0: 4.05</li>
+<li>UOPS_PORT_1: 5.98</li>
+<li>UOPS_PORT_2: 4.0</li>
+<li>UOPS_PORT_3: 4.0</li>
+<li>UOPS_PORT_4: 4.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 4.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  17:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  1d:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  23:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  29:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D; CMPXCHG dword ptr [R14+R13+16], R8D; CMPXCHG dword ptr [R14+R13+20], R8D; CMPXCHG dword ptr [R14+R13+24], R8D; CMPXCHG dword ptr [R14+R13+28], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 31.88</li>
+<li>Reference cycles: 26.6</li>
+<li>UOPS_RETIRED.ANY: 48.0</li>
+<li>RETIRE_SLOTS: 48.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 7.97</li>
+<li>UOPS_PORT_1: 5.34</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 31.87</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  17:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  1d:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  23:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  29:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D; CMPXCHG dword ptr [R14+R13+16], R8D; CMPXCHG dword ptr [R14+R13+20], R8D; CMPXCHG dword ptr [R14+R13+24], R8D; CMPXCHG dword ptr [R14+R13+28], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 33.01</li>
+<li>Reference cycles: 27.5</li>
+<li>UOPS_RETIRED.ANY: 50.0</li>
+<li>RETIRE_SLOTS: 50.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.5</li>
+<li>UOPS_PORT_1: 6.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 33.01</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  17:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  1d:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  23:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  29:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D; CMPXCHG dword ptr [R14+R13+16], R8D; CMPXCHG dword ptr [R14+R13+20], R8D; CMPXCHG dword ptr [R14+R13+24], R8D; CMPXCHG dword ptr [R14+R13+28], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 32.11</li>
+<li>Reference cycles: 26.71</li>
+<li>UOPS_RETIRED.ANY: 48.2</li>
+<li>RETIRE_SLOTS: 48.2</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 5.4</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  23:	48 31 c0             	xor    rax,rax
+  26:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  2c:	48 31 c0             	xor    rax,rax
+  2f:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  35:	48 31 c0             	xor    rax,rax
+  38:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  3e:	48 31 c0             	xor    rax,rax
+  41:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+28], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 40.0</li>
+<li>Reference cycles: 33.4</li>
+<li>UOPS_RETIRED.ANY: 56.0</li>
+<li>RETIRE_SLOTS: 56.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.0</li>
+<li>UOPS_PORT_1: 8.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  23:	48 31 c0             	xor    rax,rax
+  26:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  2c:	48 31 c0             	xor    rax,rax
+  2f:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  35:	48 31 c0             	xor    rax,rax
+  38:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  3e:	48 31 c0             	xor    rax,rax
+  41:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+28], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 41.01</li>
+<li>Reference cycles: 34.17</li>
+<li>UOPS_RETIRED.ANY: 58.0</li>
+<li>RETIRE_SLOTS: 58.0</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 9.0</li>
+<li>UOPS_PORT_1: 12.0</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  23:	48 31 c0             	xor    rax,rax
+  26:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  2c:	48 31 c0             	xor    rax,rax
+  2f:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  35:	48 31 c0             	xor    rax,rax
+  38:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  3e:	48 31 c0             	xor    rax,rax
+  41:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+28], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 40.11</li>
+<li>Reference cycles: 33.42</li>
+<li>UOPS_RETIRED.ANY: 56.2</li>
+<li>RETIRE_SLOTS: 56.2</li>
+<li>UOPS_MS: 8.0</li>
+<li>UOPS_PORT_0: 8.1</li>
+<li>UOPS_PORT_1: 11.96</li>
+<li>UOPS_PORT_2: 8.0</li>
+<li>UOPS_PORT_3: 8.0</li>
+<li>UOPS_PORT_4: 8.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 8.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  17:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  1d:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  23:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  29:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+  2f:	47 0f b1 44 2e 20    	cmpxchg DWORD PTR [r14+r13*1+0x20],r8d
+  35:	47 0f b1 44 2e 24    	cmpxchg DWORD PTR [r14+r13*1+0x24],r8d
+  3b:	47 0f b1 44 2e 28    	cmpxchg DWORD PTR [r14+r13*1+0x28],r8d
+  41:	47 0f b1 44 2e 2c    	cmpxchg DWORD PTR [r14+r13*1+0x2c],r8d
+  47:	47 0f b1 44 2e 30    	cmpxchg DWORD PTR [r14+r13*1+0x30],r8d
+  4d:	47 0f b1 44 2e 34    	cmpxchg DWORD PTR [r14+r13*1+0x34],r8d
+  53:	47 0f b1 44 2e 38    	cmpxchg DWORD PTR [r14+r13*1+0x38],r8d
+  59:	47 0f b1 44 2e 3c    	cmpxchg DWORD PTR [r14+r13*1+0x3c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D; CMPXCHG dword ptr [R14+R13+16], R8D; CMPXCHG dword ptr [R14+R13+20], R8D; CMPXCHG dword ptr [R14+R13+24], R8D; CMPXCHG dword ptr [R14+R13+28], R8D; CMPXCHG dword ptr [R14+R13+32], R8D; CMPXCHG dword ptr [R14+R13+36], R8D; CMPXCHG dword ptr [R14+R13+40], R8D; CMPXCHG dword ptr [R14+R13+44], R8D; CMPXCHG dword ptr [R14+R13+48], R8D; CMPXCHG dword ptr [R14+R13+52], R8D; CMPXCHG dword ptr [R14+R13+56], R8D; CMPXCHG dword ptr [R14+R13+60], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 63.88</li>
+<li>Reference cycles: 53.13</li>
+<li>UOPS_RETIRED.ANY: 96.0</li>
+<li>RETIRE_SLOTS: 96.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 15.97</li>
+<li>UOPS_PORT_1: 10.67</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  17:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  1d:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  23:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  29:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+  2f:	47 0f b1 44 2e 20    	cmpxchg DWORD PTR [r14+r13*1+0x20],r8d
+  35:	47 0f b1 44 2e 24    	cmpxchg DWORD PTR [r14+r13*1+0x24],r8d
+  3b:	47 0f b1 44 2e 28    	cmpxchg DWORD PTR [r14+r13*1+0x28],r8d
+  41:	47 0f b1 44 2e 2c    	cmpxchg DWORD PTR [r14+r13*1+0x2c],r8d
+  47:	47 0f b1 44 2e 30    	cmpxchg DWORD PTR [r14+r13*1+0x30],r8d
+  4d:	47 0f b1 44 2e 34    	cmpxchg DWORD PTR [r14+r13*1+0x34],r8d
+  53:	47 0f b1 44 2e 38    	cmpxchg DWORD PTR [r14+r13*1+0x38],r8d
+  59:	47 0f b1 44 2e 3c    	cmpxchg DWORD PTR [r14+r13*1+0x3c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D; CMPXCHG dword ptr [R14+R13+16], R8D; CMPXCHG dword ptr [R14+R13+20], R8D; CMPXCHG dword ptr [R14+R13+24], R8D; CMPXCHG dword ptr [R14+R13+28], R8D; CMPXCHG dword ptr [R14+R13+32], R8D; CMPXCHG dword ptr [R14+R13+36], R8D; CMPXCHG dword ptr [R14+R13+40], R8D; CMPXCHG dword ptr [R14+R13+44], R8D; CMPXCHG dword ptr [R14+R13+48], R8D; CMPXCHG dword ptr [R14+R13+52], R8D; CMPXCHG dword ptr [R14+R13+56], R8D; CMPXCHG dword ptr [R14+R13+60], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 65.01</li>
+<li>Reference cycles: 54.17</li>
+<li>UOPS_RETIRED.ANY: 98.0</li>
+<li>RETIRE_SLOTS: 98.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.0</li>
+<li>UOPS_PORT_1: 12.0</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   5:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+   b:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  11:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  17:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  1d:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  23:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  29:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+  2f:	47 0f b1 44 2e 20    	cmpxchg DWORD PTR [r14+r13*1+0x20],r8d
+  35:	47 0f b1 44 2e 24    	cmpxchg DWORD PTR [r14+r13*1+0x24],r8d
+  3b:	47 0f b1 44 2e 28    	cmpxchg DWORD PTR [r14+r13*1+0x28],r8d
+  41:	47 0f b1 44 2e 2c    	cmpxchg DWORD PTR [r14+r13*1+0x2c],r8d
+  47:	47 0f b1 44 2e 30    	cmpxchg DWORD PTR [r14+r13*1+0x30],r8d
+  4d:	47 0f b1 44 2e 34    	cmpxchg DWORD PTR [r14+r13*1+0x34],r8d
+  53:	47 0f b1 44 2e 38    	cmpxchg DWORD PTR [r14+r13*1+0x38],r8d
+  59:	47 0f b1 44 2e 3c    	cmpxchg DWORD PTR [r14+r13*1+0x3c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;CMPXCHG dword ptr [R14+R13], R8D; CMPXCHG dword ptr [R14+R13+4], R8D; CMPXCHG dword ptr [R14+R13+8], R8D; CMPXCHG dword ptr [R14+R13+12], R8D; CMPXCHG dword ptr [R14+R13+16], R8D; CMPXCHG dword ptr [R14+R13+20], R8D; CMPXCHG dword ptr [R14+R13+24], R8D; CMPXCHG dword ptr [R14+R13+28], R8D; CMPXCHG dword ptr [R14+R13+32], R8D; CMPXCHG dword ptr [R14+R13+36], R8D; CMPXCHG dword ptr [R14+R13+40], R8D; CMPXCHG dword ptr [R14+R13+44], R8D; CMPXCHG dword ptr [R14+R13+48], R8D; CMPXCHG dword ptr [R14+R13+52], R8D; CMPXCHG dword ptr [R14+R13+56], R8D; CMPXCHG dword ptr [R14+R13+60], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 64.11</li>
+<li>Reference cycles: 53.42</li>
+<li>UOPS_RETIRED.ANY: 96.2</li>
+<li>RETIRE_SLOTS: 96.2</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.0</li>
+<li>UOPS_PORT_1: 10.8</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With additional dependency-breaking instructions</h4>
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  23:	48 31 c0             	xor    rax,rax
+  26:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  2c:	48 31 c0             	xor    rax,rax
+  2f:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  35:	48 31 c0             	xor    rax,rax
+  38:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  3e:	48 31 c0             	xor    rax,rax
+  41:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+  47:	48 31 c0             	xor    rax,rax
+  4a:	47 0f b1 44 2e 20    	cmpxchg DWORD PTR [r14+r13*1+0x20],r8d
+  50:	48 31 c0             	xor    rax,rax
+  53:	47 0f b1 44 2e 24    	cmpxchg DWORD PTR [r14+r13*1+0x24],r8d
+  59:	48 31 c0             	xor    rax,rax
+  5c:	47 0f b1 44 2e 28    	cmpxchg DWORD PTR [r14+r13*1+0x28],r8d
+  62:	48 31 c0             	xor    rax,rax
+  65:	47 0f b1 44 2e 2c    	cmpxchg DWORD PTR [r14+r13*1+0x2c],r8d
+  6b:	48 31 c0             	xor    rax,rax
+  6e:	47 0f b1 44 2e 30    	cmpxchg DWORD PTR [r14+r13*1+0x30],r8d
+  74:	48 31 c0             	xor    rax,rax
+  77:	47 0f b1 44 2e 34    	cmpxchg DWORD PTR [r14+r13*1+0x34],r8d
+  7d:	48 31 c0             	xor    rax,rax
+  80:	47 0f b1 44 2e 38    	cmpxchg DWORD PTR [r14+r13*1+0x38],r8d
+  86:	48 31 c0             	xor    rax,rax
+  89:	47 0f b1 44 2e 3c    	cmpxchg DWORD PTR [r14+r13*1+0x3c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+28], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+32], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+36], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+40], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+44], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+48], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+52], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+56], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+60], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 32.0</li>
+<li>Core cycles: 79.88</li>
+<li>Reference cycles: 66.57</li>
+<li>UOPS_RETIRED.ANY: 112.0</li>
+<li>RETIRE_SLOTS: 112.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 15.98</li>
+<li>UOPS_PORT_1: 16.01</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  23:	48 31 c0             	xor    rax,rax
+  26:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  2c:	48 31 c0             	xor    rax,rax
+  2f:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  35:	48 31 c0             	xor    rax,rax
+  38:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  3e:	48 31 c0             	xor    rax,rax
+  41:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+  47:	48 31 c0             	xor    rax,rax
+  4a:	47 0f b1 44 2e 20    	cmpxchg DWORD PTR [r14+r13*1+0x20],r8d
+  50:	48 31 c0             	xor    rax,rax
+  53:	47 0f b1 44 2e 24    	cmpxchg DWORD PTR [r14+r13*1+0x24],r8d
+  59:	48 31 c0             	xor    rax,rax
+  5c:	47 0f b1 44 2e 28    	cmpxchg DWORD PTR [r14+r13*1+0x28],r8d
+  62:	48 31 c0             	xor    rax,rax
+  65:	47 0f b1 44 2e 2c    	cmpxchg DWORD PTR [r14+r13*1+0x2c],r8d
+  6b:	48 31 c0             	xor    rax,rax
+  6e:	47 0f b1 44 2e 30    	cmpxchg DWORD PTR [r14+r13*1+0x30],r8d
+  74:	48 31 c0             	xor    rax,rax
+  77:	47 0f b1 44 2e 34    	cmpxchg DWORD PTR [r14+r13*1+0x34],r8d
+  7d:	48 31 c0             	xor    rax,rax
+  80:	47 0f b1 44 2e 38    	cmpxchg DWORD PTR [r14+r13*1+0x38],r8d
+  86:	48 31 c0             	xor    rax,rax
+  89:	47 0f b1 44 2e 3c    	cmpxchg DWORD PTR [r14+r13*1+0x3c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+28], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+32], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+36], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+40], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+44], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+48], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+52], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+56], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+60], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 34.0</li>
+<li>Core cycles: 81.01</li>
+<li>Reference cycles: 67.5</li>
+<li>UOPS_RETIRED.ANY: 114.0</li>
+<li>RETIRE_SLOTS: 114.0</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 17.0</li>
+<li>UOPS_PORT_1: 24.0</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	48 31 c0             	xor    rax,rax
+   3:	47 0f b1 04 2e       	cmpxchg DWORD PTR [r14+r13*1],r8d
+   8:	48 31 c0             	xor    rax,rax
+   b:	47 0f b1 44 2e 04    	cmpxchg DWORD PTR [r14+r13*1+0x4],r8d
+  11:	48 31 c0             	xor    rax,rax
+  14:	47 0f b1 44 2e 08    	cmpxchg DWORD PTR [r14+r13*1+0x8],r8d
+  1a:	48 31 c0             	xor    rax,rax
+  1d:	47 0f b1 44 2e 0c    	cmpxchg DWORD PTR [r14+r13*1+0xc],r8d
+  23:	48 31 c0             	xor    rax,rax
+  26:	47 0f b1 44 2e 10    	cmpxchg DWORD PTR [r14+r13*1+0x10],r8d
+  2c:	48 31 c0             	xor    rax,rax
+  2f:	47 0f b1 44 2e 14    	cmpxchg DWORD PTR [r14+r13*1+0x14],r8d
+  35:	48 31 c0             	xor    rax,rax
+  38:	47 0f b1 44 2e 18    	cmpxchg DWORD PTR [r14+r13*1+0x18],r8d
+  3e:	48 31 c0             	xor    rax,rax
+  41:	47 0f b1 44 2e 1c    	cmpxchg DWORD PTR [r14+r13*1+0x1c],r8d
+  47:	48 31 c0             	xor    rax,rax
+  4a:	47 0f b1 44 2e 20    	cmpxchg DWORD PTR [r14+r13*1+0x20],r8d
+  50:	48 31 c0             	xor    rax,rax
+  53:	47 0f b1 44 2e 24    	cmpxchg DWORD PTR [r14+r13*1+0x24],r8d
+  59:	48 31 c0             	xor    rax,rax
+  5c:	47 0f b1 44 2e 28    	cmpxchg DWORD PTR [r14+r13*1+0x28],r8d
+  62:	48 31 c0             	xor    rax,rax
+  65:	47 0f b1 44 2e 2c    	cmpxchg DWORD PTR [r14+r13*1+0x2c],r8d
+  6b:	48 31 c0             	xor    rax,rax
+  6e:	47 0f b1 44 2e 30    	cmpxchg DWORD PTR [r14+r13*1+0x30],r8d
+  74:	48 31 c0             	xor    rax,rax
+  77:	47 0f b1 44 2e 34    	cmpxchg DWORD PTR [r14+r13*1+0x34],r8d
+  7d:	48 31 c0             	xor    rax,rax
+  80:	47 0f b1 44 2e 38    	cmpxchg DWORD PTR [r14+r13*1+0x38],r8d
+  86:	48 31 c0             	xor    rax,rax
+  89:	47 0f b1 44 2e 3c    	cmpxchg DWORD PTR [r14+r13*1+0x3c],r8d
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;XOR RAX, RAX; CMPXCHG dword ptr [R14+R13], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+4], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+8], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+12], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+16], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+20], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+24], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+28], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+32], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+36], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+40], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+44], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+48], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+52], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+56], R8D; XOR RAX, RAX; CMPXCHG dword ptr [R14+R13+60], R8D&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 32.2</li>
+<li>Core cycles: 80.11</li>
+<li>Reference cycles: 66.76</li>
+<li>UOPS_RETIRED.ANY: 112.2</li>
+<li>RETIRE_SLOTS: 112.2</li>
+<li>UOPS_MS: 16.0</li>
+<li>UOPS_PORT_0: 16.1</li>
+<li>UOPS_PORT_1: 23.92</li>
+<li>UOPS_PORT_2: 16.0</li>
+<li>UOPS_PORT_3: 16.0</li>
+<li>UOPS_PORT_4: 16.0</li>
+<li>UOPS_PORT_5: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>INST_DECODED.DEC0: 16.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

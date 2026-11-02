@@ -1,0 +1,289 @@
+<html>
+<head>
+<title>MUL (M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>MUL (M64) - Throughput and Uops (IACA 2.1)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 8.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 0.0    0.0  | 0.0  | 0.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14]
+Total Num Of Uops: 3
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Port0, Port1, PORT2_AGU, Port2_DATA, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+Total Num Of Uops: 4
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 128.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 16.0 | 16.0   16.0 | 0.0    0.0  | 0.0  | 0.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x8]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x10]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x18]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x20]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x28]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x30]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x38]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x40]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x48]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x50]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x58]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x60]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x68]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x70]
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x78]
+Total Num Of Uops: 48
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: Port0, Port1, PORT2_AGU, Port2_DATA, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 16.0 | 16.0   16.0 | 0.0    0.0  | 0.0  | 16.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x8]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x10]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x18]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x20]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x28]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x30]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x38]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x40]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x48]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x50]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x58]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x60]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x68]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x70]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+0x78]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+Total Num Of Uops: 64
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 8.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 0.0    0.0  | 0.0  | 0.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1]
+Total Num Of Uops: 3
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: FrontEnd, Port0, Port1, PORT2_AGU, Port2_DATA, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+Total Num Of Uops: 4
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 128.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 16.0 | 16.0   16.0 | 0.0    0.0  | 0.0  | 0.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x8]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x10]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x18]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x20]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x28]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x30]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x38]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x40]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x48]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x50]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x58]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x60]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x68]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x70]
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x78]
+Total Num Of Uops: 48
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: FrontEnd, Port0, Port1, PORT2_AGU, Port2_DATA, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 16.0   0.0  | 16.0 | 16.0   16.0 | 0.0    0.0  | 0.0  | 16.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x8]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x10]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x18]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x20]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x28]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x30]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x38]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x40]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x48]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x50]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x58]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x60]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x68]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x70]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+|   3    | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14+r13*1+0x78]
+|   1    |           |     |           |           |     | 1.0 | CP | xor rax, rax
+Total Num Of Uops: 64
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Port0, Port1, PORT2_AGU, Port2_DATA
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 1.0    1.0  | 0.0    0.0  | 0.0  | 0.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   3^   | 1.0       | 1.0 | 1.0   1.0 |           |     |     | CP | mul qword ptr [r14]
+Total Num Of Uops: 3
+</pre>
+</body>
+</html>
