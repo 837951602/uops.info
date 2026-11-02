@@ -1,0 +1,816 @@
+<html>
+<head>
+<title>MOV (R16, I16)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>MOV (R16, I16) - Throughput and Uops</h1>
+<hr>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;MOV R8W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.79</li>
+<li>Reference cycles: 1.65</li>
+<li>UOPS_EXECUTED.THREAD: 1.0</li>
+<li>RETIRE_SLOTS: 1.0</li>
+<li>UOPS_MITE: 1.0</li>
+<li>UOPS_MS: 0.05</li>
+<li>UOPS_PORT_0: 0.1</li>
+<li>UOPS_PORT_1: 0.3</li>
+<li>UOPS_PORT_5: 0.3</li>
+<li>UOPS_PORT_6: 0.3</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 3.0</li>
+<li>UOPS_MITE>=1: 0.31</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.6</li>
+<li>UOPS_EXECUTED.THREAD: 1.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.25</li>
+<li>UOPS_PORT_1: 0.25</li>
+<li>UOPS_PORT_5: 0.25</li>
+<li>UOPS_PORT_6: 0.35</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.59</li>
+<li>UOPS_EXECUTED.THREAD: 1.1</li>
+<li>RETIRE_SLOTS: 1.1</li>
+<li>UOPS_MITE: 0.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.25</li>
+<li>UOPS_PORT_1: 0.25</li>
+<li>UOPS_PORT_5: 0.25</li>
+<li>UOPS_PORT_6: 0.35</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.01</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.59</li>
+<li>UOPS_EXECUTED.THREAD: 1.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.25</li>
+<li>UOPS_PORT_1: 0.25</li>
+<li>UOPS_PORT_5: 0.25</li>
+<li>UOPS_PORT_6: 0.26</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.03</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=100, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 0.6</li>
+<li>UOPS_EXECUTED.THREAD: 1.01</li>
+<li>RETIRE_SLOTS: 1.01</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.25</li>
+<li>UOPS_PORT_1: 0.25</li>
+<li>UOPS_PORT_5: 0.25</li>
+<li>UOPS_PORT_6: 0.27</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.03</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 13.25</li>
+<li>Reference cycles: 7.91</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+<li>RETIRE_SLOTS: 4.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.25</li>
+<li>UOPS_PORT_1: 1.25</li>
+<li>UOPS_PORT_5: 1.25</li>
+<li>UOPS_PORT_6: 1.25</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 12.0</li>
+<li>UOPS_MITE>=1: 1.25</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 1.29</li>
+<li>Reference cycles: 0.77</li>
+<li>UOPS_EXECUTED.THREAD: 4.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.01</li>
+<li>UOPS_PORT_0: 1.06</li>
+<li>UOPS_PORT_1: 1.08</li>
+<li>UOPS_PORT_5: 1.09</li>
+<li>UOPS_PORT_6: 1.28</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.01</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=2, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	66 41 b9 00 01       	mov    r9w,0x100
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	66 41 ba 00 01       	mov    r10w,0x100
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	66 41 bb 00 01       	mov    r11w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256; .byte 0x40,0x40,0x40; MOV R9W, 256; .byte 0x40,0x40,0x40; MOV R10W, 256; .byte 0x40,0x40,0x40; MOV R11W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 1.29</li>
+<li>Reference cycles: 0.77</li>
+<li>UOPS_EXECUTED.THREAD: 4.5</li>
+<li>RETIRE_SLOTS: 4.5</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.01</li>
+<li>UOPS_PORT_0: 1.06</li>
+<li>UOPS_PORT_1: 1.08</li>
+<li>UOPS_PORT_5: 1.09</li>
+<li>UOPS_PORT_6: 1.27</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.01</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 1.2</li>
+<li>Reference cycles: 0.71</li>
+<li>UOPS_EXECUTED.THREAD: 4.05</li>
+<li>RETIRE_SLOTS: 4.05</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.01</li>
+<li>UOPS_PORT_0: 0.99</li>
+<li>UOPS_PORT_1: 1.0</li>
+<li>UOPS_PORT_5: 1.01</li>
+<li>UOPS_PORT_6: 1.05</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.13</li>
+<li>UOPS_MITE>=1: 0.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=20, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	66 41 b9 00 01       	mov    r9w,0x100
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	66 41 ba 00 01       	mov    r10w,0x100
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	66 41 bb 00 01       	mov    r11w,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256; .byte 0x40,0x40,0x40; MOV R9W, 256; .byte 0x40,0x40,0x40; MOV R10W, 256; .byte 0x40,0x40,0x40; MOV R11W, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 1.2</li>
+<li>Reference cycles: 0.71</li>
+<li>UOPS_EXECUTED.THREAD: 4.05</li>
+<li>RETIRE_SLOTS: 4.05</li>
+<li>UOPS_MITE: 0.04</li>
+<li>UOPS_MS: 0.01</li>
+<li>UOPS_PORT_0: 0.99</li>
+<li>UOPS_PORT_1: 1.0</li>
+<li>UOPS_PORT_5: 1.01</li>
+<li>UOPS_PORT_6: 1.05</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.12</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+  14:	66 41 bc 00 01       	mov    r12w,0x100
+  19:	66 41 bd 00 01       	mov    r13w,0x100
+  1e:	66 41 be 00 01       	mov    r14w,0x100
+  23:	66 bb 00 01          	mov    bx,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256; MOV R12W, 256; MOV R13W, 256; MOV R14W, 256; MOV BX, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 26.44</li>
+<li>Reference cycles: 15.82</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+<li>RETIRE_SLOTS: 8.0</li>
+<li>UOPS_MITE: 8.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 0.69</li>
+<li>UOPS_PORT_1: 2.43</li>
+<li>UOPS_PORT_5: 2.44</li>
+<li>UOPS_PORT_6: 2.44</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 24.0</li>
+<li>UOPS_MITE>=1: 2.44</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+  14:	66 41 bc 00 01       	mov    r12w,0x100
+  19:	66 41 bd 00 01       	mov    r13w,0x100
+  1e:	66 41 be 00 01       	mov    r14w,0x100
+  23:	66 bb 00 01          	mov    bx,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256; MOV R12W, 256; MOV R13W, 256; MOV R14W, 256; MOV BX, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 2.69</li>
+<li>Reference cycles: 1.59</li>
+<li>UOPS_EXECUTED.THREAD: 9.03</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 2.19</li>
+<li>UOPS_PORT_1: 2.23</li>
+<li>UOPS_PORT_5: 2.26</li>
+<li>UOPS_PORT_6: 2.35</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.02</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	66 41 b9 00 01       	mov    r9w,0x100
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	66 41 ba 00 01       	mov    r10w,0x100
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	66 41 bb 00 01       	mov    r11w,0x100
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	66 41 bc 00 01       	mov    r12w,0x100
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	66 41 bd 00 01       	mov    r13w,0x100
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	66 41 be 00 01       	mov    r14w,0x100
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	66 bb 00 01          	mov    bx,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256; .byte 0x40,0x40,0x40; MOV R9W, 256; .byte 0x40,0x40,0x40; MOV R10W, 256; .byte 0x40,0x40,0x40; MOV R11W, 256; .byte 0x40,0x40,0x40; MOV R12W, 256; .byte 0x40,0x40,0x40; MOV R13W, 256; .byte 0x40,0x40,0x40; MOV R14W, 256; .byte 0x40,0x40,0x40; MOV BX, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 2.37</li>
+<li>Reference cycles: 1.41</li>
+<li>UOPS_EXECUTED.THREAD: 9.03</li>
+<li>RETIRE_SLOTS: 9.0</li>
+<li>UOPS_MITE: 0.02</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 2.2</li>
+<li>UOPS_PORT_1: 2.23</li>
+<li>UOPS_PORT_5: 2.25</li>
+<li>UOPS_PORT_6: 2.35</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.02</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+  14:	66 41 bc 00 01       	mov    r12w,0x100
+  19:	66 41 bd 00 01       	mov    r13w,0x100
+  1e:	66 41 be 00 01       	mov    r14w,0x100
+  23:	66 bb 00 01          	mov    bx,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256; MOV R12W, 256; MOV R13W, 256; MOV R14W, 256; MOV BX, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 2.05</li>
+<li>Reference cycles: 1.2</li>
+<li>UOPS_EXECUTED.THREAD: 8.1</li>
+<li>RETIRE_SLOTS: 8.1</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 2.02</li>
+<li>UOPS_PORT_5: 2.03</li>
+<li>UOPS_PORT_6: 2.04</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.25</li>
+<li>UOPS_MITE>=1: 0.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	66 41 b9 00 01       	mov    r9w,0x100
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	66 41 ba 00 01       	mov    r10w,0x100
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	66 41 bb 00 01       	mov    r11w,0x100
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	66 41 bc 00 01       	mov    r12w,0x100
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	66 41 bd 00 01       	mov    r13w,0x100
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	66 41 be 00 01       	mov    r14w,0x100
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	66 bb 00 01          	mov    bx,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256; .byte 0x40,0x40,0x40; MOV R9W, 256; .byte 0x40,0x40,0x40; MOV R10W, 256; .byte 0x40,0x40,0x40; MOV R11W, 256; .byte 0x40,0x40,0x40; MOV R12W, 256; .byte 0x40,0x40,0x40; MOV R13W, 256; .byte 0x40,0x40,0x40; MOV R14W, 256; .byte 0x40,0x40,0x40; MOV BX, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 2.05</li>
+<li>Reference cycles: 1.22</li>
+<li>UOPS_EXECUTED.THREAD: 8.1</li>
+<li>RETIRE_SLOTS: 8.1</li>
+<li>UOPS_MITE: 0.08</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 2.0</li>
+<li>UOPS_PORT_1: 2.03</li>
+<li>UOPS_PORT_5: 2.03</li>
+<li>UOPS_PORT_6: 2.04</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.24</li>
+<li>UOPS_MITE>=1: 0.03</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 14 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+  14:	66 41 bc 00 01       	mov    r12w,0x100
+  19:	66 41 bd 00 01       	mov    r13w,0x100
+  1e:	66 41 be 00 01       	mov    r14w,0x100
+  23:	66 bb 00 01          	mov    bx,0x100
+  27:	66 b9 00 01          	mov    cx,0x100
+  2b:	66 ba 00 01          	mov    dx,0x100
+  2f:	66 b8 00 01          	mov    ax,0x100
+  33:	66 bf 00 01          	mov    di,0x100
+  37:	66 be 00 01          	mov    si,0x100
+  3b:	66 bd 00 01          	mov    bp,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256; MOV R12W, 256; MOV R13W, 256; MOV R14W, 256; MOV BX, 256; MOV CX, 256; MOV DX, 256; MOV AX, 256; MOV DI, 256; MOV SI, 256; MOV BP, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.0</li>
+<li>Core cycles: 45.94</li>
+<li>Reference cycles: 27.74</li>
+<li>UOPS_EXECUTED.THREAD: 14.0</li>
+<li>RETIRE_SLOTS: 14.0</li>
+<li>UOPS_MITE: 14.0</li>
+<li>UOPS_MS: 0.0</li>
+<li>UOPS_PORT_0: 2.19</li>
+<li>UOPS_PORT_1: 3.93</li>
+<li>UOPS_PORT_5: 3.94</li>
+<li>UOPS_PORT_6: 3.94</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 42.0</li>
+<li>UOPS_MITE>=1: 3.94</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+  14:	66 41 bc 00 01       	mov    r12w,0x100
+  19:	66 41 bd 00 01       	mov    r13w,0x100
+  1e:	66 41 be 00 01       	mov    r14w,0x100
+  23:	66 bb 00 01          	mov    bx,0x100
+  27:	66 b9 00 01          	mov    cx,0x100
+  2b:	66 ba 00 01          	mov    dx,0x100
+  2f:	66 b8 00 01          	mov    ax,0x100
+  33:	66 bf 00 01          	mov    di,0x100
+  37:	66 be 00 01          	mov    si,0x100
+  3b:	66 bd 00 01          	mov    bp,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256; MOV R12W, 256; MOV R13W, 256; MOV R14W, 256; MOV BX, 256; MOV CX, 256; MOV DX, 256; MOV AX, 256; MOV DI, 256; MOV SI, 256; MOV BP, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 3.78</li>
+<li>Reference cycles: 2.26</li>
+<li>UOPS_EXECUTED.THREAD: 15.03</li>
+<li>RETIRE_SLOTS: 15.0</li>
+<li>UOPS_MITE: 0.03</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 3.76</li>
+<li>UOPS_PORT_1: 3.76</li>
+<li>UOPS_PORT_5: 3.76</li>
+<li>UOPS_PORT_6: 3.76</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.04</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000, unroll_count=1, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	66 41 b9 00 01       	mov    r9w,0x100
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	66 41 ba 00 01       	mov    r10w,0x100
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	66 41 bb 00 01       	mov    r11w,0x100
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	66 41 bc 00 01       	mov    r12w,0x100
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	66 41 bd 00 01       	mov    r13w,0x100
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	66 41 be 00 01       	mov    r14w,0x100
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	66 bb 00 01          	mov    bx,0x100
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	66 b9 00 01          	mov    cx,0x100
+  46:	40                   	rex
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	66 ba 00 01          	mov    dx,0x100
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	66 b8 00 01          	mov    ax,0x100
+  54:	40                   	rex
+  55:	40                   	rex
+  56:	40                   	rex
+  57:	66 bf 00 01          	mov    di,0x100
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	66 be 00 01          	mov    si,0x100
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	66 bd 00 01          	mov    bp,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256; .byte 0x40,0x40,0x40; MOV R9W, 256; .byte 0x40,0x40,0x40; MOV R10W, 256; .byte 0x40,0x40,0x40; MOV R11W, 256; .byte 0x40,0x40,0x40; MOV R12W, 256; .byte 0x40,0x40,0x40; MOV R13W, 256; .byte 0x40,0x40,0x40; MOV R14W, 256; .byte 0x40,0x40,0x40; MOV BX, 256; .byte 0x40,0x40,0x40; MOV CX, 256; .byte 0x40,0x40,0x40; MOV DX, 256; .byte 0x40,0x40,0x40; MOV AX, 256; .byte 0x40,0x40,0x40; MOV DI, 256; .byte 0x40,0x40,0x40; MOV SI, 256; .byte 0x40,0x40,0x40; MOV BP, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 3.77</li>
+<li>Reference cycles: 2.26</li>
+<li>UOPS_EXECUTED.THREAD: 15.03</li>
+<li>RETIRE_SLOTS: 15.0</li>
+<li>UOPS_MITE: 0.01</li>
+<li>UOPS_MS: 0.03</li>
+<li>UOPS_PORT_0: 3.76</li>
+<li>UOPS_PORT_1: 3.76</li>
+<li>UOPS_PORT_5: 3.76</li>
+<li>UOPS_PORT_6: 3.76</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.04</li>
+<li>UOPS_MITE>=1: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 b8 00 01       	mov    r8w,0x100
+   5:	66 41 b9 00 01       	mov    r9w,0x100
+   a:	66 41 ba 00 01       	mov    r10w,0x100
+   f:	66 41 bb 00 01       	mov    r11w,0x100
+  14:	66 41 bc 00 01       	mov    r12w,0x100
+  19:	66 41 bd 00 01       	mov    r13w,0x100
+  1e:	66 41 be 00 01       	mov    r14w,0x100
+  23:	66 bb 00 01          	mov    bx,0x100
+  27:	66 b9 00 01          	mov    cx,0x100
+  2b:	66 ba 00 01          	mov    dx,0x100
+  2f:	66 b8 00 01          	mov    ax,0x100
+  33:	66 bf 00 01          	mov    di,0x100
+  37:	66 be 00 01          	mov    si,0x100
+  3b:	66 bd 00 01          	mov    bp,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;MOV R8W, 256; MOV R9W, 256; MOV R10W, 256; MOV R11W, 256; MOV R12W, 256; MOV R13W, 256; MOV R14W, 256; MOV BX, 256; MOV CX, 256; MOV DX, 256; MOV AX, 256; MOV DI, 256; MOV SI, 256; MOV BP, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.2</li>
+<li>Core cycles: 3.69</li>
+<li>Reference cycles: 2.2</li>
+<li>UOPS_EXECUTED.THREAD: 14.1</li>
+<li>RETIRE_SLOTS: 14.1</li>
+<li>UOPS_MITE: 0.14</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 3.52</li>
+<li>UOPS_PORT_1: 3.53</li>
+<li>UOPS_PORT_5: 3.53</li>
+<li>UOPS_PORT_6: 3.53</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.42</li>
+<li>UOPS_MITE>=1: 0.04</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100, unroll_count=10, and padding (redundant prefixes)</h4>
+<ul>
+<li>Code: <pre>   0:	40                   	rex
+   1:	40                   	rex
+   2:	40                   	rex
+   3:	66 41 b8 00 01       	mov    r8w,0x100
+   8:	40                   	rex
+   9:	40                   	rex
+   a:	40                   	rex
+   b:	66 41 b9 00 01       	mov    r9w,0x100
+  10:	40                   	rex
+  11:	40                   	rex
+  12:	40                   	rex
+  13:	66 41 ba 00 01       	mov    r10w,0x100
+  18:	40                   	rex
+  19:	40                   	rex
+  1a:	40                   	rex
+  1b:	66 41 bb 00 01       	mov    r11w,0x100
+  20:	40                   	rex
+  21:	40                   	rex
+  22:	40                   	rex
+  23:	66 41 bc 00 01       	mov    r12w,0x100
+  28:	40                   	rex
+  29:	40                   	rex
+  2a:	40                   	rex
+  2b:	66 41 bd 00 01       	mov    r13w,0x100
+  30:	40                   	rex
+  31:	40                   	rex
+  32:	40                   	rex
+  33:	66 41 be 00 01       	mov    r14w,0x100
+  38:	40                   	rex
+  39:	40                   	rex
+  3a:	40                   	rex
+  3b:	66 bb 00 01          	mov    bx,0x100
+  3f:	40                   	rex
+  40:	40                   	rex
+  41:	40                   	rex
+  42:	66 b9 00 01          	mov    cx,0x100
+  46:	40                   	rex
+  47:	40                   	rex
+  48:	40                   	rex
+  49:	66 ba 00 01          	mov    dx,0x100
+  4d:	40                   	rex
+  4e:	40                   	rex
+  4f:	40                   	rex
+  50:	66 b8 00 01          	mov    ax,0x100
+  54:	40                   	rex
+  55:	40                   	rex
+  56:	40                   	rex
+  57:	66 bf 00 01          	mov    di,0x100
+  5b:	40                   	rex
+  5c:	40                   	rex
+  5d:	40                   	rex
+  5e:	66 be 00 01          	mov    si,0x100
+  62:	40                   	rex
+  63:	40                   	rex
+  64:	40                   	rex
+  65:	66 bd 00 01          	mov    bp,0x100
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;.byte 0x40,0x40,0x40; MOV R8W, 256; .byte 0x40,0x40,0x40; MOV R9W, 256; .byte 0x40,0x40,0x40; MOV R10W, 256; .byte 0x40,0x40,0x40; MOV R11W, 256; .byte 0x40,0x40,0x40; MOV R12W, 256; .byte 0x40,0x40,0x40; MOV R13W, 256; .byte 0x40,0x40,0x40; MOV R14W, 256; .byte 0x40,0x40,0x40; MOV BX, 256; .byte 0x40,0x40,0x40; MOV CX, 256; .byte 0x40,0x40,0x40; MOV DX, 256; .byte 0x40,0x40,0x40; MOV AX, 256; .byte 0x40,0x40,0x40; MOV DI, 256; .byte 0x40,0x40,0x40; MOV SI, 256; .byte 0x40,0x40,0x40; MOV BP, 256&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 14.2</li>
+<li>Core cycles: 3.72</li>
+<li>Reference cycles: 2.19</li>
+<li>UOPS_EXECUTED.THREAD: 14.1</li>
+<li>RETIRE_SLOTS: 14.1</li>
+<li>UOPS_MITE: 0.15</li>
+<li>UOPS_MS: 0.02</li>
+<li>UOPS_PORT_0: 3.51</li>
+<li>UOPS_PORT_1: 3.52</li>
+<li>UOPS_PORT_5: 3.54</li>
+<li>UOPS_PORT_6: 3.54</li>
+<li>UOPS_PORT_23: 0.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.44</li>
+<li>UOPS_MITE>=1: 0.06</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
