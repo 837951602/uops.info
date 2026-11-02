@@ -1,0 +1,1140 @@
+<html>
+<head>
+<title>VPCONFLICTD (ZMM, ZMM)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VPCONFLICTD (ZMM, ZMM) - Throughput and Uops</h1>
+<hr>
+<h2 id="distinctRegs">With different registers for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 19.17</li>
+<li>Reference cycles: 12.37</li>
+<li>UOPS_EXECUTED.THREAD: 38.01</li>
+<li>RETIRE_SLOTS: 38.0</li>
+<li>UOPS_MITE: 3.0</li>
+<li>UOPS_MS: 35.0</li>
+<li>UOPS_PORT_0: 17.87</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 19.12</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500, no inner loop, and 1 NOP</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1;  nop&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 19.13</li>
+<li>Reference cycles: 12.43</li>
+<li>UOPS_EXECUTED.THREAD: 38.0</li>
+<li>RETIRE_SLOTS: 39.0</li>
+<li>UOPS_MITE: 4.0</li>
+<li>UOPS_MS: 35.0</li>
+<li>UOPS_PORT_0: 17.88</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 19.12</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 19.0</li>
+<li>Reference cycles: 11.19</li>
+<li>UOPS_EXECUTED.THREAD: 38.1</li>
+<li>RETIRE_SLOTS: 38.1</li>
+<li>UOPS_MITE: 3.1</li>
+<li>UOPS_MS: 35.01</li>
+<li>UOPS_PORT_0: 18.0</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.1</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 19.0</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 18.98</li>
+<li>Reference cycles: 11.17</li>
+<li>UOPS_EXECUTED.THREAD: 38.01</li>
+<li>RETIRE_SLOTS: 38.01</li>
+<li>UOPS_MITE: 3.01</li>
+<li>UOPS_MS: 35.0</li>
+<li>UOPS_PORT_0: 18.02</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.01</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 18.98</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 76.61</li>
+<li>Reference cycles: 51.2</li>
+<li>UOPS_EXECUTED.THREAD: 152.0</li>
+<li>RETIRE_SLOTS: 152.0</li>
+<li>UOPS_MITE: 12.07</li>
+<li>UOPS_MS: 140.0</li>
+<li>UOPS_PORT_0: 71.48</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 4.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 76.52</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 75.95</li>
+<li>Reference cycles: 44.72</li>
+<li>UOPS_EXECUTED.THREAD: 152.5</li>
+<li>RETIRE_SLOTS: 152.5</li>
+<li>UOPS_MITE: 12.49</li>
+<li>UOPS_MS: 140.05</li>
+<li>UOPS_PORT_0: 72.06</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 4.5</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 75.95</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 75.91</li>
+<li>Reference cycles: 47.6</li>
+<li>UOPS_EXECUTED.THREAD: 152.05</li>
+<li>RETIRE_SLOTS: 152.05</li>
+<li>UOPS_MITE: 12.03</li>
+<li>UOPS_MS: 140.0</li>
+<li>UOPS_PORT_0: 72.1</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 4.05</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 75.9</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.05</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+  18:	62 f2 7d 48 c4 e9    	vpconflictd zmm5,zmm1
+  1e:	62 f2 7d 48 c4 f1    	vpconflictd zmm6,zmm1
+  24:	62 f2 7d 48 c4 f9    	vpconflictd zmm7,zmm1
+  2a:	62 72 7d 48 c4 c1    	vpconflictd zmm8,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1; VPCONFLICTD ZMM5, ZMM1; VPCONFLICTD ZMM6, ZMM1; VPCONFLICTD ZMM7, ZMM1; VPCONFLICTD ZMM8, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 153.15</li>
+<li>Reference cycles: 98.8</li>
+<li>UOPS_EXECUTED.THREAD: 304.0</li>
+<li>RETIRE_SLOTS: 304.0</li>
+<li>UOPS_MITE: 24.05</li>
+<li>UOPS_MS: 279.99</li>
+<li>UOPS_PORT_0: 142.93</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 8.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 152.93</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+  18:	62 f2 7d 48 c4 e9    	vpconflictd zmm5,zmm1
+  1e:	62 f2 7d 48 c4 f1    	vpconflictd zmm6,zmm1
+  24:	62 f2 7d 48 c4 f9    	vpconflictd zmm7,zmm1
+  2a:	62 72 7d 48 c4 c1    	vpconflictd zmm8,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1; VPCONFLICTD ZMM5, ZMM1; VPCONFLICTD ZMM6, ZMM1; VPCONFLICTD ZMM7, ZMM1; VPCONFLICTD ZMM8, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 151.91</li>
+<li>Reference cycles: 98.11</li>
+<li>UOPS_EXECUTED.THREAD: 305.0</li>
+<li>RETIRE_SLOTS: 305.0</li>
+<li>UOPS_MITE: 24.98</li>
+<li>UOPS_MS: 280.1</li>
+<li>UOPS_PORT_0: 144.11</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 9.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 151.87</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+  18:	62 f2 7d 48 c4 e9    	vpconflictd zmm5,zmm1
+  1e:	62 f2 7d 48 c4 f1    	vpconflictd zmm6,zmm1
+  24:	62 f2 7d 48 c4 f9    	vpconflictd zmm7,zmm1
+  2a:	62 72 7d 48 c4 c1    	vpconflictd zmm8,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1; VPCONFLICTD ZMM5, ZMM1; VPCONFLICTD ZMM6, ZMM1; VPCONFLICTD ZMM7, ZMM1; VPCONFLICTD ZMM8, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 151.84</li>
+<li>Reference cycles: 98.83</li>
+<li>UOPS_EXECUTED.THREAD: 304.11</li>
+<li>RETIRE_SLOTS: 304.1</li>
+<li>UOPS_MITE: 24.06</li>
+<li>UOPS_MS: 280.0</li>
+<li>UOPS_PORT_0: 144.19</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 8.1</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 151.82</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.1</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+  18:	62 f2 7d 48 c4 e9    	vpconflictd zmm5,zmm1
+  1e:	62 f2 7d 48 c4 f1    	vpconflictd zmm6,zmm1
+  24:	62 f2 7d 48 c4 f9    	vpconflictd zmm7,zmm1
+  2a:	62 72 7d 48 c4 c1    	vpconflictd zmm8,zmm1
+  30:	62 72 7d 48 c4 c9    	vpconflictd zmm9,zmm1
+  36:	62 72 7d 48 c4 d1    	vpconflictd zmm10,zmm1
+  3c:	62 72 7d 48 c4 d9    	vpconflictd zmm11,zmm1
+  42:	62 72 7d 48 c4 e1    	vpconflictd zmm12,zmm1
+  48:	62 e2 7d 48 c4 c1    	vpconflictd zmm16,zmm1
+  4e:	62 e2 7d 48 c4 c9    	vpconflictd zmm17,zmm1
+  54:	62 e2 7d 48 c4 d1    	vpconflictd zmm18,zmm1
+  5a:	62 e2 7d 48 c4 d9    	vpconflictd zmm19,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1; VPCONFLICTD ZMM5, ZMM1; VPCONFLICTD ZMM6, ZMM1; VPCONFLICTD ZMM7, ZMM1; VPCONFLICTD ZMM8, ZMM1; VPCONFLICTD ZMM9, ZMM1; VPCONFLICTD ZMM10, ZMM1; VPCONFLICTD ZMM11, ZMM1; VPCONFLICTD ZMM12, ZMM1; VPCONFLICTD ZMM16, ZMM1; VPCONFLICTD ZMM17, ZMM1; VPCONFLICTD ZMM18, ZMM1; VPCONFLICTD ZMM19, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 306.17</li>
+<li>Reference cycles: 204.13</li>
+<li>UOPS_EXECUTED.THREAD: 608.05</li>
+<li>RETIRE_SLOTS: 608.0</li>
+<li>UOPS_MITE: 48.13</li>
+<li>UOPS_MS: 559.99</li>
+<li>UOPS_PORT_0: 285.92</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 16.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 306.0</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+  18:	62 f2 7d 48 c4 e9    	vpconflictd zmm5,zmm1
+  1e:	62 f2 7d 48 c4 f1    	vpconflictd zmm6,zmm1
+  24:	62 f2 7d 48 c4 f9    	vpconflictd zmm7,zmm1
+  2a:	62 72 7d 48 c4 c1    	vpconflictd zmm8,zmm1
+  30:	62 72 7d 48 c4 c9    	vpconflictd zmm9,zmm1
+  36:	62 72 7d 48 c4 d1    	vpconflictd zmm10,zmm1
+  3c:	62 72 7d 48 c4 d9    	vpconflictd zmm11,zmm1
+  42:	62 72 7d 48 c4 e1    	vpconflictd zmm12,zmm1
+  48:	62 e2 7d 48 c4 c1    	vpconflictd zmm16,zmm1
+  4e:	62 e2 7d 48 c4 c9    	vpconflictd zmm17,zmm1
+  54:	62 e2 7d 48 c4 d1    	vpconflictd zmm18,zmm1
+  5a:	62 e2 7d 48 c4 d9    	vpconflictd zmm19,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1; VPCONFLICTD ZMM5, ZMM1; VPCONFLICTD ZMM6, ZMM1; VPCONFLICTD ZMM7, ZMM1; VPCONFLICTD ZMM8, ZMM1; VPCONFLICTD ZMM9, ZMM1; VPCONFLICTD ZMM10, ZMM1; VPCONFLICTD ZMM11, ZMM1; VPCONFLICTD ZMM12, ZMM1; VPCONFLICTD ZMM16, ZMM1; VPCONFLICTD ZMM17, ZMM1; VPCONFLICTD ZMM18, ZMM1; VPCONFLICTD ZMM19, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 303.75</li>
+<li>Reference cycles: 178.85</li>
+<li>UOPS_EXECUTED.THREAD: 609.0</li>
+<li>RETIRE_SLOTS: 609.01</li>
+<li>UOPS_MITE: 48.98</li>
+<li>UOPS_MS: 560.1</li>
+<li>UOPS_PORT_0: 288.19</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 17.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 303.81</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c1    	vpconflictd zmm0,zmm1
+   6:	62 f2 7d 48 c4 d1    	vpconflictd zmm2,zmm1
+   c:	62 f2 7d 48 c4 d9    	vpconflictd zmm3,zmm1
+  12:	62 f2 7d 48 c4 e1    	vpconflictd zmm4,zmm1
+  18:	62 f2 7d 48 c4 e9    	vpconflictd zmm5,zmm1
+  1e:	62 f2 7d 48 c4 f1    	vpconflictd zmm6,zmm1
+  24:	62 f2 7d 48 c4 f9    	vpconflictd zmm7,zmm1
+  2a:	62 72 7d 48 c4 c1    	vpconflictd zmm8,zmm1
+  30:	62 72 7d 48 c4 c9    	vpconflictd zmm9,zmm1
+  36:	62 72 7d 48 c4 d1    	vpconflictd zmm10,zmm1
+  3c:	62 72 7d 48 c4 d9    	vpconflictd zmm11,zmm1
+  42:	62 72 7d 48 c4 e1    	vpconflictd zmm12,zmm1
+  48:	62 e2 7d 48 c4 c1    	vpconflictd zmm16,zmm1
+  4e:	62 e2 7d 48 c4 c9    	vpconflictd zmm17,zmm1
+  54:	62 e2 7d 48 c4 d1    	vpconflictd zmm18,zmm1
+  5a:	62 e2 7d 48 c4 d9    	vpconflictd zmm19,zmm1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM1, ZMM1, ZMM1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM1; VPCONFLICTD ZMM2, ZMM1; VPCONFLICTD ZMM3, ZMM1; VPCONFLICTD ZMM4, ZMM1; VPCONFLICTD ZMM5, ZMM1; VPCONFLICTD ZMM6, ZMM1; VPCONFLICTD ZMM7, ZMM1; VPCONFLICTD ZMM8, ZMM1; VPCONFLICTD ZMM9, ZMM1; VPCONFLICTD ZMM10, ZMM1; VPCONFLICTD ZMM11, ZMM1; VPCONFLICTD ZMM12, ZMM1; VPCONFLICTD ZMM16, ZMM1; VPCONFLICTD ZMM17, ZMM1; VPCONFLICTD ZMM18, ZMM1; VPCONFLICTD ZMM19, ZMM1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM1, ZMM1, ZMM1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 303.62</li>
+<li>Reference cycles: 178.8</li>
+<li>UOPS_EXECUTED.THREAD: 608.1</li>
+<li>RETIRE_SLOTS: 608.1</li>
+<li>UOPS_MITE: 48.08</li>
+<li>UOPS_MS: 560.09</li>
+<li>UOPS_PORT_0: 288.4</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 16.1</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 303.64</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.09</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="sameReg">With the same register for for different operands</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 26.43</li>
+<li>Reference cycles: 17.04</li>
+<li>UOPS_EXECUTED.THREAD: 38.0</li>
+<li>RETIRE_SLOTS: 38.0</li>
+<li>UOPS_MITE: 3.0</li>
+<li>UOPS_MS: 35.0</li>
+<li>UOPS_PORT_0: 17.97</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 19.03</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.0</li>
+</ul>
+</li></ul>
+<h4>With unroll_count=500, no inner loop, and 1 NOP</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0;  nop&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 26.44</li>
+<li>Reference cycles: 17.6</li>
+<li>UOPS_EXECUTED.THREAD: 38.0</li>
+<li>RETIRE_SLOTS: 39.0</li>
+<li>UOPS_MITE: 4.05</li>
+<li>UOPS_MS: 34.99</li>
+<li>UOPS_PORT_0: 18.09</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 18.93</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 2.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.2</li>
+<li>Core cycles: 26.39</li>
+<li>Reference cycles: 16.61</li>
+<li>UOPS_EXECUTED.THREAD: 38.1</li>
+<li>RETIRE_SLOTS: 38.1</li>
+<li>UOPS_MITE: 3.1</li>
+<li>UOPS_MS: 35.01</li>
+<li>UOPS_PORT_0: 18.03</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.1</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 18.97</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.1</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.02</li>
+<li>Core cycles: 26.41</li>
+<li>Reference cycles: 15.55</li>
+<li>UOPS_EXECUTED.THREAD: 38.01</li>
+<li>RETIRE_SLOTS: 38.01</li>
+<li>UOPS_MITE: 3.01</li>
+<li>UOPS_MS: 35.0</li>
+<li>UOPS_PORT_0: 18.04</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 1.01</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 18.95</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 1.01</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.0</li>
+<li>Core cycles: 76.57</li>
+<li>Reference cycles: 49.53</li>
+<li>UOPS_EXECUTED.THREAD: 152.0</li>
+<li>RETIRE_SLOTS: 152.0</li>
+<li>UOPS_MITE: 12.04</li>
+<li>UOPS_MS: 139.99</li>
+<li>UOPS_PORT_0: 71.46</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 4.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 76.52</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.02</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 5.0</li>
+<li>Core cycles: 75.95</li>
+<li>Reference cycles: 44.72</li>
+<li>UOPS_EXECUTED.THREAD: 152.5</li>
+<li>RETIRE_SLOTS: 152.5</li>
+<li>UOPS_MITE: 12.49</li>
+<li>UOPS_MS: 140.06</li>
+<li>UOPS_PORT_0: 72.06</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 4.5</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 75.95</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.5</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 4.1</li>
+<li>Core cycles: 75.92</li>
+<li>Reference cycles: 49.42</li>
+<li>UOPS_EXECUTED.THREAD: 152.05</li>
+<li>RETIRE_SLOTS: 152.05</li>
+<li>UOPS_MITE: 12.06</li>
+<li>UOPS_MS: 140.0</li>
+<li>UOPS_PORT_0: 72.11</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 4.05</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 75.9</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 4.05</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+  18:	62 f2 7d 48 c4 e4    	vpconflictd zmm4,zmm4
+  1e:	62 f2 7d 48 c4 ed    	vpconflictd zmm5,zmm5
+  24:	62 f2 7d 48 c4 f6    	vpconflictd zmm6,zmm6
+  2a:	62 f2 7d 48 c4 ff    	vpconflictd zmm7,zmm7
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3;
+VXORPS ZMM4, ZMM4, ZMM4;
+VXORPS ZMM5, ZMM5, ZMM5;
+VXORPS ZMM6, ZMM6, ZMM6;
+VXORPS ZMM7, ZMM7, ZMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3; VPCONFLICTD ZMM4, ZMM4; VPCONFLICTD ZMM5, ZMM5; VPCONFLICTD ZMM6, ZMM6; VPCONFLICTD ZMM7, ZMM7&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3; VXORPS ZMM4, ZMM4, ZMM4; VXORPS ZMM5, ZMM5, ZMM5; VXORPS ZMM6, ZMM6, ZMM6; VXORPS ZMM7, ZMM7, ZMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 153.28</li>
+<li>Reference cycles: 98.93</li>
+<li>UOPS_EXECUTED.THREAD: 304.02</li>
+<li>RETIRE_SLOTS: 304.0</li>
+<li>UOPS_MITE: 24.06</li>
+<li>UOPS_MS: 280.03</li>
+<li>UOPS_PORT_0: 142.94</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 8.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 153.08</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+  18:	62 f2 7d 48 c4 e4    	vpconflictd zmm4,zmm4
+  1e:	62 f2 7d 48 c4 ed    	vpconflictd zmm5,zmm5
+  24:	62 f2 7d 48 c4 f6    	vpconflictd zmm6,zmm6
+  2a:	62 f2 7d 48 c4 ff    	vpconflictd zmm7,zmm7
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3;
+VXORPS ZMM4, ZMM4, ZMM4;
+VXORPS ZMM5, ZMM5, ZMM5;
+VXORPS ZMM6, ZMM6, ZMM6;
+VXORPS ZMM7, ZMM7, ZMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3; VPCONFLICTD ZMM4, ZMM4; VPCONFLICTD ZMM5, ZMM5; VPCONFLICTD ZMM6, ZMM6; VPCONFLICTD ZMM7, ZMM7&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3; VXORPS ZMM4, ZMM4, ZMM4; VXORPS ZMM5, ZMM5, ZMM5; VXORPS ZMM6, ZMM6, ZMM6; VXORPS ZMM7, ZMM7, ZMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 151.91</li>
+<li>Reference cycles: 89.44</li>
+<li>UOPS_EXECUTED.THREAD: 305.0</li>
+<li>RETIRE_SLOTS: 305.0</li>
+<li>UOPS_MITE: 24.99</li>
+<li>UOPS_MS: 280.11</li>
+<li>UOPS_PORT_0: 144.13</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 9.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 151.89</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 9.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+  18:	62 f2 7d 48 c4 e4    	vpconflictd zmm4,zmm4
+  1e:	62 f2 7d 48 c4 ed    	vpconflictd zmm5,zmm5
+  24:	62 f2 7d 48 c4 f6    	vpconflictd zmm6,zmm6
+  2a:	62 f2 7d 48 c4 ff    	vpconflictd zmm7,zmm7
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3;
+VXORPS ZMM4, ZMM4, ZMM4;
+VXORPS ZMM5, ZMM5, ZMM5;
+VXORPS ZMM6, ZMM6, ZMM6;
+VXORPS ZMM7, ZMM7, ZMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3; VPCONFLICTD ZMM4, ZMM4; VPCONFLICTD ZMM5, ZMM5; VPCONFLICTD ZMM6, ZMM6; VPCONFLICTD ZMM7, ZMM7&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3; VXORPS ZMM4, ZMM4, ZMM4; VXORPS ZMM5, ZMM5, ZMM5; VXORPS ZMM6, ZMM6, ZMM6; VXORPS ZMM7, ZMM7, ZMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.2</li>
+<li>Core cycles: 151.83</li>
+<li>Reference cycles: 92.76</li>
+<li>UOPS_EXECUTED.THREAD: 304.1</li>
+<li>RETIRE_SLOTS: 304.1</li>
+<li>UOPS_MITE: 24.11</li>
+<li>UOPS_MS: 280.0</li>
+<li>UOPS_PORT_0: 144.2</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 8.1</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 151.81</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 8.1</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 16 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+  18:	62 f2 7d 48 c4 e4    	vpconflictd zmm4,zmm4
+  1e:	62 f2 7d 48 c4 ed    	vpconflictd zmm5,zmm5
+  24:	62 f2 7d 48 c4 f6    	vpconflictd zmm6,zmm6
+  2a:	62 f2 7d 48 c4 ff    	vpconflictd zmm7,zmm7
+  30:	62 52 7d 48 c4 c0    	vpconflictd zmm8,zmm8
+  36:	62 52 7d 48 c4 c9    	vpconflictd zmm9,zmm9
+  3c:	62 52 7d 48 c4 d2    	vpconflictd zmm10,zmm10
+  42:	62 52 7d 48 c4 db    	vpconflictd zmm11,zmm11
+  48:	62 52 7d 48 c4 e4    	vpconflictd zmm12,zmm12
+  4e:	62 a2 7d 48 c4 c0    	vpconflictd zmm16,zmm16
+  54:	62 a2 7d 48 c4 c9    	vpconflictd zmm17,zmm17
+  5a:	62 a2 7d 48 c4 d2    	vpconflictd zmm18,zmm18
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3;
+VXORPS ZMM4, ZMM4, ZMM4;
+VXORPS ZMM5, ZMM5, ZMM5;
+VXORPS ZMM6, ZMM6, ZMM6;
+VXORPS ZMM7, ZMM7, ZMM7;
+VXORPS ZMM8, ZMM8, ZMM8;
+VXORPS ZMM9, ZMM9, ZMM9;
+VXORPS ZMM10, ZMM10, ZMM10;
+VXORPS ZMM11, ZMM11, ZMM11;
+VXORPS ZMM12, ZMM12, ZMM12;
+VXORPS ZMM16, ZMM16, ZMM16;
+VXORPS ZMM17, ZMM17, ZMM17;
+VXORPS ZMM18, ZMM18, ZMM18</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3; VPCONFLICTD ZMM4, ZMM4; VPCONFLICTD ZMM5, ZMM5; VPCONFLICTD ZMM6, ZMM6; VPCONFLICTD ZMM7, ZMM7; VPCONFLICTD ZMM8, ZMM8; VPCONFLICTD ZMM9, ZMM9; VPCONFLICTD ZMM10, ZMM10; VPCONFLICTD ZMM11, ZMM11; VPCONFLICTD ZMM12, ZMM12; VPCONFLICTD ZMM16, ZMM16; VPCONFLICTD ZMM17, ZMM17; VPCONFLICTD ZMM18, ZMM18&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3; VXORPS ZMM4, ZMM4, ZMM4; VXORPS ZMM5, ZMM5, ZMM5; VXORPS ZMM6, ZMM6, ZMM6; VXORPS ZMM7, ZMM7, ZMM7; VXORPS ZMM8, ZMM8, ZMM8; VXORPS ZMM9, ZMM9, ZMM9; VXORPS ZMM10, ZMM10, ZMM10; VXORPS ZMM11, ZMM11, ZMM11; VXORPS ZMM12, ZMM12, ZMM12; VXORPS ZMM16, ZMM16, ZMM16; VXORPS ZMM17, ZMM17, ZMM17; VXORPS ZMM18, ZMM18, ZMM18&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.0</li>
+<li>Core cycles: 306.31</li>
+<li>Reference cycles: 204.8</li>
+<li>UOPS_EXECUTED.THREAD: 607.99</li>
+<li>RETIRE_SLOTS: 608.0</li>
+<li>UOPS_MITE: 48.16</li>
+<li>UOPS_MS: 559.98</li>
+<li>UOPS_PORT_0: 285.86</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 16.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 306.02</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+  18:	62 f2 7d 48 c4 e4    	vpconflictd zmm4,zmm4
+  1e:	62 f2 7d 48 c4 ed    	vpconflictd zmm5,zmm5
+  24:	62 f2 7d 48 c4 f6    	vpconflictd zmm6,zmm6
+  2a:	62 f2 7d 48 c4 ff    	vpconflictd zmm7,zmm7
+  30:	62 52 7d 48 c4 c0    	vpconflictd zmm8,zmm8
+  36:	62 52 7d 48 c4 c9    	vpconflictd zmm9,zmm9
+  3c:	62 52 7d 48 c4 d2    	vpconflictd zmm10,zmm10
+  42:	62 52 7d 48 c4 db    	vpconflictd zmm11,zmm11
+  48:	62 52 7d 48 c4 e4    	vpconflictd zmm12,zmm12
+  4e:	62 a2 7d 48 c4 c0    	vpconflictd zmm16,zmm16
+  54:	62 a2 7d 48 c4 c9    	vpconflictd zmm17,zmm17
+  5a:	62 a2 7d 48 c4 d2    	vpconflictd zmm18,zmm18
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3;
+VXORPS ZMM4, ZMM4, ZMM4;
+VXORPS ZMM5, ZMM5, ZMM5;
+VXORPS ZMM6, ZMM6, ZMM6;
+VXORPS ZMM7, ZMM7, ZMM7;
+VXORPS ZMM8, ZMM8, ZMM8;
+VXORPS ZMM9, ZMM9, ZMM9;
+VXORPS ZMM10, ZMM10, ZMM10;
+VXORPS ZMM11, ZMM11, ZMM11;
+VXORPS ZMM12, ZMM12, ZMM12;
+VXORPS ZMM16, ZMM16, ZMM16;
+VXORPS ZMM17, ZMM17, ZMM17;
+VXORPS ZMM18, ZMM18, ZMM18</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3; VPCONFLICTD ZMM4, ZMM4; VPCONFLICTD ZMM5, ZMM5; VPCONFLICTD ZMM6, ZMM6; VPCONFLICTD ZMM7, ZMM7; VPCONFLICTD ZMM8, ZMM8; VPCONFLICTD ZMM9, ZMM9; VPCONFLICTD ZMM10, ZMM10; VPCONFLICTD ZMM11, ZMM11; VPCONFLICTD ZMM12, ZMM12; VPCONFLICTD ZMM16, ZMM16; VPCONFLICTD ZMM17, ZMM17; VPCONFLICTD ZMM18, ZMM18&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3; VXORPS ZMM4, ZMM4, ZMM4; VXORPS ZMM5, ZMM5, ZMM5; VXORPS ZMM6, ZMM6, ZMM6; VXORPS ZMM7, ZMM7, ZMM7; VXORPS ZMM8, ZMM8, ZMM8; VXORPS ZMM9, ZMM9, ZMM9; VXORPS ZMM10, ZMM10, ZMM10; VXORPS ZMM11, ZMM11, ZMM11; VXORPS ZMM12, ZMM12, ZMM12; VXORPS ZMM16, ZMM16, ZMM16; VXORPS ZMM17, ZMM17, ZMM17; VXORPS ZMM18, ZMM18, ZMM18&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 18.0</li>
+<li>Core cycles: 303.76</li>
+<li>Reference cycles: 178.89</li>
+<li>UOPS_EXECUTED.THREAD: 609.0</li>
+<li>RETIRE_SLOTS: 609.01</li>
+<li>UOPS_MITE: 48.98</li>
+<li>UOPS_MS: 560.1</li>
+<li>UOPS_PORT_0: 288.26</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 17.0</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 303.67</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 17.01</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	62 f2 7d 48 c4 c0    	vpconflictd zmm0,zmm0
+   6:	62 f2 7d 48 c4 c9    	vpconflictd zmm1,zmm1
+   c:	62 f2 7d 48 c4 d2    	vpconflictd zmm2,zmm2
+  12:	62 f2 7d 48 c4 db    	vpconflictd zmm3,zmm3
+  18:	62 f2 7d 48 c4 e4    	vpconflictd zmm4,zmm4
+  1e:	62 f2 7d 48 c4 ed    	vpconflictd zmm5,zmm5
+  24:	62 f2 7d 48 c4 f6    	vpconflictd zmm6,zmm6
+  2a:	62 f2 7d 48 c4 ff    	vpconflictd zmm7,zmm7
+  30:	62 52 7d 48 c4 c0    	vpconflictd zmm8,zmm8
+  36:	62 52 7d 48 c4 c9    	vpconflictd zmm9,zmm9
+  3c:	62 52 7d 48 c4 d2    	vpconflictd zmm10,zmm10
+  42:	62 52 7d 48 c4 db    	vpconflictd zmm11,zmm11
+  48:	62 52 7d 48 c4 e4    	vpconflictd zmm12,zmm12
+  4e:	62 a2 7d 48 c4 c0    	vpconflictd zmm16,zmm16
+  54:	62 a2 7d 48 c4 c9    	vpconflictd zmm17,zmm17
+  5a:	62 a2 7d 48 c4 d2    	vpconflictd zmm18,zmm18
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0;
+VXORPS ZMM1, ZMM1, ZMM1;
+VXORPS ZMM2, ZMM2, ZMM2;
+VXORPS ZMM3, ZMM3, ZMM3;
+VXORPS ZMM4, ZMM4, ZMM4;
+VXORPS ZMM5, ZMM5, ZMM5;
+VXORPS ZMM6, ZMM6, ZMM6;
+VXORPS ZMM7, ZMM7, ZMM7;
+VXORPS ZMM8, ZMM8, ZMM8;
+VXORPS ZMM9, ZMM9, ZMM9;
+VXORPS ZMM10, ZMM10, ZMM10;
+VXORPS ZMM11, ZMM11, ZMM11;
+VXORPS ZMM12, ZMM12, ZMM12;
+VXORPS ZMM16, ZMM16, ZMM16;
+VXORPS ZMM17, ZMM17, ZMM17;
+VXORPS ZMM18, ZMM18, ZMM18</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;VPCONFLICTD ZMM0, ZMM0; VPCONFLICTD ZMM1, ZMM1; VPCONFLICTD ZMM2, ZMM2; VPCONFLICTD ZMM3, ZMM3; VPCONFLICTD ZMM4, ZMM4; VPCONFLICTD ZMM5, ZMM5; VPCONFLICTD ZMM6, ZMM6; VPCONFLICTD ZMM7, ZMM7; VPCONFLICTD ZMM8, ZMM8; VPCONFLICTD ZMM9, ZMM9; VPCONFLICTD ZMM10, ZMM10; VPCONFLICTD ZMM11, ZMM11; VPCONFLICTD ZMM12, ZMM12; VPCONFLICTD ZMM16, ZMM16; VPCONFLICTD ZMM17, ZMM17; VPCONFLICTD ZMM18, ZMM18&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0; VXORPS ZMM1, ZMM1, ZMM1; VXORPS ZMM2, ZMM2, ZMM2; VXORPS ZMM3, ZMM3, ZMM3; VXORPS ZMM4, ZMM4, ZMM4; VXORPS ZMM5, ZMM5, ZMM5; VXORPS ZMM6, ZMM6, ZMM6; VXORPS ZMM7, ZMM7, ZMM7; VXORPS ZMM8, ZMM8, ZMM8; VXORPS ZMM9, ZMM9, ZMM9; VXORPS ZMM10, ZMM10, ZMM10; VXORPS ZMM11, ZMM11, ZMM11; VXORPS ZMM12, ZMM12, ZMM12; VXORPS ZMM16, ZMM16, ZMM16; VXORPS ZMM17, ZMM17, ZMM17; VXORPS ZMM18, ZMM18, ZMM18&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 16.2</li>
+<li>Core cycles: 303.62</li>
+<li>Reference cycles: 178.79</li>
+<li>UOPS_EXECUTED.THREAD: 608.1</li>
+<li>RETIRE_SLOTS: 608.1</li>
+<li>UOPS_MITE: 48.12</li>
+<li>UOPS_MS: 560.0</li>
+<li>UOPS_PORT_0: 288.35</li>
+<li>UOPS_PORT_1: 0.0</li>
+<li>UOPS_PORT_6: 16.1</li>
+<li>UOPS_PORT_49: 0.0</li>
+<li>UOPS_PORT_78: 0.0</li>
+<li>UOPS_PORT_5B: 303.62</li>
+<li>UOPS_PORT_5B>=2: 0.0</li>
+<li>UOPS_PORT_23A: 0.0</li>
+<li>DIV_CYCLES: 0.0</li>
+<li>ILD_STALL.LCP: 0.0</li>
+<li>UOPS_MITE>=1: 16.1</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
