@@ -1,0 +1,163 @@
+<html>
+<head>
+<title>ROR (R16, CL)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>ROR (R16, CL) - Throughput and Uops (IACA 3.0)</h1>
+<hr>
+<h2 id="distinctRegs">With different registers for different operands</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.92 Cycles       Throughput Bottleneck: Backend
+Loop Count:  39
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.5     0.0  |  0.0  |  0.0     0.0  |  0.0     0.0  |  0.0  |  0.0  |  1.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   3      | 1.5         |      |             |             |      |      | 1.5  |      | ror r8w, cl
+Total Num Of Uops: 3
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.86 Cycles       Throughput Bottleneck: Dependency chains
+Loop Count:  25
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.5     0.0  |  0.5  |  0.0     0.0  |  0.0     0.0  |  0.0  |  0.5  |  1.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   3      | 1.5         |      |             |             |      |      | 1.5  |      | ror r8w, cl
+|   1      |             | 0.5  |             |             |      | 0.5  |      |      | test r15, r15
+Total Num Of Uops: 4
+</pre>
+<h3>With 12 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 17.89 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles | 18.0     0.0  |  0.0  |  0.0     0.0  |  0.0     0.0  |  0.0  |  0.0  | 18.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r8w, cl
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror r9w, cl
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r10w, cl
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror r11w, cl
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r12w, cl
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror r13w, cl
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r14w, cl
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror bx, cl
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror dx, cl
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror di, cl
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror si, cl
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror bp, cl
+Total Num Of Uops: 36
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 17.89 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles | 18.0     0.0  |  6.0  |  0.0     0.0  |  0.0     0.0  |  0.0  |  6.0  | 18.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r8w, cl
+|   1      |             | 1.0  |             |             |      |      |      |      | test r15, r15
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror r9w, cl
+|   1      |             |      |             |             |      | 1.0  |      |      | test r15, r15
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r10w, cl
+|   1      |             | 1.0  |             |             |      |      |      |      | test r15, r15
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror r11w, cl
+|   1      |             |      |             |             |      | 1.0  |      |      | test r15, r15
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r12w, cl
+|   1      |             | 1.0  |             |             |      |      |      |      | test r15, r15
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror r13w, cl
+|   1      |             |      |             |             |      | 1.0  |      |      | test r15, r15
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror r14w, cl
+|   1      |             | 1.0  |             |             |      |      |      |      | test r15, r15
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror bx, cl
+|   1      |             |      |             |             |      | 1.0  |      |      | test r15, r15
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror dx, cl
+|   1      |             | 1.0  |             |             |      |      |      |      | test r15, r15
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror di, cl
+|   1      |             |      |             |             |      | 1.0  |      |      | test r15, r15
+|   3      | 2.0         |      |             |             |      |      | 1.0  |      | ror si, cl
+|   1      |             | 1.0  |             |             |      |      |      |      | test r15, r15
+|   3      | 1.0         |      |             |             |      |      | 2.0  |      | ror bp, cl
+|   1      |             |      |             |             |      | 1.0  |      |      | test r15, r15
+Total Num Of Uops: 48
+</pre>
+<hr><h2 id="sameReg">With the same register for for different operands</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.92 Cycles       Throughput Bottleneck: Backend
+Loop Count:  39
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.5     0.0  |  0.0  |  0.0     0.0  |  0.0     0.0  |  0.0  |  0.0  |  1.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   3      | 1.5         |      |             |             |      |      | 1.5  |      | ror cx, cl
+Total Num Of Uops: 3
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.86 Cycles       Throughput Bottleneck: Dependency chains
+Loop Count:  25
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.5     0.0  |  0.5  |  0.0     0.0  |  0.0     0.0  |  0.0  |  0.5  |  1.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   3      | 1.5         |      |             |             |      |      | 1.5  |      | ror cx, cl
+|   1      |             | 0.5  |             |             |      | 0.5  |      |      | test r15, r15
+Total Num Of Uops: 4
+</pre>
+</body>
+</html>

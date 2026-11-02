@@ -1,0 +1,303 @@
+<html>
+<head>
+<title>CMPXCHG8B (M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMPXCHG8B (M64) - Throughput and Uops (IACA 2.3)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 10.48 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.8    0.0  | 2.8  | 0.6    0.5  | 0.7    0.5  | 1.0  | 2.8  | 2.8  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  14^   | 2.8       | 2.8 | 0.6   0.5 | 0.7   0.5 | 1.0 | 2.8 | 2.8 | 0.6 | CP | cmpxchg8b qword ptr [r14]
+Total Num Of Uops: 14
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 3.48 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.8    0.0  | 2.8  | 0.5    0.5  | 1.0    0.5  | 1.0  | 2.8  | 2.8  | 0.5  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  14^   | 2.8       | 2.8 | 0.5   0.5 | 1.0   0.5 | 1.0 | 2.8 | 2.8 | 0.5 |    | cmpxchg8b qword ptr [r14]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 16
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 173.48 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 44.0   0.0  | 44.0 | 10.7   8.0  | 10.6   8.0  | 16.0 | 44.0 | 44.0 | 10.6 |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14]
+|  14^   | 3.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x8]
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 2.0 | 0.7 |    | cmpxchg8b qword ptr [r14+0x10]
+|  14^   | 3.0       | 3.0 | 0.3       | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x18]
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x20]
+|  14^   | 3.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 0.7 |    | cmpxchg8b qword ptr [r14+0x28]
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 2.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x30]
+|  14^   | 3.0       | 3.0 | 0.3       | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x38]
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 3.0 | 0.7 |    | cmpxchg8b qword ptr [r14+0x40]
+|  14^   | 3.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x48]
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 2.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x50]
+|  14^   | 3.0       | 3.0 | 0.3       | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 0.7 |    | cmpxchg8b qword ptr [r14+0x58]
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x60]
+|  14^   | 3.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x68]
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 0.3       | 1.0 | 3.0 | 2.0 | 0.7 |    | cmpxchg8b qword ptr [r14+0x70]
+|  14^   | 3.0       | 3.0 | 0.3       | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 0.6 |    | cmpxchg8b qword ptr [r14+0x78]
+Total Num Of Uops: 224
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 56.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 44.0   0.0  | 44.0 | 8.0    8.0  | 16.0   8.0  | 16.0 | 44.0 | 44.0 | 8.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 2.0 |           | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x8]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+0x10]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 |           | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x18]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+0x20]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 2.0 |           | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x28]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+0x30]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 |           | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x38]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+0x40]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 2.0 |           | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x48]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+0x50]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 |           | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x58]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+0x60]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 2.0 |           | 1.0   1.0 | 1.0 | 3.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x68]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+0x70]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  14^   | 3.0       | 3.0 |           | 1.0   1.0 | 1.0 | 2.0 | 3.0 | 1.0 |    | cmpxchg8b qword ptr [r14+0x78]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 256
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 10.48 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.8    0.0  | 2.8  | 1.0    0.5  | 1.0    0.5  | 1.0  | 2.8  | 2.8  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   14   | 2.8       | 2.8 | 1.0   0.5 | 1.0   0.5 | 1.0 | 2.8 | 2.8 |     | CP | cmpxchg8b qword ptr [r14+r13*1]
+Total Num Of Uops: 14
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.8    0.0  | 2.7  | 1.0    0.5  | 1.0    0.5  | 1.0  | 2.8  | 2.8  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   14   | 2.8       | 2.7 | 1.0   0.5 | 1.0   0.5 | 1.0 | 2.8 | 2.8 |     |    | cmpxchg8b qword ptr [r14+r13*1]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 16
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 173.14 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 44.0   0.0  | 44.0 | 16.0   8.0  | 16.0   8.0  | 16.0 | 44.0 | 44.0 | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   14   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1]
+|   14   | 3.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x8]
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x10]
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x18]
+|   14   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x20]
+|   14   | 3.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x28]
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x30]
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x38]
+|   14   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x40]
+|   14   | 3.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x48]
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x50]
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x58]
+|   14   | 2.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x60]
+|   14   | 3.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x68]
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x70]
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x78]
+Total Num Of Uops: 224
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 64.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 44.0   0.0  | 44.0 | 16.0   8.0  | 16.0   8.0  | 16.0 | 44.0 | 44.0 | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   14   | 3.0       | 2.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 2.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x8]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x10]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x18]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 2.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x20]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 2.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x28]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x30]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x38]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 2.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x40]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 2.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x48]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x50]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x58]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 2.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x60]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 2.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 3.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x68]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0   1.0 | 1.0       | 1.0 | 3.0 | 2.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x70]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   14   | 3.0       | 3.0 | 1.0       | 1.0   1.0 | 1.0 | 2.0 | 3.0 |     |    | cmpxchg8b qword ptr [r14+r13*1+0x78]
+|   1*   |           |     |           |           |     |     |     |     |    | xor rdx, rdx
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 256
+</pre>
+</body>
+</html>
