@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>uops.info - Table</title>
+    <link rel="stylesheet" type="text/css" href="../cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="../cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="../cdn.datatables.net/rowgroup/1.0.4/css/rowGroup.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="../www.jacklmoore.com/colorbox/example2/colorbox.css"/>
+    <script src="../ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="../cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+    <script src="../cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js"></script>
+    <script src="../cdn.datatables.net/buttons/1.6.4/js/buttons.flash.min.js"></script>
+    <script src="../cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js"></script>
+    <script src="../cdn.datatables.net/buttons/1.6.4/js/buttons.print.min.js"></script>
+    <script src="../cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="../cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script src="../cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script src="../cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.5/dist/loadingoverlay.min.js"></script>
+    <script src="../cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.6.4/jquery.colorbox-min.js"></script>
+    <script class="init">
+
+var arch_tools = [
+    ["CON_",  ["Measurements"]],
+    ["WOL",  ["Measurements"]],
+    ["NHM",  ["Measurements", "IACA2.1", "IACA2.2"]],
+    ["WSM",  ["Measurements", "IACA2.1", "IACA2.2"]],
+    ["SNB",  ["Measurements", "IACA2.1", "IACA2.2", "IACA2.3"]],
+    ["IVB",  ["Measurements", "IACA2.1", "IACA2.2", "IACA2.3"]],
+    ["HSW",  ["Measurements", "IACA2.1", "IACA2.2", "IACA2.3", "IACA3.0"]],
+    ["BDW",  ["Measurements", "IACA2.2", "IACA2.3", "IACA3.0"]],
+    ["SKL",  ["Measurements", "IACA2.3", "IACA3.0"]],
+    ["SKX",  ["Measurements", "IACA2.3", "IACA3.0"]],
+    ["KBL",  ["Measurements"]],
+    ["CFL",  ["Measurements"]],
+    ["CNL",  ["Measurements"]],
+    ["CLX",  ["Measurements"]],
+    ["ICL",  ["Measurements", "Doc"]],
+    ["TGL",  ["Measurements"]],
+    ["RKL",  ["Measurements"]],
+    ["ADL-P",  ["Measurements"]],
+    ["EMR",  ["Measurements"]],
+    ["MTL-P",  ["Measurements"]],
+    ["ARL-P",  ["Measurements"]],
+    ["BNL",  ["Measurements"]],
+    ["AMT",  ["Measurements"]],
+    ["GLM",  ["Measurements"]],
+    ["GLP",  ["Measurements"]],
+    ["TRM",  ["Measurements"]],
+    ["ADL-E",  ["Measurements"]],
+    ["MTL-E",  ["Measurements"]],
+    ["ARL-E",  ["Measurements"]],
+    ["ZEN+", ["Measurements", "Doc"]],
+    ["ZEN2",  ["Measurements", "Doc"]],
+    ["ZEN3",  ["Measurements", "Doc"]],
+    ["ZEN4",  ["Measurements", "Doc"]],
+    ["ZEN5",  ["Measurements", "Doc"]],
+];
+
+var properties = ["latency", "tp", "uops", "portUsage"];
+
+var instructions = [
+    //["string", "extension"],
+]
+
+var instr_data = {
+    /*"NHMIACA2.1": [
+        ["lat", "tp", "uops", "ports"],
+    ]*/
+}
+
+var completeTableData = []
+
+var toolToString = {
+    "Measurements": "Measurements",
+    "IACA2.1": "IACA 2.1",
+    "IACA2.2": "IACA 2.2",
+    "IACA2.3": "IACA 2.3",
+    "IACA3.0": "IACA 3.0",
+    "Doc": "Documentation"
+}
+
+var archToString = {
+    "CON_":   "Conroe",
+    "WOL":   "Wolfdale",
+    "NHM":   "Nehalem",
+    "WSM":   "Westmere",
+    "SNB":   "Sandy Bridge",
+    "IVB":   "Ivy Bridge",
+    "HSW":   "Haswell",
+    "BDW":   "Broadwell",
+    "SKL":   "Skylake",
+    "SKX":   "Skylake-X",
+    "KBL":   "Kaby Lake",
+    "CFL":   "Coffee Lake",
+    "CNL":   "Cannon Lake",
+    "CLX":   "Cascade Lake",
+    "ICL":   "Ice Lake",
+    "TGL":   "Tiger Lake",
+    "RKL":   "Rocket Lake",
+    "ADL-P": "Alder Lake-P",
+    "EMR":   "Emerald Rapids",
+    "MTL-P": "Meteor Lake-P",
+    "ARL-P": "Arrow Lake-P",
+    "BNL":   "Bonnell",
+    "AMT":   "Airmont",
+    "GLM":   "Goldmont",
+    "GLP":   "Goldmont Plus",
+    "TRM":   "Tremont",
+    "ADL-E": "Alder Lake-E",
+    "MTL-E": "Meteor Lake-E",
+    "ARL-E": "Arrow Lake-E",
+    "ZEN+":  "AMD Zen+",
+    "ZEN2":  "AMD Zen2",
+    "ZEN3":  "AMD Zen3",
+    "ZEN4":  "AMD Zen4",
+    "ZEN5":  "AMD Zen 5",
+}
+
+var emptyRowsHidden = false
+
+function readTextFile(filename) {
+    var txt = '';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        txt = xmlhttp.responseText;
+    };
+    xmlhttp.open("GET",filename,false);
+    xmlhttp.send();
+
+    return txt
+}
+
+function readCSV(filename) {
+    var txt = '';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        txt = xmlhttp.responseText;
+    };
+    xmlhttp.open("GET",filename,false);
+    xmlhttp.send();
+
+    var data = []
+    for (line of txt.split("\n")) {
+        if (!line) break;
+        data.push(line.split("|"))
+    }
+    return data
+}
+
+function canonicalizeInstrString(instrString) {
+   return instrString.replace(/[(){}, ]+/g, '_').replace(/_$/, '')
+}
+
+function getData(arch, tool) {
+    var prop = arch + tool
+    if (!instr_data.hasOwnProperty(prop)) {
+        txt = readTextFile('csv/' + arch + '-' + tool + '.csv')
+
+        data = []
+        var lineIdx = 0
+        for (line of txt.split("\n")) {
+            if (!line) break;
+            var items = line.split("|")
+            var cells = ['', '', '', {'display': '', 'export': ''}]
+
+            if (tool == "Doc") {
+                cells[0] = items[0]
+                cells[1] = items[1]
+                cells[2] = items[2]
+                cells[3] = {'display': items[3], 'export': items[3]}
+            } else {
+                var htmlFilename = arch + '/' + canonicalizeInstrString(instructions[lineIdx][0]) + '-' + tool + '.html'
+                if (items[0]) {
+                    cells[0] = '<a href="html-lat/' + htmlFilename + '" class="iframe">' + items[0] + '</a>'
+                }
+                if (items[1]) {
+                    cells[1] = '<span title="Computed from the port usage">' + items[1] + '</span>'
+                    if (items[2]) cells[1] += ' / '
+                }
+                if (items[2]) {
+                    cells[1] += '<a href="html-tp/' + htmlFilename + '" class="iframe" title="Measured">' + items[2] + '</a>'
+                }
+                if (items[3]) {
+                    cells[2] = '<a href="html-tp/' + htmlFilename + '" class="iframe" title="Fused domain (retire slots)">' + items[3] + '</a>'
+                    cells[2] += ' / '
+                    cells[2] += '<a href="html-tp/' + htmlFilename + '" class="iframe" title="Unfused domain">' + items[4] + '</a>'
+                } else if (items[4]) {
+                    cells[2] = '<a href="html-tp/' + htmlFilename + '" class="iframe">' + items[4] + '</a>'
+                }
+                if (items[5]) {
+                    var display = items[5]
+                    if (display.length > 33) {
+                        display = '<span title="' + display + '">' + display.substring(0, display.lastIndexOf('+', 32)+1) + '...' + '</span>'
+                    }
+                    display = '<a href="html-ports/' + htmlFilename + '" class="iframe">' + display + '</a>'
+                    cells[3] = {'display': display, 'export': items[5]}
+                }
+            }
+
+            data.push(cells)
+            lineIdx++
+        }
+        instr_data[prop] = data
+    }
+    return instr_data[prop]
+}
+
+$(document).ready(function() {
+    var searchStr = ""
+    var paramStr = window.location.search.substring(1)
+    if (paramStr) {
+        $("input[type='checkbox']").prop("checked", false)
+        window.history.replaceState(null, null, window.location.pathname)
+        var fieldArray = paramStr.split("&")
+        $.each(fieldArray, function(i, pair) {
+            var nameValue = pair.split("=")
+            var name = decodeURIComponent(nameValue[0])
+            if (name == "search") {
+                searchStr = decodeURIComponent(nameValue[1])
+            } else {
+                $("[name=" + name + "]").prop("checked", true)
+            }
+        })
+    }
+
+    instructions = readCSV("csv/instructions.csv")
+    createTable(searchStr)
+});
+
+function getRows() {
+    var applicableExtensions = []
+    if ($('input[ext="BASE"]').prop("checked")) applicableExtensions.push('BASE')
+    if ($('input[ext="AES"]').prop("checked")) applicableExtensions.push('AES', 'AVXAES')
+    if ($('input[ext="AVX"]').prop("checked")) applicableExtensions.push('AVX')
+    if ($('input[ext="AVX2"]').prop("checked")) applicableExtensions.push('AVX2', 'AVX2GATHER')
+    if ($('input[ext="AVX512"]').prop("checked")) applicableExtensions.push('AVX512EVEX', 'AVX512VEX')
+    if ($('input[ext="BMI"]').prop("checked")) applicableExtensions.push('BMI1', 'BMI2')
+    if ($('input[ext="FMA"]').prop("checked")) applicableExtensions.push('FMA')
+    if ($('input[ext="MMX"]').prop("checked")) applicableExtensions.push('MMX')
+    if ($('input[ext="SSE"]').prop("checked")) applicableExtensions.push('SSE', 'SSE2', 'SSE3', 'SSE4', 'SSSE3')
+    if ($('input[ext="X87"]').prop("checked")) applicableExtensions.push('X87')
+
+    var otherExt = false
+    if ($('input[ext="OTHERS"]').prop("checked")) otherExt = true
+
+    var data = []
+    for (i = 0; i < instructions.length; i++) {
+        var instr = instructions[i]
+        var ext = instr[1]
+        if (applicableExtensions.includes(ext) ||
+                (otherExt && !['BASE', 'AES', 'AVXAES', 'AVX', 'AVX2', 'AVX2GATHER', 'AVX512EVEX', 'AVX512VEX', 'BMI1', 'BMI2', 'FMA', 'MMX', 'SSE', 'SSE2', 'SSE3', 'SSE4', 'SSSE3', 'X87'].includes(ext))) {
+            completeTableDataForInstr = completeTableData[i]
+            if (!emptyRowsHidden || completeTableDataForInstr.some((elem, index) => (index>=2) && (elem!="") && (elem.display!=""))) {
+                data.push(completeTableDataForInstr)
+            }
+        }
+    }
+
+    return data
+}
+
+function hideRows() {
+    $.LoadingOverlay("show", {image: "", text: "Loading...", fade: false});
+    window.setTimeout(function() {
+        var data = getRows()
+        $('#instrTable').DataTable().clear().rows.add(data).draw();
+        $.LoadingOverlay("hide");
+    }, 10);
+}
+
+function hideEmptyRows() {
+    emptyRowsHidden = $("#hideEmptyRowsCB").prop('checked')
+    hideRows()
+}
+
+function createTable(searchStr) {
+    $.LoadingOverlay("show", {image: "", text: "Loading...", fade: false});
+    window.setTimeout(function() {
+        if ($.fn.DataTable.isDataTable('#instrTable')) {
+            searchStr = $('#instrTable').DataTable().search()
+            $('#instrTable').DataTable().destroy()
+        } else {
+             searchStr = (typeof searchStr == 'undefined' ? '' : searchStr)
+        }
+
+        completeTableData = []
+        for (i = 0; i < instructions.length; i++) {
+            instr = instructions[i]
+            instrLink = '<a href="html-instr/' + canonicalizeInstrString(instr[0]) + '.html" class="iframe">' + instr[0] + '</a>'
+            completeTableData.push([instrLink, instr[1]])
+        }
+
+        latColumns = []
+        tpColumns = []
+        uopsColumns = []
+        portsColumns = []
+        head_first_row = '<th rowspan="3">Instruction</th><th></th>'
+        head_second_row = '<th></th>'
+        head_third_row = '<th></th>'
+        for (i = 0; i < arch_tools.length; i++) {
+            var arch = arch_tools[i][0]
+            var tools = arch_tools[i][1]
+
+            if ($('input[arch="' + arch + '"]').prop("checked")) {
+                var arch_columns = 0
+                for (tool of tools) {
+                    if ($('input[source_="' + tool + '"]').prop("checked")) {
+                        var tool_data = getData(arch, tool)
+                        var tool_columns = 0
+                        for (property of properties) {
+                            if ($('input[property="' + property + '"]').prop("checked")) {
+                                var propIdx
+                                var propS
+                                if (property == "latency") {
+                                    propIdx = 0
+                                    propS = "Lat"
+                                    latColumns.push(completeTableData[0].length)
+                                } else if (property == "tp") {
+                                    propIdx = 1
+                                    propS = "TP"
+                                    tpColumns.push(completeTableData[0].length)
+                                } else if (property == "uops") {
+                                    propIdx = 2
+                                    propS = "Uops"
+                                    uopsColumns.push(completeTableData[0].length)
+                                } else if (property == "portUsage") {
+                                    propIdx = 3
+                                    propS = "Ports"
+                                    portsColumns.push(completeTableData[0].length)
+                                }
+                                head_third_row += "<th>" + propS + "</th>"
+                                for (r = 0; r < instructions.length; r++) {
+                                    completeTableData[r].push(tool_data[r][propIdx])
+                                }
+                                tool_columns++
+                           }
+                        }
+                        if (tool_columns>0) {
+                            head_second_row += '<th colspan="' + tool_columns + '" style="border-bottom:0px">' + toolToString[tool] + '</th>'
+                            arch_columns += tool_columns
+                        }
+                    }
+                }
+                if (arch_columns>0) {
+                    head_first_row += '<th colspan="' + arch_columns + '" style="border-bottom:0px">' + archToString[arch] + '</th>'
+                } else {
+                    alertString = 'Available data for ' + archToString[arch] + ': '
+                    var first = true
+                    for (tool of tools) {
+                        if (!first) alertString += ', '
+                        first = false
+                        alertString += toolToString[tool]
+                    }
+                    alert(alertString)
+                }
+            }
+        }
+        $('#instrTable').html('<thead><tr>' + head_first_row + '</tr><tr>' + head_second_row + '</tr><tr>' + head_third_row + '</tr></thead>');
+
+        var groupColumn = 1;
+        $('#instrTable').DataTable({
+            data: getRows(),
+            pagingType: 'full_numbers',
+            lengthMenu: [ [10, 25, 50, 100, 250, 500, -1], [10, 25, 50, 100, 250, 500, "All"] ],
+            pageLength: 100,
+            dom: '<"datatables_top"fl<"hideRowsDiv">B>rtip',
+            buttons: [
+                {extend: 'copy', exportOptions: { orthogonal: 'export' }},
+                {extend: 'csv', exportOptions: { orthogonal: 'export' }},
+                {extend: 'excel', exportOptions: { orthogonal: 'export' }},
+                'pdf', 'print', {
+                    text: 'URL',
+                    action: function (e, dt, node, config) {
+                        window.prompt('URL', window.location.href.split('?')[0] + '?search=' + encodeURIComponent(dt.search()) + '&' + $(':checkbox').serialize())
+                    }
+                }
+            ],
+            columnDefs: [
+                { visible: false, targets: groupColumn },
+                { orderData: [groupColumn, 0], targets: 0 },
+                { className: 'dt-body-right', targets: latColumns },
+                { className: 'dt-body-center', targets: tpColumns },
+                { className: 'dt-body-center', targets: uopsColumns },
+                { type: 'any-number', targets : latColumns },
+                { type: 'any-number', targets : tpColumns },
+                { type: 'any-number', targets : uopsColumns },
+                { type: 'ports', targets : portsColumns, render: {
+                        _: 'display',
+                        'export': 'export'
+                    }},
+            ],
+            search: {
+                search: searchStr
+            },
+            drawCallback: function (settings) {
+                var api = this.api();
+                var rows = api.rows({page:'current'}).nodes();
+                var last = null;
+
+                api.column(groupColumn, {page:'current'}).data().each(function (group, i) {
+                    if (last !== group) {
+                        $(rows).eq(i).before(
+                            '<tr class="group"><td colspan="' + this.columns().header().length + '">'+group+'</td></tr>'
+                        );
+                        last = group;
+                    }
+                });
+
+                $('.iframe').colorbox({iframe:true, width:'90%', height:'90%', title:function () {
+                    return '<a href="' + this.href + '" target="_blank">' + this.href + '</a>'
+                }})
+            },
+        });
+
+        $("div.hideRowsDiv").html('<label><input type="checkbox" name="checkbox" id="hideEmptyRowsCB" onclick="hideEmptyRows()">Hide empty rows</label>');
+        $("#hideEmptyRowsCB").prop('checked', emptyRowsHidden);
+
+        // Order by the grouping
+        $('#instrTable tbody').on( 'click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+                table.order( [ groupColumn, 'desc' ] ).draw();
+            }
+            else {
+                table.order( [ groupColumn, 'asc' ] ).draw();
+            }
+        });
+
+        $.LoadingOverlay("hide");
+    }, 10);
+}
+
+//based on https://datatables.net/plug-ins/sorting/any-number and https://datatables.net/plug-ins/sorting/num-html
+_anyNumberSort = function(a, b, high) {
+    a = String(a).replace( /<[\s\S]*?>/g, "" );
+    b = String(b).replace( /<[\s\S]*?>/g, "" );
+    var reg = /[+-]?((\d+(\.\d*)?)|\.\d+)([eE][+-]?[0-9]+)?/;
+    a = a.replace(',','.').match(reg);
+    a = a !== null ? parseFloat(a[0]) : high;
+    b = b.replace(',','.').match(reg);
+    b = b !== null ? parseFloat(b[0]) : high;
+    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+}
+
+jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    "any-number-asc": function (a, b) {
+        return _anyNumberSort(a, b, Number.POSITIVE_INFINITY);
+    },
+    "any-number-desc": function (a, b) {
+        return _anyNumberSort(a, b, Number.NEGATIVE_INFINITY) * -1;
+    }
+});
+
+//based on https://stackoverflow.com/questions/25944854/sorting-alphabetical-order-to-ignore-empty-cells-datatables
+jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    "ports-asc": function (str1, str2) {
+        str1 = String(str1).replace( /<[\s\S]*?>/g, "" );
+        str2 = String(str2).replace( /<[\s\S]*?>/g, "" );
+        if(str1 == "") return 1;
+        if(str2 == "") return -1;
+        if (str1.length < str2.length) return -1
+        if (str1.length > str2.length) return 1
+        return ((str1 < str2) ? -1 : ((str1 > str2) ? 1 : 0));
+    },
+    "ports-desc": function (str1, str2) {
+        str1 = String(str1).replace( /<[\s\S]*?>/g, "" );
+        str2 = String(str2).replace( /<[\s\S]*?>/g, "" );
+        if (str1 == "") return 1;
+        if (str2 == "") return -1;
+        if (str1.length < str2.length) return 1
+        if (str1.length > str2.length) return -1
+        return ((str1 < str2) ? 1 : ((str1 > str2) ? -1 : 0));
+    }
+});
+
+jQuery.extend(jQuery.fn.DataTable.ext.type.search, {
+    "any-number": jQuery.fn.DataTable.ext.type.search.html,
+    "ports": jQuery.fn.DataTable.ext.type.search.html
+});
+
+$(document).on('cbox_open', function() {
+    $('body').css({overflow: 'hidden'})
+}).on('cbox_closed', function() {
+    $('body').css({overflow: ''})
+})
+
+</script>
+<style>
+    th {
+      border-top: 1px solid #dddddd;
+      border-bottom: 1px solid #dddddd;
+      border-right: 1px solid #dddddd;
+    }
+
+    th:first-child {
+      border-left: 1px solid #dddddd;
+    }
+    [type=checkbox] {
+         vertical-align: -1px;
+    }
+    .datatables_top {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    hr {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    body {
+        font-family:Helvetica, Arial, sans-serif;
+    }
+    td {
+        font-size: 11pt;
+    }
+    label {
+        white-space: nowrap;
+    }
+</style>
+<script src="../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<div id="header" style="background-color:lightblue;text-align:center;">
+  <hr>
+  <label><input type="checkbox" name="cb_lat" property="latency" checked onclick="createTable()">Latency</label>
+  <label><input type="checkbox" name="cb_tp" property="tp" checked onclick="createTable()">Throughput</label>
+  <label><input type="checkbox" name="cb_uops" property="uops" checked onclick="createTable()">Number of Uops</label>
+  <label><input type="checkbox" name="cb_ports" property="portUsage" checked onclick="createTable()">Port Usage</label>
+  <hr>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_CON" arch="CON_" onclick="createTable()">Conroe</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_WOL" arch="WOL" onclick="createTable()">Wolfdale</label>
+  <label title="Available data: Measurements, IACA 2.1, IACA 2.2"><input type="checkbox" name="cb_NHM" arch="NHM" onclick="createTable()">Nehalem</label>
+  <label title="Available data: Measurements, IACA 2.1, IACA 2.2"><input type="checkbox" name="cb_WSM" arch="WSM" onclick="createTable()">Westmere</label>
+  <label title="Available data: Measurements, IACA 2.1, IACA 2.2, IACA 2.3"><input type="checkbox" name="cb_SNB" arch="SNB" onclick="createTable()">Sandy Bridge</label>
+  <label title="Available data: Measurements, IACA 2.1, IACA 2.2, IACA 2.3"><input type="checkbox" name="cb_IVB" arch="IVB" onclick="createTable()">Ivy Bridge</label>
+  <label title="Available data: Measurements, IACA 2.1, IACA 2.2, IACA 2.3, IACA 3.0"><input type="checkbox" name="cb_HSW" arch="HSW" onclick="createTable()">Haswell</label>
+  <label title="Available data: Measurements, IACA 2.2, IACA 2.3, IACA 3.0"><input type="checkbox" name="cb_BDW" arch="BDW" onclick="createTable()">Broadwell</label>
+  <label title="Available data: Measurements, IACA 2.3, IACA 3.0"><input type="checkbox" name="cb_SKL" arch="SKL" onclick="createTable()">Skylake</label>
+  <label title="Available data: Measurements, IACA 2.3, IACA 3.0"><input type="checkbox" name="cb_SKX" arch="SKX" onclick="createTable()">Skylake-X</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_KBL" arch="KBL" onclick="createTable()">Kaby Lake</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_CFL" arch="CFL" onclick="createTable()">Coffee Lake</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_CNL" arch="CNL" onclick="createTable()">Cannon Lake</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_CLX" arch="CLX" onclick="createTable()">Cascade Lake</label>
+  <label title="Available data: Measurements, Documentation"><input type="checkbox" name="cb_ICL" arch="ICL" onclick="createTable()">Ice Lake</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_TGL" arch="TGL" onclick="createTable()">Tiger Lake</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_RKL" arch="RKL" onclick="createTable()">Rocket Lake</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_ADLP" arch="ADL-P" onclick="createTable()">Alder Lake-P</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_EMR" arch="EMR" onclick="createTable()">Emerald Rapids</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_MTLP" arch="MTL-P" onclick="createTable()">Meteor Lake-P</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_ARLP" arch="ARL-P" onclick="createTable()" checked>Arrow Lake-P</label>
+  <span style="display:inline-block;width:20px"></span>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_BNL" arch="BNL" onclick="createTable()">Bonnell</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_AMT" arch="AMT" onclick="createTable()">Airmont</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_GLM" arch="GLM" onclick="createTable()">Goldmont</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_GLP" arch="GLP" onclick="createTable()">Goldmont Plus</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_TRM" arch="TRM" onclick="createTable()">Tremont</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_ADLE" arch="ADL-E" onclick="createTable()">Alder Lake-E</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_MTLE" arch="MTL-E" onclick="createTable()">Meteor Lake-E</label>
+  <label title="Available data: Measurements"><input type="checkbox" name="cb_ARLE" arch="ARL-E" onclick="createTable()" checked>Arrow Lake-E</label>
+  <span style="display:inline-block;width:20px"></span>
+  <label title="Available data: Measurements, Documentation"><input type="checkbox" name="cb_ZENp" arch="ZEN+" onclick="createTable()">Zen+</label>
+  <label title="Available data: Measurements, Documentation"><input type="checkbox" name="cb_ZEN2" arch="ZEN2" onclick="createTable()">Zen 2</label>
+  <label title="Available data: Measurements, Documentation"><input type="checkbox" name="cb_ZEN3" arch="ZEN3" onclick="createTable()">Zen 3</label>
+  <label title="Available data: Measurements, Documentation"><input type="checkbox" name="cb_ZEN4" arch="ZEN4" onclick="createTable()">Zen 4</label>
+  <label title="Available data: Measurements, Documentation"><input type="checkbox" name="cb_ZEN5" arch="ZEN5" onclick="createTable()" checked>Zen 5</label>
+  <hr>
+  <label title="Supported architectures: CON, WOL, NHM, WSM, SNB, IVB, HSW, BDW, SKL, SKX, KBL, CFL, CNL, CLX, ICL, TGL, RKL, ADL-P, EMR, MTL-P, ARL-P, BNL, AMT, GLM, GLP, TRM, ADL-E, MTL-E, ARL-E, ZEN+, ZEN2, ZEN3, ZEN4, ZEN5"><input type="checkbox" name="cb_measurements" source_="Measurements" onclick="createTable()" checked>Measurements</label>
+  <label title="Supported architectures: NHM, WSM, SNB, IVB, HSW"><input type="checkbox" name="cb_iaca21" source_="IACA2.1" onclick="createTable()">IACA 2.1</label>
+  <label title="Supported architectures: NHM, WSM, SNB, IVB, HSW"><input type="checkbox" name="cb_iaca22" source_="IACA2.2" onclick="createTable()">IACA 2.2</label>
+  <label title="Supported architectures: SNB, IVB, HSW, BDW, SKL, SKX"><input type="checkbox" name="cb_iaca23" source_="IACA2.3" onclick="createTable()">IACA 2.3</label>
+  <label title="Supported architectures: HSW, BDW, SKL, SKX"><input type="checkbox" name="cb_iaca30" source_="IACA3.0" onclick="createTable()">IACA 3.0</label>
+  <label title="Supported architectures: ICL, ZEN+, ZEN2, ZEN3, ZEN4, ZEN5"><input type="checkbox" name="cb_doc" source_="Doc" onclick="createTable()" checked>Documentation</label>
+  <hr>
+  <label><input type="checkbox" name="cb_base" ext="BASE" onclick="hideRows()" checked>Base</label>
+  <label><input type="checkbox" name="cb_aes" ext="AES" onclick="hideRows()">AES</label>
+  <label><input type="checkbox" name="cb_avx" ext="AVX" onclick="hideRows()">AVX</label>
+  <label><input type="checkbox" name="cb_avx2" ext="AVX2" onclick="hideRows()">AVX2</label>
+  <label><input type="checkbox" name="cb_avx512" ext="AVX512" onclick="hideRows()">AVX512</label>
+  <label><input type="checkbox" name="cb_bmi" ext="BMI" onclick="hideRows()">BMI</label>
+  <label><input type="checkbox" name="cb_fma" ext="FMA" onclick="hideRows()">FMA</label>
+  <label><input type="checkbox" name="cb_mmx" ext="MMX" onclick="hideRows()">MMX</label>
+  <label><input type="checkbox" name="cb_sse" ext="SSE" onclick="hideRows()">SSE</label>
+  <label><input type="checkbox" name="cb_x87" ext="X87" onclick="hideRows()">X87</label>
+  <label><input type="checkbox" name="cb_others" ext="OTHERS" onclick="hideRows()">Others</label>
+  <hr>
+</div>
+<table id="instrTable" class="display cell-border nowrap" style="width:100%;"></table>
+</body>
+</html>

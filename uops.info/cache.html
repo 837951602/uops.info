@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>uops.info</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="../fonts.googleapis.com/css.css" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+<script src="../ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	$("#header").load("header.html");
+	$("#footer").load("footer.html");
+	$("#menu").load("menu.html", function() {
+		$("#menu_cache").addClass("current_page_item")
+	});
+});
+</script>
+<script src="../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<div id="header"></div>
+
+<div id="wrapper" class="container">
+	<div id="menu"></div>
+
+	<div id="page" style="text-align:justify">
+		<span class="arrow-down"></span>
+		<h1>Caches</h1>
+		<p>
+		On this page, we provide details on the caches of some of the processors that we analyzed.
+		In particular, we provide information on the cache replacement policies, which are undocumented in the official manuals.
+		</p>
+		<p>
+		The results were obtained using the <b>nanoBench Cache Analyzer</b>, which is available on <a href="https://github.com/andreas-abel/nanoBench/tree/master/tools/CacheAnalyzer">GitHub</a>.
+		The repository also contains a simulator for all the policies described on this page.
+		Further information on the policies can be found in our paper <a href="paper.html#Abel20">nanoBench: A Low-Overhead Tool for Running Microbenchmarks on x86 Systems</a> and in Andreas Abel's PhD thesis <a href="paper.html#Abel20b">Automatic Generation of Models of Microarchitectures</a>.
+		</p>
+		<p>
+		We provide results for the following processors:
+		<ul>
+			<li><a href="#ICL">Core i5-1035G1 (Ice Lake)</a></li>
+			<li><a href="#CNL">Core i3-8121U (Cannon Lake)</a></li>
+			<li><a href="#CFL">Core i7-8700K (Coffee Lake)</a></li>
+			<li><a href="#KBL">Core i7-7700 (Kaby Lake)</a></li>
+			<li><a href="#SKL">Core i7-6500U (Skylake)</a></li>
+			<li><a href="#BDW">Core i5-5200U (Broadwell)</a></li>
+			<li><a href="#HSW">Xeon E3-1225 v3 (Haswell)</a></li>
+			<li><a href="#IVB">Core i5-3470 (Ivy Bridge)</a></li>
+			<li><a href="#SNB">Core i7-2600 (Sandy Bridge)</a></li>
+			<li><a href="#WSM">Core i5-650 (Westmere)</a></li>
+			<li><a href="#NHM">Core i5-750 (Nehalem)</a></li>
+			<li><a href="#WOL">Core 2 Duo E8400 (Wolfdale)</a></li>
+			<li><a href="#CON">Core 2 Duo E6750 (Conroe)</a></li>
+		</ul>
+		</p>
+		<p>
+		<a href="cache/lat_combined.html">Here</a>, we provide a set of graphs for all CPUs showing the latencies when accessing memory areas of different sizes.
+		</p>
+		<hr>
+		<p>
+		<ul>
+		<li id="ICL"><b>Core i5-1035G1 (Ice Lake)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 48 kB</li>
+				<li>Associativity: 12</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 5 cycles <a href="cache/lat_ICL.html">Link</a></li>
+				<li>Replacement policy: LRU<sub>3</sub>PLRU<sub>4</sub> <a href="cache/replPolicy_ICL_L1.html">Link 1</a> <a href="cache/permPolicy_ICL_L1.html">Link 2</a></li>
+					<ul>
+					<li>This policy uses three PLRU trees with 4 elements each</li>
+					<li>The trees are ordered in an LRU fashion</li>
+					<li>Upon a cache miss, the element that the bits of the least-recently accessed tree point to is replaced</li>
+					</ul>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 512 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 1024</li>
+				<li>Way size: 64 kB</li>
+				<li>Latency: 13 cycles <a href="cache/lat_ICL.html">Link</a></li>
+				<li>Replacement policy: QLRU_H00_M1_R0_U1 <a href="cache/replPolicy_ICL_L2.html">Link</a></li>
+					<ul>
+					<li>Same as the Cannon Lake L2 policy (see below)</li>
+					</ul>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 6 MB</li>
+				<li>Associativity: 12</li>
+				<li>Number of CBoxes: 4</li>
+				<li>Number of slices: 8</li>
+				<li>Number of sets (per slice): 1024</li>
+				<li>Way size (per slice): 64 kB</li>
+				<li>Latency: 41 cycles <a href="cache/lat_ICL.html">Link</a></li>
+				<li>Replacement policy: Adaptive <a href="cache/setDueling_ICL.html">Link</a></li>
+					<ul>
+					<li>Sets 0, 33, 132, 165, 264, 297, 396, 429, 528, 561, 660, 693, 792, 825, 924, 957 (in all CBoxes): QLRU_H00_M1_R0_U1 <a href="cache/replPolicy_ICL_L3_0.html">Link</a></li>
+						<ul>
+						<li>Same as the L2 policy</li>
+						</ul>
+					<li>The remaining sets can switch between the QLRU_H00_M1_R0_U1 policy and a variant of this policy that occasionally inserts new blocks with age 3 instead of age 1</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="CNL"><b>Core i3-8121U (Cannon Lake)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_CNL.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_CNL_L1.html">Link 1</a> <a href="cache/permPolicy_CNL_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 4</li>
+				<li>Number of sets: 1024</li>
+				<li>Way size: 64 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_CNL.html">Link</a></li>
+				<li>Replacement policy: QLRU_H00_M1_R0_U1 <a href="cache/replPolicy_CNL_L2.html">Link</a></li>
+					<ul>
+					<li>Similar to the policy used in sets 512-575 of the L3 cache on Haswell (see below), but:</li>
+						<ul>
+						<li>A cache hit always sets the age to 0</li>
+						<li>If after an access, there is no more line whose age is 3, only the ages of all <b>other</b> lines are increased</li>
+						</ul>
+					</ul>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 4 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of CBoxes: 2</li>
+				<li>Number of slices: 4</li>
+				<li>Number of sets (per slice): 1024</li>
+				<li>Way size (per slice): 64 kB</li>
+				<li>Latency: 37 cycles <a href="cache/lat_CNL.html">Link</a></li>
+				<li>Replacement policy: Adaptive <a href="cache/setDueling_CNL.html">Link</a></li>
+					<ul>
+					<li>Sets 0, 33, 132, 165, 264, 297, 396, 429, 528, 561, 660, 693, 792, 825, 924, 957 (in all CBoxes): QLRU_H11_M1_R0_U0 <a href="cache/replPolicy_CNL_L3.html">Link</a></li>
+					<li>The remaining sets can switch between the QLRU_H11_M1_R0_U0 policy and a variant of this policy that occasionally inserts new blocks with age 3 instead of age 1 when the cache is not full</li>
+					<li>Same as the Skylake L3 policy</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="CFL"><b>Core i7-8700K (Coffee Lake)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_CFL.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_CFL_L1.html">Link 1</a> <a href="cache/permPolicy_CFL_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 4</li>
+				<li>Number of sets: 1024</li>
+				<li>Way size: 64 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_CFL.html">Link</a></li>
+				<li>Replacement policy: QLRU_H00_M1_R2_U1 <a href="cache/replPolicy_CFL_L2.html">Link</a></li>
+					<ul>
+					<li>Same as the Skylake L2 policy</li>
+					</ul>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 12 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of CBoxes: 6</li>
+				<li>Number of slices: 12</li>
+				<li>Number of sets (per slice): 1024</li>
+				<li>Way size (per slice): 64 kB</li>
+				<li>Latency: 41 cycles <a href="cache/lat_CFL.html">Link</a></li>
+				<li>Replacement policy: Adaptive <a href="cache/setDueling_CFL.html">Link</a></li>
+					<ul>
+					<li>Sets 0, 33, 132, 165, 264, 297, 396, 429, 528, 561, 660, 693, 792, 825, 924, 957 (in all CBoxes): QLRU_H11_M1_R0_U0 <a href="cache/replPolicy_CFL_L3.html">Link</a></li>
+					<li>The remaining sets can switch between the QLRU_H11_M1_R0_U0 policy and a variant of this policy that occasionally inserts new blocks with age 3 instead of age 1 when the cache is not full</li>
+					<li>Same as the Skylake L3 policy</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="KBL"><b>Core i7-7700 (Kaby Lake)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_KBL.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_KBL_L1.html">Link 1</a> <a href="cache/permPolicy_KBL_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 4</li>
+				<li>Number of sets: 1024</li>
+				<li>Way size: 64 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_KBL.html">Link</a></li>
+				<li>Replacement policy: QLRU_H00_M1_R2_U1 <a href="cache/replPolicy_KBL_L2.html">Link</a></li>
+					<ul>
+					<li>Same as the Skylake L2 policy</li>
+					</ul>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 8 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of CBoxes: 4</li>
+				<li>Number of slices: 8</li>
+				<li>Number of sets (per slice): 1024</li>
+				<li>Way size (per slice): 64 kB</li>
+				<li>Latency: 41 cycles <a href="cache/lat_KBL.html">Link</a></li>
+				<li>Replacement policy: Adaptive <a href="cache/setDueling_KBL.html">Link</a></li>
+					<ul>
+					<li>Sets 0, 33, 132, 165, 264, 297, 396, 429, 528, 561, 660, 693, 792, 825, 924, 957 (in all CBoxes): QLRU_H11_M1_R0_U0 <a href="cache/replPolicy_KBL_L3.html">Link</a></li>
+					<li>The remaining sets can switch between the QLRU_H11_M1_R0_U0 policy and a variant of this policy that occasionally inserts new blocks with age 3 instead of age 1 when the cache is not full</li>
+					<li>Same as the Skylake L3 policy</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="SKL"><b>Core i7-6500U (Skylake)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_SKL.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_SKL_L1.html">Link 1</a> <a href="cache/permPolicy_SKL_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 4</li>
+				<li>Number of sets: 1024</li>
+				<li>Way size: 64 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_SKL.html">Link</a></li>
+				<li>Replacement policy: QLRU_H00_M1_R2_U1 <a href="cache/replPolicy_SKL_L2.html">Link</a></li>
+					<ul>
+					<li>Similar to the Cannon Lake L2 policy, but:</li>
+						<ul>
+						<li>If the cache is empty (after executing the WBINVD instruction), blocks are inserted from right to left</li>
+						<li>The initial ages of blocks inserted into an empty cache can depend on the previous state</li>
+						<li>See also <a href="https://arxiv.org/pdf/1912.09770.pdf">Vila et al.</a></li>
+						</ul>
+					</ul>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 4 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of CBoxes: 2</li>
+				<li>Number of slices: 4</li>
+				<li>Number of sets (per slice): 1024</li>
+				<li>Way size (per slice): 64 kB</li>
+				<li>Latency: 34 cycles <a href="cache/lat_SKL.html">Link</a></li>
+				<li>Replacement policy: Adaptive <a href="cache/setDueling_SKL.html">Link</a></li>
+					<ul>
+					<li>Sets 0, 33, 132, 165, 264, 297, 396, 429, 528, 561, 660, 693, 792, 825, 924, 957 (in all CBoxes): QLRU_H11_M1_R0_U0 <a href="cache/replPolicy_SKL_L3.html">Link</a></li>
+						<ul>
+						<li>Same as the policy used in sets 512-575 on Haswell (see below)</li>
+						<li>See also <a href="https://arxiv.org/pdf/1912.09770.pdf">Vila et al.</a></li>
+						</ul>
+					<li>The remaining sets can switch between the QLRU_H11_M1_R0_U0 policy and a variant of this policy that occasionally inserts new blocks with age 3 instead of age 1 when the cache is not full</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="BDW"><b>Core i5-5200U (Broadwell)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_BDW.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (insertion order if empty depends on previous state) <a href="cache/replPolicy_BDW_L1.html">Link 1</a> <a href="cache/permPolicy_BDW_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 512</li>
+				<li>Way size: 32 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_BDW.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_BDW_L2.html">Link 1</a> <a href="cache/permPolicy_BDW_L2.html">Link 2</a></li>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 3 MB</li>
+				<li>Associativity: 12</li>
+				<li>Number of CBoxes: 2</li>
+				<li>Number of slices: 2</li>
+				<li>Number of sets (per slice): 2048</li>
+				<li>Way size (per slice): 128 kB</li>
+				<li>Latency: 38 cycles <a href="cache/lat_BDW.html">Link</a></li>
+				<li>Replacement policy: Set Dueling <a href="cache/setDueling_BDW.html">Link 1</a> <a href="cache/replPolicy_BDW_L3.html">Link 2</a>  <a href="cache/permPolicy_BDW_L3.html">Link 3</a></li>
+					<ul>
+					<li>Same as the Haswell L3 policy</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="HSW"><b>Xeon E3-1225 v3 (Haswell)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_HSW.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (insertion order if empty depends on previous state) <a href="cache/replPolicy_HSW_L1.html">Link 1</a> <a href="cache/permPolicy_HSW_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 512</li>
+				<li>Way size: 32 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_HSW.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_HSW_L2.html">Link 1</a> <a href="cache/permPolicy_HSW_L2.html">Link 2</a></li>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 8 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of CBoxes: 4</li>
+				<li>Number of slices: 4</li>
+				<li>Number of sets (per slice): 2048</li>
+				<li>Way size (per slice): 128 kB</li>
+				<li>Latency: 36 cycles <a href="cache/lat_HSW.html">Link</a></li>
+				<li>Replacement policy: Set Dueling <a href="cache/setDueling_HSW.html">Link</a></li>
+					<ul>
+					<li>Sets 512-575 in CBox 0: QLRU_H11_M1_R0_U0 <a href="cache/replPolicy_HSW_L3.html">Link</a></li>
+						<ul>
+						<li>Two bits per cache line; they represent the age of the block</li>
+						<li>A cache hit sets the age to 1 if it was 2 or 3 before, and to 0 otherwise</li>
+						<li>Upon a cache miss, the leftmost line whose age is 3 is replaced, and the age is set to 1</li>
+						<li>If after an access (hit or miss), there is no more line whose age is 3, the ages of all lines (including the accessed line) are increased by 1; this is repeated until there is at least one line whose age is 3</li>
+						<li>If the cache is empty (after executing the WBINVD instruction), blocks are inserted from left to right</li>
+						<li>Note that the description of the policy in <a href="https://arxiv.org/pdf/1904.06278.pdf">this paper</a> is incorrect.
+							 The policy from the paper corresponds to the QLRU_H21_M2_R0_U0_UMO variant in the <a href="cache/replPolicy_HSW_L3.html">linked table</a>;
+							 the table (and the corresponding table for the other CPUs above) contain several counterexamples that show that this is not the policy actually implemented.</li>
+						</ul>
+					<li>Sets 768-831 in CBox 0: <a href="cache/permPolicy_HSW_L3.html">Link</a></li>
+						<ul>
+						<li>Similar to the policy described above, but it seems that in about 15/16 of the cases, new blocks are inserted with age&nbsp;3 instead of age 1</li>
+						</ul>
+					<li>The remaining sets are "follower sets" that use the policy that performs better</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="IVB"><b>Core i5-3470 (Ivy Bridge)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_IVB.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (insertion order if empty depends on previous state) <a href="cache/replPolicy_IVB_L1.html">Link 1</a> <a href="cache/permPolicy_IVB_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 512</li>
+				<li>Way size: 32 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_IVB.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_IVB_L2.html">Link 1</a> <a href="cache/permPolicy_IVB_L2.html">Link 2</a></li>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 6 MB</li>
+				<li>Associativity: 12</li>
+					<ul>
+					<li>In CBox 0, the associativity seems to be only 11</li>
+					</ul>
+				<li>Number of CBoxes: 4</li>
+				<li>Number of slices: 4</li>
+				<li>Number of sets (per slice): 2048</li>
+				<li>Way size (per slice): 128 kB</li>
+				<li>Latency: 30 cycles <a href="cache/lat_IVB.html">Link</a></li>
+				<li>Replacement policy: Set Dueling <a href="cache/setDueling_IVB.html">Link</a></li>
+					<ul>
+					<li>Sets 512-575 (in all CBoxes): QLRU_H11_M1_R1_U2 <a href="cache/replPolicy_IVB_L3.html">Link</a></li>
+						<ul>
+						<li>Similar to the policy used in sets 512-575 on Haswell, but:</li>
+							<ul>
+							<li>If after an access, there is no more line whose age is 3, the ages of all lines (including the accessed line) are increased by&nbsp;1;
+							    however, unlike with the Haswell policy, this step is <b>not</b> repeated if there is still no line whose age is 3</li>
+							<li>Upon a cache miss, the leftmost line whose age is 3 is replaced; if there is no such line, the leftmost line is replaced</li>
+							</ul>
+						</ul>
+					<li>Sets 768-831 (in all CBoxes): <a href="cache/permPolicy_IVB_L3.html">Link</a></li>
+						<ul>
+						<li>Similar to the policy described above, but it seems that in about 15/16 of the cases, new blocks are inserted with age 3 instead of age 1</li>
+						</ul>
+					<li>The remaining sets are "follower sets" that use the policy that performs better</li>
+					<li>See also <a href="http://blog.stuffedcow.net/2013/01/ivb-cache-replacement/">Intel Ivy Bridge Cache Replacement Policy</a></li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="SNB"><b>Core i7-2600 (Sandy Bridge)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_SNB.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (insertion order if empty depends on previous state) <a href="cache/replPolicy_SNB_L1.html">Link 1</a> <a href="cache/permPolicy_SNB_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+			<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 512</li>
+				<li>Way size: 32 kB</li>
+				<li>Latency: 12 cycles <a href="cache/lat_SNB.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_SNB_L2.html">Link 1</a> <a href="cache/permPolicy_SNB_L2.html">Link 2</a></li>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 8 MB</li>
+				<li>Associativity: 16</li>
+					<ul>
+					<li>In CBox 0, the associativity seems to be only 15, see also <a href="http://www.cs.binghamton.edu/~dima/dac16.pdf">Kayaalp et al.</a></li>
+					</ul>
+				<li>Number of CBoxes: 4</li>
+				<li>Number of slices: 4</li>
+				<li>Number of sets (per slice): 2048</li>
+				<li>Way size (per slice): 128 kB</li>
+				<li>Latency: 29 cycles <a href="cache/lat_SNB.html">Link</a></li>
+				<li>Replacement policy: MRU_N <a href="cache/replPolicy_SNB_L3.html">Link</a></li>
+					<ul>
+					<li>Similar to the Nehalem policy (see below), but the status bits are not updated until all lines are filled</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="WSM"><b>Core i5-650 (Westmere)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_WSM.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_WSM_L1.html">Link 1</a> <a href="cache/permPolicy_WSM_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 512</li>
+				<li>Way size: 32 kB</li>
+				<li>Latency: 10 cycles <a href="cache/lat_WSM.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_WSM_L2.html">Link 1</a> <a href="cache/permPolicy_WSM_L2.html">Link 2</a></li>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 4 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of sets: 4096</li>
+				<li>Way size: 256 kB</li>
+				<li>Latency: 45 cycles <a href="cache/lat_WSM.html">Link</a></li>
+				<li>Replacement policy: MRU <a href="cache/replPolicy_WSM_L3.html">Link</a></li>
+					<ul>
+					<li>Same as the Nehalem policy (see below)</li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="NHM"><b>Core i5-750 (Nehalem)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 4 cycles <a href="cache/lat_NHM.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_NHM_L1.html">Link 1</a> <a href="cache/permPolicy_NHM_L1.html">Link 2</a></li>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 256 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 512</li>
+				<li>Way size: 32 kB</li>
+				<li>Latency: 10 cycles <a href="cache/lat_NHM.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (with linear insertion order if empty) <a href="cache/replPolicy_NHM_L2.html">Link 1</a> <a href="cache/permPolicy_NHM_L2.html">Link 2</a></li>
+				</ul>
+			<li>L3 cache</li>
+				<ul>
+				<li>Size: 8 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of sets: 8192</li>
+				<li>Way size: 512 kB</li>
+				<li>Latency: 46 cycles <a href="cache/lat_NHM.html">Link</a></li>
+				<li>Replacement policy: MRU <a href="cache/replPolicy_NHM_L3.html">Link</a></li>
+					<ul>
+					<li>One bit per cache line</li>
+					<li>An access sets the bit to 0</li>
+					<li>Upon a cache miss, the leftmost line whose bit is 1 is replaced, and the bit is set to 0</li>
+					<li>Whenever the last 1-bit is set to 0, all other bits are set to 1</li>
+					<li>Initially (after a WBINVD instruction), all bits are 1</li>
+					<li>See also <a href="https://it.uu.se/research/publications/reports/2011-001/2011-001-nc.pdf">Eklov et al.</a></li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="WOL"><b>Core 2 Duo E8400 (Wolfdale)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 3 cycles <a href="cache/lat_E8400.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (inital insertion order unknown) <a href="cache/replPolicy_E8400_L1.html">Link 1</a> <a href="cache/permPolicy_E8400_L1.html">Link 2</a></li>
+					<ul>
+					<li>See also our paper <a href="http://embedded.cs.uni-saarland.de/publications/CacheModelingRTAS2013.pdf">Measurement-based Modeling of the Cache Replacement Policy</a></li>
+					</ul>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 6 MB</li>
+				<li>Associativity: 24</li>
+				<li>Number of sets: 4096</li>
+				<li>Way size: 256 kB</li>
+				<li>Latency: 15 cycles <a href="cache/lat_E8400.html">Link</a></li>
+				<li>Replacement policy: Rand-PLRU <a href="cache/permPolicy_E8400_L2.html">Link</a></li>
+					<ul>
+					<li>Tree-PLRU variant where the bit at the root is replaced by (pseudo-)randomness</li>
+					<li>See also our paper <a href="http://embedded.cs.uni-saarland.de/publications/ISPASS14.pdf">Reverse Engineering of Cache Replacement Policies in Intel Microprocessors and Their Evaluation</a></li>
+					</ul>
+				</ul>
+			</ul><br>
+		<li id="CON"><b>Core 2 Duo E6750 (Conroe)</b></li>
+			<ul>
+			<li>L1 data cache</li>
+				<ul>
+				<li>Size: 32 kB</li>
+				<li>Associativity: 8</li>
+				<li>Number of sets: 64</li>
+				<li>Way size: 4 kB</li>
+				<li>Latency: 3 cycles <a href="cache/lat_E6750.html">Link</a></li>
+				<li>Replacement policy: Tree-PLRU (inital insertion order unknown) <a href="cache/replPolicy_E6750_L1.html">Link 1</a> <a href="cache/permPolicy_E6750_L1.html">Link 2</a></li>
+					<ul>
+					<li>See also our paper <a href="http://embedded.cs.uni-saarland.de/publications/CacheModelingRTAS2013.pdf">Measurement-based Modeling of the Cache Replacement Policy</a></li>
+					</ul>
+				</ul>
+			<li>L2 cache</li>
+				<ul>
+				<li>Size: 4 MB</li>
+				<li>Associativity: 16</li>
+				<li>Number of sets: 4096</li>
+				<li>Way size: 256 kB</li>
+				<li>Latency: 14 cycles <a href="cache/lat_E6750.html">Link</a></li>
+				<li>Replacement policy: PLRU-Rand <a href="cache/permPolicy_E6750_L2.html">Link</a></li>
+					<ul>
+					<li>Tree-PLRU variant where the bits closest to the leaves are replaced by (pseudo-)randomness</li>
+					<li>See also our paper <a href="http://embedded.cs.uni-saarland.de/publications/ISPASS14.pdf">Reverse Engineering of Cache Replacement Policies in Intel Microprocessors and Their Evaluation</a></li>
+					</ul>
+				</ul>
+			</ul>
+		</ul>
+		</p>
+	</div>
+</div>
+<div id="footer"></div>
+</body>
+</html>
+<!--
+Modified from:
+
+Design by TEMPLATED
+http://templated.co
+Released for free under the Creative Commons Attribution License
+http://creativecommons.org/licenses/by/3.0/
+
+Name       : Justifiable
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20130801
+-->

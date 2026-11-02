@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>uops.info</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="../fonts.googleapis.com/css.css" rel="stylesheet" />
+<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+<script src="../ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	$("#header").load("header.html");
+	$("#footer").load("footer.html");
+	$("#menu").load("menu.html", function() {
+		$("#menu_background").addClass("current_page_item")
+	});
+});
+</script>
+<script src="../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<div id="header"></div>
+
+<div id="wrapper" class="container">
+	<div id="menu"></div>
+
+	<div id="page" style="text-align:justify">
+		<span class="arrow-down"></span>
+		<p>
+		Knowledge of the latency, throughput and port usage is necessary for building performance-analysis tools, cycle-accurate simulators, and optimzing compilers.
+		It is also helpful when manually fine-tuning a piece of code for a specific processor.
+		Unfortunately, this information is only poorly documented in the <a href="https://software.intel.com/sites/default/files/managed/9e/bc/64-ia-32-architectures-optimization-manual.pdf">official processor manuals</a>.
+		</p>
+		<p>
+		We have developed a technique to automatically generate microbenchmarks for measuring these properties.
+		On this website, we present latency, throughput and port usage data for all generations of Intel's core microarchitecture that were obtained using these microbenchmarks.
+		</p>
+
+		<img src="pipeline.png" style="float:right; padding-top:40px; padding-left: 30px;"></img>
+		<h1>Pipeline of Intel Core CPUs</h1>
+
+		<p>
+		The figure on the right shows the general structure of the pipeline of Intel
+		Core CPUs. The pipeline consists of the front end, the
+		execution engine (back end), and the memory subsystem.
+		The front end is responsible for fetching instructions from
+		the memory, and for decoding them into a sequence of microoperations
+		(&mu;ops).
+		</p>
+		<p>
+		The reorder buffer stores the the μops in order until they
+		are retired. It is also responsible for register allocation (i.e.,
+		mapping the architectural registers to physical registers), and
+		register renaming (to eliminate false dependencies among
+		μops).
+		</p>
+		<p>
+		The &mu;ops are then forwarded to the scheduler
+		(also known as the reservation station), which queues the μops
+		until all their source operands are ready. Once the operands of
+		a μop are ready, it is dispatched through an execution port. Due
+		to out-of-order execution, μops are not necessarily dispatched
+		in program order. Each port (Intel Core microarchitectures
+		have 6, 8, or 10 of them) is connected to a set of different functional
+		units. Each port can accept at most
+		one &mu;op in every cycle. However, as most functional units are
+		fully pipelined, a port can typically accept a new &mu;op in every
+		cycle, even though the corresponding functional unit might
+		not have finished executing a previous &mu;op.
+		</p>
+		<h1>Definitions</h1>
+		<h3>Latency</h3>
+		<p>The latency of an instruction is <a href="https://software.intel.com/sites/default/files/managed/9e/bc/64-ia-32-architectures-optimization-manual.pdf">commonly</a> defined as the
+		<i>"number of clock cycles that are required for the execution
+		core to complete the execution of all of the &mu;ops that form
+		an instruction"</i> (assuming that there are no other instructions
+		that compete for execution resources). Thus, it denotes the
+		time from when the operands of the instruction are ready and
+		the instruction can begin execution to when the results of the
+		instruction are ready.
+		</p>
+		<p>
+		This definition ignores the fact that different operands of an
+		instruction may be read and/or written by different &mu;ops. Thus,
+		a &mu;op of an instruction I might already begin execution before
+		all source operands of I are ready, and a subsequent instruction
+		I' that depends on some (but not all results) of I might
+		begin execution before all results of I have been produced.</p>
+		<p>
+		<em>To take this into account, we therefore provide separate latency numbers for each pair of input and output operands.</em>
+		</p>
+		<h3>Throughput</h3>
+		<p>
+		When comparing throughput data from different publications,
+		it is important to note that these publications do not all use the
+		same definition of throughput. Intel defines throughput in its
+		<a href="https://software.intel.com/sites/default/files/managed/9e/bc/64-ia-32-architectures-optimization-manual.pdf">manual</a> as follows:
+		</p>
+		<p style="margin-left:50px">
+		<i>"The number of clock cycles
+		required to wait before the issue ports are free to accept
+		the same instruction again."</i>
+		</p>
+		On the other hand, <a href="https://www.agner.org/optimize/instruction_tables.pdf">Agner Fog</a> uses the following definition
+		for (reciprocal) throughput:
+		</p>
+		<p style="margin-left:50px">
+		<i>"The average number of
+		core clock cycles per instruction for a series of independent
+		instructions of the same kind in the same thread."</i>
+		</p>
+		<p>
+		These two definitions are not equivalent, as there can be factors
+		other than contention for the issue ports that may reduce
+		the rate at which instructions can be executed (e.g., the front
+		end, or the memory subsystem). Moreover, it is not always
+		possible to find instructions of the same kind that are truly
+		independent, as many instructions have implicit dependencies
+		on certain registers or flags. Hence, the second definition
+		may yield higher throughput values (corresponding to a lower
+		throughput) than the first definition for the same instruction.
+		</p>
+		<p>
+		<em>We provide throughput values according to both definitions.</em>
+		</p>
+		<h3>Port Usage</h3>
+		<p>
+		We use the following notation for the port usage: <em>3*p015+1*p23</em>, for example, denotes an instruction with four &mu;ops;
+		three of these &mu;ops can each be executed on ports 0, 1, and 5, and one &mu;op can be executed on ports 2 and 3.
+		</p>
+		<h1>How We Obtained the Numbers</h1>
+		<p>We developed algorithms that generate assembler code
+		for microbenchmarks to measure the properties of interest
+		for most x86 instructions. Our algorithms take into account
+		explicit and implicit dependencies, such as, e.g., dependencies
+		on status flags.</p>
+		<p>
+		We ran the generated microbenchmarks both on the actual hardware (using <a href="https://github.com/andreas-abel/nanoBench">nanoBench</a>) and on top of different versions of <a href="https://software.intel.com/en-us/articles/intel-architecture-code-analyzer" target="_blank">Intel IACA</a>.
+		</p>
+		<h1 id="supportedMicroarchitectures">Supported Microarchitectures</h1>
+		Thus far, we have analyzed the following microarchitectures:
+		<ul>
+		<li><b>Conroe:</b> Measurements (Core 2 Duo E6750)</li>
+		<li><b>Wolfdale:</b> Measurements (Core 2 Duo E8400)</li>
+		<li><b>Nehalem:</b> Measurements (Core i5-750), IACA 2.1, IACA 2.2</li>
+		<li><b>Westmere:</b> Measurements (Core i5-650), IACA 2.1, IACA2.2</li>
+		<li><b>Sandy Bridge:</b> Measurements (Core i7-2600), IACA 2.1, IACA 2.2, IACA 2.3</li>
+		<li><b>Ivy Bridge:</b> Measurements (Core i5-3470), IACA 2.1, IACA 2.2, IACA 2.3</li>
+		<li><b>Haswell:</b> Measurements (Xeon E3-1225 v3), IACA 2.1, IACA 2.2, IACA 2.3, IACA 3.0</li>
+		<li><b>Broadwell:</b> Measurements (Core i3-5005U), IACA 2.2, IACA 2.3, IACA 3.0</li>
+		<li><b>Skylake:</b> Measurements (Core i5-6500), IACA 2.3, IACA 3.0</li>
+		<li><b>Skylake-X:</b> Measurements (Core i9-9900X), IACA 2.3, IACA 3.0</li>
+		<li><b>Kaby Lake:</b> Measurements (Core i7-7700)</li>
+		<li><b>Coffee Lake:</b> Measurements (Core i7-8700K)</li>
+		<li><b>Cannon Lake:</b> Measurements (Core i3-8121U)</li>
+		<li><b>Cascade Lake:</b> Measurements (Core i9-10980XE)</li>
+		<li><b>Ice Lake:</b> Measurements (Core i5-1035G1), <a href="https://www.intel.com/content/www/us/en/content-details/671104/10th-generation-intel-core-processor-instruction-throughput-and-latency-docs.html" target="_blank">Documentation</a></li>
+		<li><b>Tiger Lake:</b> Measurements (Core i7-1165G7)</li>
+		<li><b>Rocket Lake:</b> Measurements (Core i9-11900)</li>
+		<li><b>Alder Lake:</b> Measurements (Core i5-12600K)</li>
+		<li><b>Emerald Rapids:</b> Measurements (Xeon Silver 4514Y)</li>
+		<li><b>Meteor Lake:</b> Measurements (Core Ultra 7 155H)</li>
+		<li><b>Arrow Lake:</b> Measurements (Core Ultra 7 265K)</li>
+		<li><b>Bonnell:</b> Measurements (Atom D525)</li>
+		<li><b>Airmont:</b> Measurements (Celeron N3000)</li>
+		<li><b>Goldmont:</b> Measurements (Celeron J3455)</li>
+		<li><b>Goldmont Plus:</b> Measurements (Celeron J4125)</li>
+		<li><b>Tremont:</b> Measurements (Pentium Silver N6005)</li>
+		<li><b>AMD Zen+:</b> Measurements (Ryzen 5 2600), <a href="https://docs.amd.com/v/u/en-US/55723_3_01_0" target="_blank">Documentation</a></li>
+		<li><b>AMD Zen 2:</b> Measurements (Ryzen 7 3700X), <a href="https://docs.amd.com/v/u/en-US/56305" target="_blank">Documentation</a></li>
+		<li><b>AMD Zen 3:</b> Measurements (Ryzen 5 5600X), <a href="https://docs.amd.com/v/u/en-US/56665" target="_blank">Documentation</a></li>
+		<li><b>AMD Zen 4:</b> Measurements (Ryzen 5 7600X), <a href="http://web.archive.org/web/20230108094512/https://www.amd.com/system/files/TechDocs/57647.zip" target="_blank">Documentation</a></li>
+		<li><b>AMD Zen 5:</b> Measurements (Ryzen 7 9700X), <a href="https://docs.amd.com/v/u/en-US/58455_1.00" target="_blank">Documentation</a></li>
+		</ul>
+		<h1>More Information</h1>
+		For more information, please read our paper <a href="paper.html">"uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures"</a>.
+	</div>
+</div>
+<div id="footer"></div>
+</body>
+</html>
+<!--
+Modified from:
+
+Design by TEMPLATED
+http://templated.co
+Released for free under the Creative Commons Attribution License
+http://creativecommons.org/licenses/by/3.0/
+
+Name       : Justifiable
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20130801
+-->
