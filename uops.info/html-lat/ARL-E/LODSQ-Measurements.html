@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>LODSQ</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>LODSQ - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w, suppressed): Register (RAX)</li><li>Operand 2 (r, suppressed): Memory</li><li>Operand 3 (r, suppressed): Flags (DF: r)</li></ul><hr><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): 5</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;6</h3></a><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): 5</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>LODSQ</code></li>
+<li>Chain instructions: <code>MOVSX RAX, EAX;XOR RSI, RAX;XOR RSI, RAX;XOR RSI, RAX;XOR RSI, RAX;XOR RSI, RAX;XOR RSI, RAX;TEST R15, R15</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	48 ad                	lods   rax,QWORD PTR ds:[rsi]
+   2:	48 63 c0             	movsxd rax,eax
+   5:	48 31 c6             	xor    rsi,rax
+   8:	48 31 c6             	xor    rsi,rax
+   b:	48 31 c6             	xor    rsi,rax
+   e:	48 31 c6             	xor    rsi,rax
+  11:	48 31 c6             	xor    rsi,rax
+  14:	48 31 c6             	xor    rsi,rax
+  17:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LODSQ; MOVSX RAX, EAX; XOR RSI, RAX; XOR RSI, RAX; XOR RSI, RAX; XOR RSI, RAX; XOR RSI, RAX; XOR RSI, RAX; TEST R15, R15&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 11.98</li>
+<li>Reference cycles: 9.93</li>
+<li>UOPS_RETIRED.ALL: 11.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>LODSQ</code></li>
+<li>Chain instructions: <code>MOVSX R12, EAX;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RSI], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	48 ad                	lods   rax,QWORD PTR ds:[rsi]
+   2:	4c 63 e0             	movsxd r12,eax
+   5:	4d 63 e4             	movsxd r12,r12d
+   8:	4d 63 e4             	movsxd r12,r12d
+   b:	4d 63 e4             	movsxd r12,r12d
+   e:	4d 63 e4             	movsxd r12,r12d
+  11:	4d 63 e4             	movsxd r12,r12d
+  14:	4c 89 26             	mov    QWORD PTR [rsi],r12
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LODSQ; MOVSX R12, EAX; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RSI], R12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 11.99</li>
+<li>Reference cycles: 9.93</li>
+<li>UOPS_RETIRED.ALL: 10.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

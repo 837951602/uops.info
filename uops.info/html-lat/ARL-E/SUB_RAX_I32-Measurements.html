@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>SUB (RAX, I32)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>SUB (RAX, I32) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (RAX)</li><li>Operand 2 (r): 32-bit immediate</li><li>Operand 3 (w, suppressed): Flags (AF: w, CF: w, OF: w, PF: w, SF: w, ZF: w)</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 1</h3></a><a href="#lat1->3"><h3>Latency operand 1 &rarr; 3: 1</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 0.97</li>
+<li>Reference cycles: 0.34</li>
+<li>UOPS_RETIRED.ALL: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Chain instructions: <code>MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+   6:	48 63 c0             	movsxd rax,eax
+   9:	48 63 c0             	movsxd rax,eax
+   c:	48 63 c0             	movsxd rax,eax
+   f:	48 63 c0             	movsxd rax,eax
+  12:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 5.98</li>
+<li>Reference cycles: 4.88</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3">Latency operand 1 &rarr; 3: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Chain instructions: <code>CMOVC R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+   6:	4d 0f 42 ff          	cmovb  r15,r15
+   a:	49 63 c7             	movsxd rax,r15d
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216; CMOVC R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 7.99</li>
+<li>Reference cycles: 6.73</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Chain instructions: <code>CMOVP R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+   6:	4d 0f 4a ff          	cmovp  r15,r15
+   a:	49 63 c7             	movsxd rax,r15d
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216; CMOVP R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 7.99</li>
+<li>Reference cycles: 7.07</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Chain instructions: <code>CMOVS R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+   6:	4d 0f 48 ff          	cmovs  r15,r15
+   a:	49 63 c7             	movsxd rax,r15d
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216; CMOVS R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 7.99</li>
+<li>Reference cycles: 7.07</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Chain instructions: <code>CMOVO R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+   6:	4d 0f 40 ff          	cmovo  r15,r15
+   a:	49 63 c7             	movsxd rax,r15d
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216; CMOVO R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 7.99</li>
+<li>Reference cycles: 6.57</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>SUB RAX, 16777216</code></li>
+<li>Chain instructions: <code>CMOVZ R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	48 2d 00 00 00 01    	sub    rax,0x1000000
+   6:	4d 0f 44 ff          	cmove  r15,r15
+   a:	49 63 c7             	movsxd rax,r15d
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SUB RAX, 16777216; CMOVZ R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 8.0</li>
+<li>Reference cycles: 6.57</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

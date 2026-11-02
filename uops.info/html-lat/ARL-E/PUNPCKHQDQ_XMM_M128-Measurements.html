@@ -1,0 +1,332 @@
+<html>
+<head>
+<title>PUNPCKHQDQ (XMM, M128)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>PUNPCKHQDQ (XMM, M128) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li><li>Operand 2 (r): Memory</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 1</h3></a><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): &le;11</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): &le;11</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;6</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.07</li>
+<li>Reference cycles: 0.51</li>
+<li>UOPS_RETIRED.ALL: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   a:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   f:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  14:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  19:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.05</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   a:	66 0f db c0          	pand   xmm0,xmm0
+   e:	66 0f db c0          	pand   xmm0,xmm0
+  12:	66 0f db c0          	pand   xmm0,xmm0
+  16:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 5.05</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.01</li>
+<li>Reference cycles: 0.51</li>
+<li>UOPS_RETIRED.ALL: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0;SHUFPD XMM0, XMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   a:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+   f:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  14:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+  19:	66 0f c6 c0 00       	shufpd xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0; SHUFPD XMM0, XMM0, 0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 5.91</li>
+<li>Reference cycles: 5.39</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM0, XMM0, 0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0;PAND XMM0, XMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 0f 70 c0 00       	pshufd xmm0,xmm0,0x0
+   a:	66 0f db c0          	pand   xmm0,xmm0
+   e:	66 0f db c0          	pand   xmm0,xmm0
+  12:	66 0f db c0          	pand   xmm0,xmm0
+  16:	66 0f db c0          	pand   xmm0,xmm0
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; PSHUFD XMM0, XMM0, 0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0; PAND XMM0, XMM0&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 5.92</li>
+<li>Reference cycles: 4.88</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): &le;11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 49 0f 7e c4       	movq   r12,xmm0
+   a:	4d 31 e6             	xor    r14,r12
+   d:	4d 31 e6             	xor    r14,r12
+  10:	4d 31 e6             	xor    r14,r12
+  13:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; MOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 15.98</li>
+<li>Reference cycles: 13.64</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 49 0f 7e c4       	movq   r12,xmm0
+   a:	4d 31 e6             	xor    r14,r12
+   d:	4d 31 e6             	xor    r14,r12
+  10:	4d 31 e6             	xor    r14,r12
+  13:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; MOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 15.9</li>
+<li>Reference cycles: 13.64</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): &le;11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	66 43 0f 6d 04 2e    	punpckhqdq xmm0,XMMWORD PTR [r14+r13*1]
+   6:	66 49 0f 7e c4       	movq   r12,xmm0
+   b:	4d 31 e5             	xor    r13,r12
+   e:	4d 31 e5             	xor    r13,r12
+  11:	4d 31 e5             	xor    r13,r12
+  14:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14+R13]; MOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 15.91</li>
+<li>Reference cycles: 13.13</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	66 43 0f 6d 04 2e    	punpckhqdq xmm0,XMMWORD PTR [r14+r13*1]
+   6:	66 49 0f 7e c4       	movq   r12,xmm0
+   b:	4d 31 e5             	xor    r13,r12
+   e:	4d 31 e5             	xor    r13,r12
+  11:	4d 31 e5             	xor    r13,r12
+  14:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14+R13]; MOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 15.99</li>
+<li>Reference cycles: 13.64</li>
+<li>UOPS_RETIRED.ALL: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM13, XMM0, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;MOVUPD [R14], XMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 44 0f c6 e8 00    	shufpd xmm13,xmm0,0x0
+   b:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  11:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  17:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  1d:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  23:	66 45 0f 11 2e       	movupd XMMWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; SHUFPD XMM13, XMM0, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; MOVUPD [R14], XMM13&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 12.0</li>
+<li>Reference cycles: 9.93</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM13, XMM0, 0;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;MOVDQU [R14], XMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 44 0f 70 e8 00    	pshufd xmm13,xmm0,0x0
+   b:	66 45 0f db ed       	pand   xmm13,xmm13
+  10:	66 45 0f db ed       	pand   xmm13,xmm13
+  15:	66 45 0f db ed       	pand   xmm13,xmm13
+  1a:	66 45 0f db ed       	pand   xmm13,xmm13
+  1f:	f3 45 0f 7f 2e       	movdqu XMMWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; PSHUFD XMM13, XMM0, 0; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; MOVDQU [R14], XMM13&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 12.0</li>
+<li>Reference cycles: 9.26</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM13, XMM0, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;MOVUPD [R14], XMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 44 0f c6 e8 00    	shufpd xmm13,xmm0,0x0
+   b:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  11:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  17:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  1d:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  23:	66 45 0f 11 2e       	movupd XMMWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; SHUFPD XMM13, XMM0, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; MOVUPD [R14], XMM13&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 12.01</li>
+<li>Reference cycles: 9.93</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>PUNPCKHQDQ XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM13, XMM0, 0;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;MOVDQU [R14], XMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	66 41 0f 6d 06       	punpckhqdq xmm0,XMMWORD PTR [r14]
+   5:	66 44 0f 70 e8 00    	pshufd xmm13,xmm0,0x0
+   b:	66 45 0f db ed       	pand   xmm13,xmm13
+  10:	66 45 0f db ed       	pand   xmm13,xmm13
+  15:	66 45 0f db ed       	pand   xmm13,xmm13
+  1a:	66 45 0f db ed       	pand   xmm13,xmm13
+  1f:	f3 45 0f 7f 2e       	movdqu XMMWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PUNPCKHQDQ XMM0, xmmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PUNPCKHQDQ XMM0, xmmword ptr [R14]; PSHUFD XMM13, XMM0, 0; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; MOVDQU [R14], XMM13&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PUNPCKHQDQ XMM0, xmmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 12.04</li>
+<li>Reference cycles: 10.27</li>
+<li>UOPS_RETIRED.ALL: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
