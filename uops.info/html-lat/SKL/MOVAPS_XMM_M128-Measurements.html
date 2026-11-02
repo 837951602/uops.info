@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>MOVAPS (XMM, M128)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>MOVAPS (XMM, M128) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li><li>Operand 2 (r): Memory</li></ul><hr><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): &le;7</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): &le;7</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;4</h3></a><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): &le;7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>MOVAPS XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	41 0f 28 06          	movaps xmm0,XMMWORD PTR [r14]
+   4:	66 49 0f 7e c4       	movq   r12,xmm0
+   9:	4d 31 e6             	xor    r14,r12
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOVAPS XMM0, xmmword ptr [R14]; MOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 12.0</li>
+<li>Reference cycles: 10.64</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): &le;7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>MOVAPS XMM0, xmmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	43 0f 28 04 2e       	movaps xmm0,XMMWORD PTR [r14+r13*1]
+   5:	66 49 0f 7e c4       	movq   r12,xmm0
+   a:	4d 31 e5             	xor    r13,r12
+   d:	4d 31 e5             	xor    r13,r12
+  10:	4d 31 e5             	xor    r13,r12
+  13:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOVAPS XMM0, xmmword ptr [R14+R13]; MOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 12.0</li>
+<li>Reference cycles: 10.42</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;4</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>MOVAPS XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>SHUFPD XMM13, XMM0, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;SHUFPD XMM13, XMM13, 0;MOVUPD [R14], XMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	41 0f 28 06          	movaps xmm0,XMMWORD PTR [r14]
+   4:	66 44 0f c6 e8 00    	shufpd xmm13,xmm0,0x0
+   a:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  10:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  16:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  1c:	66 45 0f c6 ed 00    	shufpd xmm13,xmm13,0x0
+  22:	66 45 0f 11 2e       	movupd XMMWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOVAPS XMM0, xmmword ptr [R14]; SHUFPD XMM13, XMM0, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; SHUFPD XMM13, XMM13, 0; MOVUPD [R14], XMM13&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 8.2</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>MOVAPS XMM0, xmmword ptr [R14]</code></li>
+<li>Chain instructions: <code>PSHUFD XMM13, XMM0, 0;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;PAND XMM13, XMM13;MOVDQU [R14], XMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	41 0f 28 06          	movaps xmm0,XMMWORD PTR [r14]
+   4:	66 44 0f 70 e8 00    	pshufd xmm13,xmm0,0x0
+   a:	66 45 0f db ed       	pand   xmm13,xmm13
+   f:	66 45 0f db ed       	pand   xmm13,xmm13
+  14:	66 45 0f db ed       	pand   xmm13,xmm13
+  19:	66 45 0f db ed       	pand   xmm13,xmm13
+  1e:	f3 45 0f 7f 2e       	movdqu XMMWORD PTR [r14],xmm13
+</pre></li>
+<li>Init: <pre>VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;MOVAPS XMM0, xmmword ptr [R14]; PSHUFD XMM13, XMM0, 0; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; PAND XMM13, XMM13; MOVDQU [R14], XMM13&quot; -asm_init &quot;VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.98</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

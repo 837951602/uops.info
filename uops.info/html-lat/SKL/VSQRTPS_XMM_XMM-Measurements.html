@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>VSQRTPS (XMM, XMM)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VSQRTPS (XMM, XMM) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li><li>Operand 2 (r): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15)</li></ul><hr><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: &le;12</h3></a><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: &le;12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VSQRTPS XMM0, XMM2</code></li>
+<li>Chain instructions: <code>VORPS XMM2, XMM0, XMM0; VORPS XMM2, XMM2, XMM1; VANDPS XMM2, XMM2, XMM1; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; </code></li>
+<li>Chain latency: &ge;9</li>
+<li>Code: <pre>   0:	c5 f8 51 c2          	vsqrtps xmm0,xmm2
+   4:	c5 f8 56 d0          	vorps  xmm2,xmm0,xmm0
+   8:	c5 e8 56 d1          	vorps  xmm2,xmm2,xmm1
+   c:	c5 e8 54 d1          	vandps xmm2,xmm2,xmm1
+  10:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  14:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  18:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  1c:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  20:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  24:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x72d30ff172d30ff1;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPS XMM2, [R14];
+VMOVUPS XMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VSQRTPS XMM0, XMM2; VORPS XMM2, XMM0, XMM0;  VORPS XMM2, XMM2, XMM1;  VANDPS XMM2, XMM2, XMM1;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x72d30ff172d30ff1; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPS XMM2, [R14]; VMOVUPS XMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 22.3</li>
+<li>Reference cycles: 19.29</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VSQRTPS XMM2, XMM2</code></li>
+<li>Code: <pre>   0:	c5 f8 51 d2          	vsqrtps xmm2,xmm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPS XMM2, [R14];
+VMOVUPS XMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VSQRTPS XMM2, XMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPS XMM2, [R14]; VMOVUPS XMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 12.0</li>
+<li>Reference cycles: 10.64</li>
+<li>UOPS_EXECUTED.THREAD: 1.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>VSQRTPS XMM0, XMM2</code></li>
+<li>Chain instructions: <code>VORPS XMM2, XMM0, XMM0; VORPS XMM2, XMM2, XMM1; VANDPS XMM2, XMM2, XMM1; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; VORPS XMM2, XMM2, XMM2; </code></li>
+<li>Chain latency: &ge;9</li>
+<li>Code: <pre>   0:	c5 f8 51 c2          	vsqrtps xmm0,xmm2
+   4:	c5 f8 56 d0          	vorps  xmm2,xmm0,xmm0
+   8:	c5 e8 56 d1          	vorps  xmm2,xmm2,xmm1
+   c:	c5 e8 54 d1          	vandps xmm2,xmm2,xmm1
+  10:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  14:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  18:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  1c:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  20:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+  24:	c5 e8 56 d2          	vorps  xmm2,xmm2,xmm2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x3f8000003f800000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPS XMM2, [R14];
+VMOVUPS XMM1, [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VSQRTPS XMM0, XMM2; VORPS XMM2, XMM0, XMM0;  VORPS XMM2, XMM2, XMM1;  VANDPS XMM2, XMM2, XMM1;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2;  VORPS XMM2, XMM2, XMM2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x3f8000003f800000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPS XMM2, [R14]; VMOVUPS XMM1, [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 22.16</li>
+<li>Reference cycles: 19.95</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
