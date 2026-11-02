@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>CMPXCHG (R8l, R8h)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMPXCHG (R8l, R8h) - Throughput and Uops (IACA 3.0)</h1>
+<hr>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.79 Cycles       Throughput Bottleneck: Backend
+Loop Count:  27
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.2     0.0  |  1.2  |  0.0     0.0  |  0.0     0.0  |  0.0  |  1.2  |  1.2  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.2         | 1.2  |             |             |      | 1.2  | 1.2  |      | cmpxchg bl, ch
+Total Num Of Uops: 5
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.82 Cycles       Throughput Bottleneck: Backend
+Loop Count:  25
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  1.5     0.0  |  0.5  |  0.0     0.0  |  0.0     0.0  |  0.0  |  1.5  |  1.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.5         | 0.5  |             |             |      | 1.5  | 1.5  |      | cmpxchg bl, ch
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+Total Num Of Uops: 6
+</pre>
+<h3>With 2 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 9.74 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  2.5     0.0  |  2.5  |  0.0     0.0  |  0.0     0.0  |  0.0  |  2.5  |  2.5  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.5         | 1.0  |             |             |      | 1.5  | 1.0  |      | cmpxchg bl, ch
+|   5      | 1.0         | 1.5  |             |             |      | 1.0  | 1.5  |      | cmpxchg dl, ch
+Total Num Of Uops: 10
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 4.89 Cycles       Throughput Bottleneck: Backend
+Loop Count:  22
+Port Binding In Cycles Per Iteration:
+--------------------------------------------------------------------------------------------------
+|  Port  |   0   -  DV   |   1   |   2   -  D    |   3   -  D    |   4   |   5   |   6   |   7   |
+--------------------------------------------------------------------------------------------------
+| Cycles |  3.0     0.0  |  1.0  |  0.0     0.0  |  0.0     0.0  |  0.0  |  3.0  |  3.0  |  0.0  |
+--------------------------------------------------------------------------------------------------
+
+| Num Of   |                    Ports pressure in cycles                         |      |
+|  Uops    |  0  - DV    |  1   |  2  -  D    |  3  -  D    |  4   |  5   |  6   |  7   |
+-----------------------------------------------------------------------------------------
+|   5      | 1.0         | 1.0  |             |             |      | 2.0  | 1.0  |      | cmpxchg bl, ch
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+|   5      | 2.0         |      |             |             |      | 1.0  | 2.0  |      | cmpxchg dl, ch
+|   1*     |             |      |             |             |      |      |      |      | xor rax, rax
+Total Num Of Uops: 12
+</pre>
+</body>
+</html>

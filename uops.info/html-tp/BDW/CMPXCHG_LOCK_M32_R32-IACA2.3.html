@@ -1,0 +1,269 @@
+<html>
+<head>
+<title>CMPXCHG_LOCK (M32, R32)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMPXCHG_LOCK (M32, R32) - Throughput and Uops (IACA 2.3)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 6.67 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.0    0.0  | 1.5  | 0.6    0.5  | 0.7    0.5  | 1.0  | 1.5  | 2.0  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  10^   | 2.0       | 1.5 | 0.6   0.5 | 0.7   0.5 | 1.0 | 1.5 | 2.0 | 0.6 | CP | lock cmpxchg dword ptr [r14], r8d
+Total Num Of Uops: 10
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.24 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.0    0.0  | 1.5  | 0.6    0.5  | 0.8    0.5  | 1.0  | 1.5  | 2.0  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  10^   | 2.0       | 1.5 | 0.6   0.5 | 0.8   0.5 | 1.0 | 1.5 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 11
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 110.24 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 32.0   0.0  | 24.0 | 10.7   8.0  | 10.6   8.0  | 16.0 | 24.0 | 32.0 | 10.6 |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x4], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.7 |    | lock cmpxchg dword ptr [r14+0x8], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0xc], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x10], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.7 |    | lock cmpxchg dword ptr [r14+0x14], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x18], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x1c], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.7 |    | lock cmpxchg dword ptr [r14+0x20], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x24], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x28], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.7 |    | lock cmpxchg dword ptr [r14+0x2c], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x30], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x34], r8d
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 | 2.0 | 2.0 | 0.7 |    | lock cmpxchg dword ptr [r14+0x38], r8d
+|  10^   | 2.0       | 2.0 | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 0.6 |    | lock cmpxchg dword ptr [r14+0x3c], r8d
+Total Num Of Uops: 160
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 36.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 32.0   0.0  | 24.0 | 10.0   8.0  | 12.0   8.0  | 16.0 | 24.0 | 32.0 | 10.0 |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|  10^   | 2.0       | 1.0 | 1.0   1.0 |           | 1.0 | 2.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+0x4], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 |           | 1.0 | 2.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x8], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 |           | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0xc], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+0x10], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 |           | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x14], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+0x18], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 |           | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x1c], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 |           | 1.0 | 2.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x20], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+0x24], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 |           | 1.0 | 2.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x28], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 |           | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x2c], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+0x30], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 |           | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x34], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+0x38], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|  10^   | 2.0       | 2.0 |           | 1.0   1.0 | 1.0 | 1.0 | 2.0 | 1.0 |    | lock cmpxchg dword ptr [r14+0x3c], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 176
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 6.67 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.0    0.0  | 1.5  | 1.0    0.5  | 1.0    0.5  | 1.0  | 1.5  | 2.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   10   | 2.0       | 1.5 | 1.0   0.5 | 1.0   0.5 | 1.0 | 1.5 | 2.0 |     | CP | lock cmpxchg dword ptr [r14+r13*1], r8d
+Total Num Of Uops: 10
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.71 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 2.0    0.0  | 1.5  | 1.0    0.5  | 1.0    0.5  | 1.0  | 1.5  | 2.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   10   | 2.0       | 1.5 | 1.0   0.5 | 1.0   0.5 | 1.0 | 1.5 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 11
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 110.33 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 32.0   0.0  | 24.0 | 16.0   8.0  | 16.0   8.0  | 16.0 | 24.0 | 32.0 | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x4], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x8], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0xc], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x10], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x14], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x18], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x1c], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x20], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x24], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x28], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x2c], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x30], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x34], r8d
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x38], r8d
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x3c], r8d
+Total Num Of Uops: 160
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 44.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 32.0   0.0  | 24.0 | 16.0   8.0  | 16.0   8.0  | 16.0 | 24.0 | 32.0 | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x4], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x8], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0xc], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x10], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x14], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x18], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x1c], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x20], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x24], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x28], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x2c], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x30], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x34], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 | 2.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x38], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+|   10   | 2.0       | 2.0 | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 2.0 |     |    | lock cmpxchg dword ptr [r14+r13*1+0x3c], r8d
+|   1*   |           |     |           |           |     |     |     |     |    | xor rax, rax
+Total Num Of Uops: 176
+</pre>
+</body>
+</html>

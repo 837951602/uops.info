@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>XOR (M8, R8l)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XOR (M8, R8l) - Throughput and Uops (IACA 2.2)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.2    0.0  | 0.2  | 0.6    0.5  | 0.7    0.5  | 1.0  | 0.2  | 0.2  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   4^   | 0.2       | 0.2 | 0.6   0.5 | 0.7   0.5 | 1.0 | 0.2 | 0.2 | 0.6 | CP | xor byte ptr [r14], r8b
+Total Num Of Uops: 4
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 4.0    0.0  | 4.0  | 10.7   8.0  | 10.6   8.0  | 16.0 | 4.0  | 4.0  | 10.6 |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   4^   | 1.0       |     | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xor byte ptr [r14], r8b
+|   4^   |           | 1.0 | 0.3       | 1.0   1.0 | 1.0 |     |     | 0.6 | CP | xor byte ptr [r14+0x1], r8b
+|   4^   |           |     | 1.0   1.0 | 0.3       | 1.0 | 1.0 |     | 0.7 | CP | xor byte ptr [r14+0x2], r8b
+|   4^   |           |     | 0.3       | 1.0   1.0 | 1.0 |     | 1.0 | 0.6 | CP | xor byte ptr [r14+0x3], r8b
+|   4^   | 1.0       |     | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xor byte ptr [r14+0x4], r8b
+|   4^   |           | 1.0 | 0.3       | 1.0   1.0 | 1.0 |     |     | 0.7 | CP | xor byte ptr [r14+0x5], r8b
+|   4^   |           |     | 1.0   1.0 | 0.3       | 1.0 | 1.0 |     | 0.6 | CP | xor byte ptr [r14+0x6], r8b
+|   4^   |           |     | 0.3       | 1.0   1.0 | 1.0 |     | 1.0 | 0.6 | CP | xor byte ptr [r14+0x7], r8b
+|   4^   | 1.0       |     | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.7 | CP | xor byte ptr [r14+0x8], r8b
+|   4^   |           | 1.0 | 0.3       | 1.0   1.0 | 1.0 |     |     | 0.6 | CP | xor byte ptr [r14+0x9], r8b
+|   4^   |           |     | 1.0   1.0 | 0.3       | 1.0 | 1.0 |     | 0.6 | CP | xor byte ptr [r14+0xa], r8b
+|   4^   |           |     | 0.3       | 1.0   1.0 | 1.0 |     | 1.0 | 0.7 | CP | xor byte ptr [r14+0xb], r8b
+|   4^   | 1.0       |     | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xor byte ptr [r14+0xc], r8b
+|   4^   |           | 1.0 | 0.3       | 1.0   1.0 | 1.0 |     |     | 0.6 | CP | xor byte ptr [r14+0xd], r8b
+|   4^   |           |     | 1.0   1.0 | 0.3       | 1.0 | 1.0 |     | 0.7 | CP | xor byte ptr [r14+0xe], r8b
+|   4^   |           |     | 0.3       | 1.0   1.0 | 1.0 |     | 1.0 | 0.6 | CP | xor byte ptr [r14+0xf], r8b
+Total Num Of Uops: 64
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: FrontEnd, PORT2_AGU, PORT3_AGU, Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.2    0.0  | 0.2  | 1.0    0.5  | 1.0    0.5  | 1.0  | 0.2  | 0.2  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   4    | 0.2       | 0.2 | 1.0   0.5 | 1.0   0.5 | 1.0 | 0.2 | 0.2 |     | CP | xor byte ptr [r14+r13*1], r8b
+Total Num Of Uops: 4
+</pre>
+<h3>With 16 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 16.00 Cycles       Throughput Bottleneck: FrontEnd, PORT2_AGU, PORT3_AGU, Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 4.0    0.0  | 4.0  | 16.0   8.0  | 16.0   8.0  | 16.0 | 4.0  | 4.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   4    | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1], r8b
+|   4    |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0x1], r8b
+|   4    |           |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 |     |     | CP | xor byte ptr [r14+r13*1+0x2], r8b
+|   4    |           |     | 1.0       | 1.0   1.0 | 1.0 |     | 1.0 |     | CP | xor byte ptr [r14+r13*1+0x3], r8b
+|   4    | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0x4], r8b
+|   4    |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0x5], r8b
+|   4    |           |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 |     |     | CP | xor byte ptr [r14+r13*1+0x6], r8b
+|   4    |           |     | 1.0       | 1.0   1.0 | 1.0 |     | 1.0 |     | CP | xor byte ptr [r14+r13*1+0x7], r8b
+|   4    | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0x8], r8b
+|   4    |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0x9], r8b
+|   4    |           |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 |     |     | CP | xor byte ptr [r14+r13*1+0xa], r8b
+|   4    |           |     | 1.0       | 1.0   1.0 | 1.0 |     | 1.0 |     | CP | xor byte ptr [r14+r13*1+0xb], r8b
+|   4    | 1.0       |     | 1.0   1.0 | 1.0       | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0xc], r8b
+|   4    |           | 1.0 | 1.0       | 1.0   1.0 | 1.0 |     |     |     | CP | xor byte ptr [r14+r13*1+0xd], r8b
+|   4    |           |     | 1.0   1.0 | 1.0       | 1.0 | 1.0 |     |     | CP | xor byte ptr [r14+r13*1+0xe], r8b
+|   4    |           |     | 1.0       | 1.0   1.0 | 1.0 |     | 1.0 |     | CP | xor byte ptr [r14+r13*1+0xf], r8b
+Total Num Of Uops: 64
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.2    0.0  | 0.2  | 0.6    0.5  | 0.7    0.5  | 1.0  | 0.2  | 0.2  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   4^   | 0.2       | 0.2 | 0.6   0.5 | 0.7   0.5 | 1.0 | 0.2 | 0.2 | 0.6 | CP | xor byte ptr [r14], r8b
+Total Num Of Uops: 4
+</pre>
+</body>
+</html>

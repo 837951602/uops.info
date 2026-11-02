@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>XADD (M32, R32)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XADD (M32, R32) - Throughput and Uops (IACA 2.3)</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.90 Cycles       Throughput Bottleneck: Dependency chains (possibly between iterations)
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 0.6    0.5  | 0.7    0.5  | 1.0  | 0.5  | 0.5  | 0.6  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5^   | 0.5       | 0.5 | 0.6   0.5 | 0.7   0.5 | 1.0 | 0.5 | 0.5 | 0.6 | CP | xadd dword ptr [r14], r8d
+Total Num Of Uops: 5
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 8.00 Cycles       Throughput Bottleneck: Backend. Port4
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 4.0    0.0  | 4.0  | 5.3    4.0  | 5.3    4.0  | 8.0  | 4.0  | 4.0  | 5.3  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xadd dword ptr [r14], r8d
+|   5^   |           |     | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 1.0 | 0.6 | CP | xadd dword ptr [r14+0x4], r9d
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.7 | CP | xadd dword ptr [r14+0x8], r10d
+|   5^   |           |     | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 1.0 | 0.6 | CP | xadd dword ptr [r14+0xc], r11d
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xadd dword ptr [r14+0x10], r12d
+|   5^   |           |     | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 1.0 | 0.7 | CP | xadd dword ptr [r14+0x14], ebx
+|   5^   | 1.0       | 1.0 | 1.0   1.0 | 0.3       | 1.0 |     |     | 0.6 | CP | xadd dword ptr [r14+0x18], ecx
+|   5^   |           |     | 0.3       | 1.0   1.0 | 1.0 | 1.0 | 1.0 | 0.6 | CP | xadd dword ptr [r14+0x1c], edx
+Total Num Of Uops: 40
+</pre>
+<hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.90 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 0.5    0.0  | 0.5  | 1.0    0.5  | 1.0    0.5  | 1.0  | 0.5  | 0.5  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5    | 0.5       | 0.5 | 1.0   0.5 | 1.0   0.5 | 1.0 | 0.5 | 0.5 |     | CP | xadd dword ptr [r14+r13*1], r8d
+Total Num Of Uops: 5
+</pre>
+<h3>With 8 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 10.00 Cycles       Throughput Bottleneck: FrontEnd
+
+Port Binding In Cycles Per Iteration:
+---------------------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |  6   |  7   |
+---------------------------------------------------------------------------------------
+| Cycles | 4.0    0.0  | 4.0  | 8.0    4.0  | 8.0    4.0  | 8.0  | 4.0  | 4.0  | 0.0  |
+---------------------------------------------------------------------------------------
+
+
+| Num Of |                    Ports pressure in cycles                     |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |  6  |  7  |    |
+---------------------------------------------------------------------------------
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |     |     |    | xadd dword ptr [r14+r13*1], r8d
+|   5    |           |     | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xadd dword ptr [r14+r13*1+0x4], r9d
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |     |     |    | xadd dword ptr [r14+r13*1+0x8], r10d
+|   5    |           |     | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xadd dword ptr [r14+r13*1+0xc], r11d
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |     |     |    | xadd dword ptr [r14+r13*1+0x10], r12d
+|   5    |           |     | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xadd dword ptr [r14+r13*1+0x14], ebx
+|   5    | 1.0       | 1.0 | 1.0   1.0 | 1.0       | 1.0 |     |     |     |    | xadd dword ptr [r14+r13*1+0x18], ecx
+|   5    |           |     | 1.0       | 1.0   1.0 | 1.0 | 1.0 | 1.0 |     |    | xadd dword ptr [r14+r13*1+0x1c], edx
+Total Num Of Uops: 40
+</pre>
+</body>
+</html>
