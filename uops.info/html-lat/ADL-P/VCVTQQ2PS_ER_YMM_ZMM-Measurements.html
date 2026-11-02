@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>VCVTQQ2PS_ER (YMM, ZMM)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VCVTQQ2PS_ER (YMM, ZMM) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (YMM0, YMM1, YMM2, YMM3, YMM4, YMM5, YMM6, YMM7, YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15, YMM16, YMM17, YMM18, YMM19, YMM20, YMM21, YMM22, YMM23, YMM24, YMM25, YMM26, YMM27, YMM28, YMM29, YMM30, YMM31)</li><li>Operand 2 (r): Register (ZMM0, ZMM1, ZMM2, ZMM3, ZMM4, ZMM5, ZMM6, ZMM7, ZMM8, ZMM9, ZMM10, ZMM11, ZMM12, ZMM13, ZMM14, ZMM15, ZMM16, ZMM17, ZMM18, ZMM19, ZMM20, ZMM21, ZMM22, ZMM23, ZMM24, ZMM25, ZMM26, ZMM27, ZMM28, ZMM29, ZMM30, ZMM31)</li></ul><hr><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 7</h3></a><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VCVTQQ2PS YMM1, ZMM0, {rn-sae}</code></li>
+<li>Chain instructions: <code>VSHUFPD YMM0, YMM1, YMM1, 0;VSHUFPD YMM0, YMM0, YMM0, 0;VSHUFPD YMM0, YMM0, YMM0, 0;VSHUFPD YMM0, YMM0, YMM0, 0;VSHUFPD YMM0, YMM0, YMM0, 0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	62 f1 fc 18 5b c8    	vcvtqq2ps ymm1,zmm0,{rn-sae}
+   6:	c5 f5 c6 c1 00       	vshufpd ymm0,ymm1,ymm1,0x0
+   b:	c5 fd c6 c0 00       	vshufpd ymm0,ymm0,ymm0,0x0
+  10:	c5 fd c6 c0 00       	vshufpd ymm0,ymm0,ymm0,0x0
+  15:	c5 fd c6 c0 00       	vshufpd ymm0,ymm0,ymm0,0x0
+  1a:	c5 fd c6 c0 00       	vshufpd ymm0,ymm0,ymm0,0x0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTQQ2PS YMM1, ZMM0, {rn-sae}; VSHUFPD YMM0, YMM1, YMM1, 0; VSHUFPD YMM0, YMM0, YMM0, 0; VSHUFPD YMM0, YMM0, YMM0, 0; VSHUFPD YMM0, YMM0, YMM0, 0; VSHUFPD YMM0, YMM0, YMM0, 0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 12.0</li>
+<li>Reference cycles: 9.28</li>
+<li>UOPS_EXECUTED.THREAD: 6.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VCVTQQ2PS YMM1, ZMM0, {rn-sae}</code></li>
+<li>Chain instructions: <code>VPAND YMM0, YMM1, YMM1;VPAND YMM0, YMM0, YMM0;VPAND YMM0, YMM0, YMM0;VPAND YMM0, YMM0, YMM0;VPAND YMM0, YMM0, YMM0</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	62 f1 fc 18 5b c8    	vcvtqq2ps ymm1,zmm0,{rn-sae}
+   6:	c5 f5 db c1          	vpand  ymm0,ymm1,ymm1
+   a:	c5 fd db c0          	vpand  ymm0,ymm0,ymm0
+   e:	c5 fd db c0          	vpand  ymm0,ymm0,ymm0
+  12:	c5 fd db c0          	vpand  ymm0,ymm0,ymm0
+  16:	c5 fd db c0          	vpand  ymm0,ymm0,ymm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS ZMM0, ZMM1, ZMM1;
+VADDPS ZMM0, ZMM1, ZMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+VXORPS ZMM0, ZMM0, ZMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTQQ2PS YMM1, ZMM0, {rn-sae}; VPAND YMM0, YMM1, YMM1; VPAND YMM0, YMM0, YMM0; VPAND YMM0, YMM0, YMM0; VPAND YMM0, YMM0, YMM0; VPAND YMM0, YMM0, YMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS ZMM0, ZMM1, ZMM1; VADDPS ZMM0, ZMM1, ZMM1; DEC R15; JNZ L; VZEROALL; VXORPS ZMM0, ZMM0, ZMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 13.0</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

@@ -1,0 +1,1106 @@
+<html>
+<head>
+<title>SCASW</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>SCASW - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r, suppressed): Register (AX)</li><li>Operand 2 (r, suppressed): Memory</li><li>Operand 3 (r/w, suppressed): Flags (AF: w, CF: w, DF: r, OF: w, PF: w, SF: w, ZF: w)</li></ul><hr><a href="#lat1->3"><h3>Latency operand 1 &rarr; 3: 1</h3></a><a href="#lat2->3_addr"><h3>Latency operand 2 &rarr; 3 (address, base register): 6</h3></a><a href="#lat2->3_mem"><h3>Latency operand 2 &rarr; 3 (memory): &le;5</h3></a><a href="#lat3->3"><h3>Latency operand 3 &rarr; 3: 2</h3></a><hr><h2 id="lat1->3">Latency operand 1 &rarr; 3: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ R15W, R15W;MOVSX RAX, R15W;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	66 45 0f 44 ff       	cmove  r15w,r15w
+   7:	49 0f bf c7          	movsx  rax,r15w
+   b:	48 0f bf c0          	movsx  rax,ax
+   f:	48 0f bf c0          	movsx  rax,ax
+  13:	48 0f bf c0          	movsx  rax,ax
+  17:	48 0f bf c0          	movsx  rax,ax
+  1b:	48 0f bf c0          	movsx  rax,ax
+  1f:	48 0f bf c0          	movsx  rax,ax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ R15W, R15W; MOVSX RAX, R15W; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 6.72</li>
+<li>UOPS_EXECUTED.THREAD: 11.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO R15W, R15W;MOVSX RAX, R15W;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	66 45 0f 40 ff       	cmovo  r15w,r15w
+   7:	49 0f bf c7          	movsx  rax,r15w
+   b:	48 0f bf c0          	movsx  rax,ax
+   f:	48 0f bf c0          	movsx  rax,ax
+  13:	48 0f bf c0          	movsx  rax,ax
+  17:	48 0f bf c0          	movsx  rax,ax
+  1b:	48 0f bf c0          	movsx  rax,ax
+  1f:	48 0f bf c0          	movsx  rax,ax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO R15W, R15W; MOVSX RAX, R15W; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 6.72</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC R15W, R15W;MOVSX RAX, R15W;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	66 45 0f 42 ff       	cmovb  r15w,r15w
+   7:	49 0f bf c7          	movsx  rax,r15w
+   b:	48 0f bf c0          	movsx  rax,ax
+   f:	48 0f bf c0          	movsx  rax,ax
+  13:	48 0f bf c0          	movsx  rax,ax
+  17:	48 0f bf c0          	movsx  rax,ax
+  1b:	48 0f bf c0          	movsx  rax,ax
+  1f:	48 0f bf c0          	movsx  rax,ax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC R15W, R15W; MOVSX RAX, R15W; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 6.72</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP R15W, R15W;MOVSX RAX, R15W;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	66 45 0f 4a ff       	cmovp  r15w,r15w
+   7:	49 0f bf c7          	movsx  rax,r15w
+   b:	48 0f bf c0          	movsx  rax,ax
+   f:	48 0f bf c0          	movsx  rax,ax
+  13:	48 0f bf c0          	movsx  rax,ax
+  17:	48 0f bf c0          	movsx  rax,ax
+  1b:	48 0f bf c0          	movsx  rax,ax
+  1f:	48 0f bf c0          	movsx  rax,ax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP R15W, R15W; MOVSX RAX, R15W; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 6.72</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS R15W, R15W;MOVSX RAX, R15W;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX;MOVSX RAX, AX</code></li>
+<li>Chain latency: 8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	66 45 0f 48 ff       	cmovs  r15w,r15w
+   7:	49 0f bf c7          	movsx  rax,r15w
+   b:	48 0f bf c0          	movsx  rax,ax
+   f:	48 0f bf c0          	movsx  rax,ax
+  13:	48 0f bf c0          	movsx  rax,ax
+  17:	48 0f bf c0          	movsx  rax,ax
+  1b:	48 0f bf c0          	movsx  rax,ax
+  1f:	48 0f bf c0          	movsx  rax,ax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS R15W, R15W; MOVSX RAX, R15W; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX; MOVSX RAX, AX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 9.0</li>
+<li>Reference cycles: 6.72</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3_addr">Latency operand 2 &rarr; 3 (address, base register): 6</h2><div style="margin-left: 50px"><h3>Experiment 1 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVZ RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ RDI, RDI&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with AX=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.76</li>
+<li>UOPS_EXECUTED.THREAD: 6.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVZ RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ RDI, RDI&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 4.8</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with AX=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVZ RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ RDI, RDI&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with AX=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 44 ff          	cmove  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVO RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO RDI, RDI&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with AX=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.76</li>
+<li>UOPS_EXECUTED.THREAD: 6.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVO RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO RDI, RDI&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.6</li>
+<li>UOPS_EXECUTED.THREAD: 5.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with AX=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVO RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO RDI, RDI&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.6</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (with AX=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 40 ff          	cmovo  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 6.99</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 6.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVC RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC RDI, RDI&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (with AX=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVC RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC RDI, RDI&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.6</li>
+<li>UOPS_EXECUTED.THREAD: 4.96</li>
+</ul>
+</li></ul>
+<h3>Experiment 16 (with AX=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.6</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 17 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVC RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC RDI, RDI&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.99</li>
+<li>Reference cycles: 4.96</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 18 (with AX=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 42 ff          	cmovb  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.6</li>
+<li>UOPS_EXECUTED.THREAD: 6.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 19 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVP RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP RDI, RDI&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.97</li>
+<li>Reference cycles: 4.8</li>
+<li>UOPS_EXECUTED.THREAD: 4.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 20 (with AX=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 21 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVP RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP RDI, RDI&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 22 (with AX=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 6.02</li>
+</ul>
+</li></ul>
+<h3>Experiment 23 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVP RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP RDI, RDI&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 5.76</li>
+<li>UOPS_EXECUTED.THREAD: 5.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 24 (with AX=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 4a ff          	cmovp  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 4.8</li>
+<li>UOPS_EXECUTED.THREAD: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 25 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVS RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS RDI, RDI&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 6.99</li>
+<li>Reference cycles: 5.28</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 26 (with AX=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.44</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 27 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVS RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS RDI, RDI&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.6</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 28 (with AX=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.12</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 29 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instruction: <code>CMOVS RDI, RDI</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS RDI, RDI&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.76</li>
+<li>UOPS_EXECUTED.THREAD: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 30 (with AX=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS RDI, RDI;TEST R15, R15</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	48 0f 48 ff          	cmovs  rdi,rdi
+   6:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS RDI, RDI; TEST R15, R15&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 7.01</li>
+<li>Reference cycles: 4.48</li>
+<li>UOPS_EXECUTED.THREAD: 5.99</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3_mem">Latency operand 2 &rarr; 3 (memory): &le;5</h2><div style="margin-left: 50px"><h3>Experiment 1 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 44 e4          	cmove  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.02</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 13.02</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 44 e4          	cmove  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 12.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 44 e4          	cmove  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.02</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 40 e4          	cmovo  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.02</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 12.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 40 e4          	cmovo  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 40 e4          	cmovo  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 12.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 42 e4          	cmovb  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 42 e4          	cmovb  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 42 e4          	cmovb  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.02</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 4a e4          	cmovp  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 4a e4          	cmovp  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.92</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 4a e4          	cmovp  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.02</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 13.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 48 e4          	cmovs  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 12.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 48 e4          	cmovs  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.01</li>
+<li>Reference cycles: 9.6</li>
+<li>UOPS_EXECUTED.THREAD: 13.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 15 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [RDI], R12W</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+   2:	4d 0f 48 e4          	cmovs  r12,r12
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	66 44 89 27          	mov    WORD PTR [rdi],r12w
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [RDI], R12W&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 13.0</li>
+<li>Reference cycles: 9.76</li>
+<li>UOPS_EXECUTED.THREAD: 13.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->3">Latency operand 3 &rarr; 3: 2</h2><div style="margin-left: 50px"><h3>Experiment 1 (with AX=0)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+</pre></li>
+<li>Init: <pre>MOV AX, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW&quot; -asm_init &quot;MOV AX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.27</li>
+<li>Reference cycles: 1.76</li>
+<li>UOPS_EXECUTED.THREAD: 3.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with AX=1)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+</pre></li>
+<li>Init: <pre>MOV AX, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW&quot; -asm_init &quot;MOV AX, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.27</li>
+<li>Reference cycles: 1.92</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with AX=2)</h3>
+<ul>
+<li>Instruction: <code>SCASW</code></li>
+<li>Code: <pre>   0:	66 af                	scas   ax,WORD PTR es:[rdi]
+</pre></li>
+<li>Init: <pre>MOV AX, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;SCASW&quot; -asm_init &quot;MOV AX, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.29</li>
+<li>Reference cycles: 2.24</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>CMOVNBE (R32, M32)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMOVNBE (R32, M32) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI, R8D, R9D, R10D, R11D, R12D, R13D, R14D, R15D)</li><li>Operand 2 (r): Memory</li><li>Operand 3 (r, suppressed): Flags (CF: r, ZF: r)</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 1</h3></a><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): 6</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): 6</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;6</h3></a><a href="#lat3->1"><h3>Latency operand 3 &rarr; 1: 2</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14]</code></li>
+<li>Code: <pre>   0:	45 0f 47 06          	cmova  r8d,DWORD PTR [r14]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 1.0</li>
+<li>Reference cycles: 1.28</li>
+<li>UOPS_EXECUTED.THREAD: 3.02</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	45 0f 47 06          	cmova  r8d,DWORD PTR [r14]
+   4:	4d 63 c0             	movsxd r8,r8d
+   7:	4d 63 c0             	movsxd r8,r8d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14]; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 6.0</li>
+<li>Reference cycles: 4.64</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): 6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX R8, R8D;XOR R14, R8;XOR R14, R8;XOR R14, R8;XOR R14, R8;TEST R15, R15</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	45 0f 47 06          	cmova  r8d,DWORD PTR [r14]
+   4:	4d 63 c0             	movsxd r8,r8d
+   7:	4d 31 c6             	xor    r14,r8
+   a:	4d 31 c6             	xor    r14,r8
+   d:	4d 31 c6             	xor    r14,r8
+  10:	4d 31 c6             	xor    r14,r8
+  13:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14]; MOVSX R8, R8D; XOR R14, R8; XOR R14, R8; XOR R14, R8; XOR R14, R8; TEST R15, R15&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 11.0</li>
+<li>Reference cycles: 7.84</li>
+<li>UOPS_EXECUTED.THREAD: 9.01</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): 6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVSX R8, R8D;XOR R13, R8;XOR R13, R8;XOR R13, R8;XOR R13, R8;TEST R15, R15</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	47 0f 47 04 2e       	cmova  r8d,DWORD PTR [r14+r13*1]
+   5:	4d 63 c0             	movsxd r8,r8d
+   8:	4d 31 c5             	xor    r13,r8
+   b:	4d 31 c5             	xor    r13,r8
+   e:	4d 31 c5             	xor    r13,r8
+  11:	4d 31 c5             	xor    r13,r8
+  14:	4d 85 ff             	test   r15,r15
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14+R13]; MOVSX R8, R8D; XOR R13, R8; XOR R13, R8; XOR R13, R8; XOR R13, R8; TEST R15, R15&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 7.0</li>
+<li>Core cycles: 11.0</li>
+<li>Reference cycles: 8.0</li>
+<li>UOPS_EXECUTED.THREAD: 9.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX R12, R8D;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12D</code></li>
+<li>Chain latency: &ge;4</li>
+<li>Code: <pre>   0:	45 0f 47 06          	cmova  r8d,DWORD PTR [r14]
+   4:	4d 63 e0             	movsxd r12,r8d
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	45 89 26             	mov    DWORD PTR [r14],r12d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14]; MOVSX R12, R8D; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 10.01</li>
+<li>Reference cycles: 7.2</li>
+<li>UOPS_EXECUTED.THREAD: 8.99</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1">Latency operand 3 &rarr; 1: 2</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14]</code></li>
+<li>Chain instruction: <code>TEST R8D, R8D</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	45 0f 47 06          	cmova  r8d,DWORD PTR [r14]
+   4:	45 85 c0             	test   r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14]; TEST R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 3.0</li>
+<li>Reference cycles: 2.56</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>CMOVNBE R8D, dword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;TEST R8D, R8D</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	45 0f 47 06          	cmova  r8d,DWORD PTR [r14]
+   4:	4d 63 c0             	movsxd r8,r8d
+   7:	4d 63 c0             	movsxd r8,r8d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	45 85 c0             	test   r8d,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMOVNBE R8D, dword ptr [R14]; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; TEST R8D, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 6.0</li>
+<li>Core cycles: 7.0</li>
+<li>Reference cycles: 5.12</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

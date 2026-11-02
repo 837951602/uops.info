@@ -1,0 +1,1034 @@
+<html>
+<head>
+<title>VCVTPD2PS (XMM, K, M256)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VCVTPD2PS (XMM, K, M256) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Register (XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6, XMM7, XMM8, XMM9, XMM10, XMM11, XMM12, XMM13, XMM14, XMM15, XMM16, XMM17, XMM18, XMM19, XMM20, XMM21, XMM22, XMM23, XMM24, XMM25, XMM26, XMM27, XMM28, XMM29, XMM30, XMM31)</li><li>Operand 2 (r): Register (K1, K2, K3, K4, K5, K6, K7)</li><li>Operand 3 (r): Memory</li></ul><hr><a href="#lat1->1"><h3>Latency operand 1 &rarr; 1: 3</h3></a><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 7</h3></a><a href="#lat3->1_addr"><h3>Latency operand 3 &rarr; 1 (address, base register): &le;15</h3></a><a href="#lat3->1_addr_index"><h3>Latency operand 3 &rarr; 1 (address, index register): &le;15</h3></a><a href="#lat3->1_mem"><h3>Latency operand 3 &rarr; 1 (memory): &le;12</h3></a><hr><h2 id="lat1->1">Latency operand 1 &rarr; 1: 3</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 3.12</li>
+<li>Reference cycles: 2.24</li>
+<li>UOPS_EXECUTED.THREAD: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+   b:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  10:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  15:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  1a:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  1f:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  24:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.01</li>
+<li>Reference cycles: 7.36</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+   a:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+   e:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  12:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  16:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  1a:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  1e:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.2</li>
+<li>UOPS_EXECUTED.THREAD: 10.03</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 2.98</li>
+<li>Reference cycles: 2.72</li>
+<li>UOPS_EXECUTED.THREAD: 2.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0;VSHUFPD XMM0, XMM0, XMM0, 0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+   b:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  10:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  15:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  1a:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  1f:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+  24:	c5 f9 c6 c0 00       	vshufpd xmm0,xmm0,xmm0,0x0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0; VSHUFPD XMM0, XMM0, XMM0, 0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.01</li>
+<li>Reference cycles: 7.68</li>
+<li>UOPS_EXECUTED.THREAD: 10.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0;VPAND XMM0, XMM0, XMM0</code></li>
+<li>Chain latency: 7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+   a:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+   e:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  12:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  16:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  1a:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+  1e:	c5 f9 db c0          	vpand  xmm0,xmm0,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0; VPAND XMM0, XMM0, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.52</li>
+<li>UOPS_EXECUTED.THREAD: 9.99</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instruction: <code>VPMOVQ2M K1, XMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 08 39 c8    	vpmovq2m k1,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPMOVQ2M K1, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.68</li>
+<li>UOPS_EXECUTED.THREAD: 4.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPMOVQ2M K1, XMM0;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 08 39 c8    	vpmovq2m k1,xmm0
+   c:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPMOVQ2M K1, XMM0; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.68</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instruction: <code>VPTESTNMQ K1 {K1}, XMM0, XMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 09 27 c8    	vptestnmq k1{k1},xmm0,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPTESTNMQ K1 {K1}, XMM0, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.36</li>
+<li>UOPS_EXECUTED.THREAD: 4.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPTESTNMQ K1 {K1}, XMM0, XMM0;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 09 27 c8    	vptestnmq k1{k1},xmm0,xmm0
+   c:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPTESTNMQ K1 {K1}, XMM0, XMM0; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.68</li>
+<li>UOPS_EXECUTED.THREAD: 3.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instruction: <code>VPMOVQ2M K1, XMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 08 39 c8    	vpmovq2m k1,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPMOVQ2M K1, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.84</li>
+<li>UOPS_EXECUTED.THREAD: 3.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPMOVQ2M K1, XMM0;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 08 39 c8    	vpmovq2m k1,xmm0
+   c:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPMOVQ2M K1, XMM0; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.52</li>
+<li>UOPS_EXECUTED.THREAD: 3.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instruction: <code>VPTESTNMQ K1 {K1}, XMM0, XMM0</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 09 27 c8    	vptestnmq k1{k1},xmm0,xmm0
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPTESTNMQ K1 {K1}, XMM0, XMM0&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 7.52</li>
+<li>UOPS_EXECUTED.THREAD: 3.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPTESTNMQ K1 {K1}, XMM0, XMM0;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: 3</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	62 f2 fe 09 27 c8    	vptestnmq k1{k1},xmm0,xmm0
+   c:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPTESTNMQ K1 {K1}, XMM0, XMM0; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 10.0</li>
+<li>Reference cycles: 8.0</li>
+<li>UOPS_EXECUTED.THREAD: 4.01</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1_addr">Latency operand 3 &rarr; 1 (address, base register): &le;15</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VMOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.48</li>
+<li>UOPS_EXECUTED.THREAD: 10.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VMOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.48</li>
+<li>UOPS_EXECUTED.THREAD: 9.98</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VMOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.32</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   b:	4d 31 e6             	xor    r14,r12
+   e:	4d 31 e6             	xor    r14,r12
+  11:	4d 31 e6             	xor    r14,r12
+  14:	4d 31 e6             	xor    r14,r12
+  17:	4d 31 e6             	xor    r14,r12
+  1a:	4d 31 e6             	xor    r14,r12
+  1d:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VMOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.64</li>
+<li>UOPS_EXECUTED.THREAD: 9.98</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1_addr_index">Latency operand 3 &rarr; 1 (address, index register): &le;15</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 91 fd 29 5a 04 2e 	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14+r13*1]
+   7:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   c:	4d 31 e5             	xor    r13,r12
+   f:	4d 31 e5             	xor    r13,r12
+  12:	4d 31 e5             	xor    r13,r12
+  15:	4d 31 e5             	xor    r13,r12
+  18:	4d 31 e5             	xor    r13,r12
+  1b:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]; VMOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.48</li>
+<li>UOPS_EXECUTED.THREAD: 10.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 91 fd 29 5a 04 2e 	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14+r13*1]
+   7:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   c:	4d 31 e5             	xor    r13,r12
+   f:	4d 31 e5             	xor    r13,r12
+  12:	4d 31 e5             	xor    r13,r12
+  15:	4d 31 e5             	xor    r13,r12
+  18:	4d 31 e5             	xor    r13,r12
+  1b:	4d 31 e5             	xor    r13,r12
+  1e:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]; VMOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.8</li>
+<li>UOPS_EXECUTED.THREAD: 10.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 91 fd 29 5a 04 2e 	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14+r13*1]
+   7:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   c:	4d 31 e5             	xor    r13,r12
+   f:	4d 31 e5             	xor    r13,r12
+  12:	4d 31 e5             	xor    r13,r12
+  15:	4d 31 e5             	xor    r13,r12
+  18:	4d 31 e5             	xor    r13,r12
+  1b:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+XOR R13, R13;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]; VMOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; XOR R13, R13; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 8.0</li>
+<li>Core cycles: 22.0</li>
+<li>Reference cycles: 16.48</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;7</li>
+<li>Code: <pre>   0:	62 91 fd 29 5a 04 2e 	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14+r13*1]
+   7:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   c:	4d 31 e5             	xor    r13,r12
+   f:	4d 31 e5             	xor    r13,r12
+  12:	4d 31 e5             	xor    r13,r12
+  15:	4d 31 e5             	xor    r13,r12
+  18:	4d 31 e5             	xor    r13,r12
+  1b:	4d 31 e5             	xor    r13,r12
+  1e:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+XOR R13, R13;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14+R13]; VMOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; XOR R13, R13; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 22.01</li>
+<li>Reference cycles: 16.48</li>
+<li>UOPS_EXECUTED.THREAD: 9.97</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat3->1_mem">Latency operand 3 &rarr; 1 (memory): &le;12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VSHUFPD YMM13, YMM0, YMM0, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VMOVUPD [R14], YMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d c6 e8 00       	vshufpd ymm13,ymm0,ymm0,0x0
+   b:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  11:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  17:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  1d:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  23:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  29:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  2f:	c4 41 7d 11 2e       	vmovupd YMMWORD PTR [r14],ymm13
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VSHUFPD YMM13, YMM0, YMM0, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VMOVUPD [R14], YMM13&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 15.2</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VSHUFPD YMM13, YMM0, YMM0, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VMOVUPD [R14], YMM13;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d c6 e8 00       	vshufpd ymm13,ymm0,ymm0,0x0
+   b:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  11:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  17:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  1d:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  23:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  29:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  2f:	c4 41 7d 11 2e       	vmovupd YMMWORD PTR [r14],ymm13
+  34:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VSHUFPD YMM13, YMM0, YMM0, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VMOVUPD [R14], YMM13; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 20.01</li>
+<li>Reference cycles: 14.56</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPAND YMM13, YMM0, YMM0;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VMOVDQU [R14], YMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d db e8          	vpand  ymm13,ymm0,ymm0
+   a:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+   f:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  14:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  19:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  1e:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  23:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  28:	c4 41 7e 7f 2e       	vmovdqu YMMWORD PTR [r14],ymm13
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPAND YMM13, YMM0, YMM0; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VMOVDQU [R14], YMM13&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 14.72</li>
+<li>UOPS_EXECUTED.THREAD: 12.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPAND YMM13, YMM0, YMM0;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VMOVDQU [R14], YMM13;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d db e8          	vpand  ymm13,ymm0,ymm0
+   a:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+   f:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  14:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  19:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  1e:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  23:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  28:	c4 41 7e 7f 2e       	vmovdqu YMMWORD PTR [r14],ymm13
+  2d:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPAND YMM13, YMM0, YMM0; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VMOVDQU [R14], YMM13; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 20.01</li>
+<li>Reference cycles: 15.2</li>
+<li>UOPS_EXECUTED.THREAD: 12.03</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VSHUFPD YMM13, YMM0, YMM0, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VMOVUPD [R14], YMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d c6 e8 00       	vshufpd ymm13,ymm0,ymm0,0x0
+   b:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  11:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  17:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  1d:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  23:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  29:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  2f:	c4 41 7d 11 2e       	vmovupd YMMWORD PTR [r14],ymm13
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VSHUFPD YMM13, YMM0, YMM0, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VMOVUPD [R14], YMM13&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 15.36</li>
+<li>UOPS_EXECUTED.THREAD: 11.99</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VSHUFPD YMM13, YMM0, YMM0, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VSHUFPD YMM13, YMM13, YMM13, 0;VMOVUPD [R14], YMM13;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d c6 e8 00       	vshufpd ymm13,ymm0,ymm0,0x0
+   b:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  11:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  17:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  1d:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  23:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  29:	c4 41 15 c6 ed 00    	vshufpd ymm13,ymm13,ymm13,0x0
+  2f:	c4 41 7d 11 2e       	vmovupd YMMWORD PTR [r14],ymm13
+  34:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VSHUFPD YMM13, YMM0, YMM0, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VSHUFPD YMM13, YMM13, YMM13, 0; VMOVUPD [R14], YMM13; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 14.88</li>
+<li>UOPS_EXECUTED.THREAD: 12.01</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (source registers initialized by an instruction of the same kind)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPAND YMM13, YMM0, YMM0;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VMOVDQU [R14], YMM13</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d db e8          	vpand  ymm13,ymm0,ymm0
+   a:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+   f:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  14:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  19:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  1e:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  23:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  28:	c4 41 7e 7f 2e       	vmovdqu YMMWORD PTR [r14],ymm13
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPAND YMM13, YMM0, YMM0; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VMOVDQU [R14], YMM13&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 9.0</li>
+<li>Core cycles: 20.0</li>
+<li>Reference cycles: 15.04</li>
+<li>UOPS_EXECUTED.THREAD: 11.97</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (source registers initialized by an instruction of the same kind, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</code></li>
+<li>Chain instructions: <code>VPAND YMM13, YMM0, YMM0;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VMOVDQU [R14], YMM13;;VMOVUPD XMM0, XMM15</code></li>
+<li>Chain latency: &ge;8</li>
+<li>Code: <pre>   0:	62 d1 fd 29 5a 06    	vcvtpd2ps xmm0{k1},YMMWORD PTR [r14]
+   6:	c5 7d db e8          	vpand  ymm13,ymm0,ymm0
+   a:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+   f:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  14:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  19:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  1e:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  23:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  28:	c4 41 7e 7f 2e       	vmovdqu YMMWORD PTR [r14],ymm13
+  2d:	c5 79 11 f8          	vmovupd xmm0,xmm15
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+MOV RAX, 0x4000000040000000;
+MOV [R14+0], RAX;
+MOV [R14+8], RAX;
+VMOVUPD XMM0, [R14];
+MOV [R14+16], RAX;
+MOV [R14+24], RAX;
+VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]; VPAND YMM13, YMM0, YMM0; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VMOVDQU [R14], YMM13; VMOVUPD XMM0, XMM15&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; MOV RAX, 0x4000000040000000; MOV [R14+0], RAX; MOV [R14+8], RAX; VMOVUPD XMM0, [R14]; MOV [R14+16], RAX; MOV [R14+24], RAX; VCVTPD2PS XMM0  {K1}, ymmword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 10.0</li>
+<li>Core cycles: 20.01</li>
+<li>Reference cycles: 14.88</li>
+<li>UOPS_EXECUTED.THREAD: 12.02</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
