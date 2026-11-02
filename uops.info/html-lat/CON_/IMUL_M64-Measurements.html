@@ -1,0 +1,499 @@
+<html>
+<head>
+<title>IMUL (M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>IMUL (M64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r): Memory</li><li>Operand 2 (r/w, suppressed): Register (RAX)</li><li>Operand 3 (w, suppressed): Register (RDX)</li><li>Operand 4 (w, suppressed): Flags (AF: undef, CF: w, OF: w, PF: undef, SF: undef, ZF: undef)</li></ul><hr><a href="#lat1->2_addr"><h3>Latency operand 1 &rarr; 2 (address, base register): 12</h3></a><a href="#lat1->2_addr_index"><h3>Latency operand 1 &rarr; 2 (address, index register): 12</h3></a><a href="#lat1->2_mem"><h3>Latency operand 1 &rarr; 2 (memory): &le;12</h3></a><a href="#lat1->3_addr"><h3>Latency operand 1 &rarr; 3 (address, base register): 11</h3></a><a href="#lat1->3_addr_index"><h3>Latency operand 1 &rarr; 3 (address, index register): 11</h3></a><a href="#lat1->3_mem"><h3>Latency operand 1 &rarr; 3 (memory): &le;12</h3></a><a href="#lat1->4_addr"><h3>Latency operand 1 &rarr; 4 (address, base register): 11</h3></a><a href="#lat1->4_addr_index"><h3>Latency operand 1 &rarr; 4 (address, index register): 10</h3></a><a href="#lat1->4_mem"><h3>Latency operand 1 &rarr; 4 (memory): &le;12</h3></a><a href="#lat2->2"><h3>Latency operand 2 &rarr; 2: 6</h3></a><a href="#lat2->3"><h3>Latency operand 2 &rarr; 3: 7</h3></a><a href="#lat2->4"><h3>Latency operand 2 &rarr; 4: 8</h3></a><hr><h2 id="lat1->2_addr">Latency operand 1 &rarr; 2 (address, base register): 12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX RAX, EAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX;XOR R14, RAX</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	48 63 c0             	movsxd rax,eax
+   6:	49 31 c6             	xor    r14,rax
+   9:	49 31 c6             	xor    r14,rax
+   c:	49 31 c6             	xor    r14,rax
+   f:	49 31 c6             	xor    r14,rax
+  12:	49 31 c6             	xor    r14,rax
+  15:	49 31 c6             	xor    r14,rax
+  18:	49 31 c6             	xor    r14,rax
+  1b:	49 31 c6             	xor    r14,rax
+  1e:	49 31 c6             	xor    r14,rax
+  21:	49 31 c6             	xor    r14,rax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; MOVSX RAX, EAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX; XOR R14, RAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 23.07</li>
+<li>Reference cycles: 23.05</li>
+<li>RS_UOPS_DISPATCHED: 14.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->2_addr_index">Latency operand 1 &rarr; 2 (address, index register): 12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVSX RAX, EAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX;XOR R13, RAX</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	4b f7 2c 2e          	imul   QWORD PTR [r14+r13*1]
+   4:	48 63 c0             	movsxd rax,eax
+   7:	49 31 c5             	xor    r13,rax
+   a:	49 31 c5             	xor    r13,rax
+   d:	49 31 c5             	xor    r13,rax
+  10:	49 31 c5             	xor    r13,rax
+  13:	49 31 c5             	xor    r13,rax
+  16:	49 31 c5             	xor    r13,rax
+  19:	49 31 c5             	xor    r13,rax
+  1c:	49 31 c5             	xor    r13,rax
+  1f:	49 31 c5             	xor    r13,rax
+  22:	49 31 c5             	xor    r13,rax
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14+R13]; MOVSX RAX, EAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX; XOR R13, RAX&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 23.07</li>
+<li>Reference cycles: 23.08</li>
+<li>RS_UOPS_DISPATCHED: 14.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->2_mem">Latency operand 1 &rarr; 2 (memory): &le;12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX R12, EAX;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4c 63 e0             	movsxd r12,eax
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; MOVSX R12, EAX; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 23.18</li>
+<li>Reference cycles: 23.16</li>
+<li>RS_UOPS_DISPATCHED: 15.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_addr">Latency operand 1 &rarr; 3 (address, base register): 11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX RDX, EDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX;XOR R14, RDX</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	48 63 d2             	movsxd rdx,edx
+   6:	49 31 d6             	xor    r14,rdx
+   9:	49 31 d6             	xor    r14,rdx
+   c:	49 31 d6             	xor    r14,rdx
+   f:	49 31 d6             	xor    r14,rdx
+  12:	49 31 d6             	xor    r14,rdx
+  15:	49 31 d6             	xor    r14,rdx
+  18:	49 31 d6             	xor    r14,rdx
+  1b:	49 31 d6             	xor    r14,rdx
+  1e:	49 31 d6             	xor    r14,rdx
+  21:	49 31 d6             	xor    r14,rdx
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; MOVSX RDX, EDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX; XOR R14, RDX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 22.11</li>
+<li>Reference cycles: 22.09</li>
+<li>RS_UOPS_DISPATCHED: 14.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_addr_index">Latency operand 1 &rarr; 3 (address, index register): 11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>MOVSX RDX, EDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX;XOR R13, RDX</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	4b f7 2c 2e          	imul   QWORD PTR [r14+r13*1]
+   4:	48 63 d2             	movsxd rdx,edx
+   7:	49 31 d5             	xor    r13,rdx
+   a:	49 31 d5             	xor    r13,rdx
+   d:	49 31 d5             	xor    r13,rdx
+  10:	49 31 d5             	xor    r13,rdx
+  13:	49 31 d5             	xor    r13,rdx
+  16:	49 31 d5             	xor    r13,rdx
+  19:	49 31 d5             	xor    r13,rdx
+  1c:	49 31 d5             	xor    r13,rdx
+  1f:	49 31 d5             	xor    r13,rdx
+  22:	49 31 d5             	xor    r13,rdx
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14+R13]; MOVSX RDX, EDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX; XOR R13, RDX&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 22.11</li>
+<li>Reference cycles: 22.11</li>
+<li>RS_UOPS_DISPATCHED: 14.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_mem">Latency operand 1 &rarr; 3 (memory): &le;12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX R12, EDX;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;11</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4c 63 e2             	movsxd r12,edx
+   6:	4d 63 e4             	movsxd r12,r12d
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; MOVSX R12, EDX; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 22.82</li>
+<li>Reference cycles: 22.8</li>
+<li>RS_UOPS_DISPATCHED: 15.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->4_addr">Latency operand 1 &rarr; 4 (address, base register): 11</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVC R14, R14&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 12.83</li>
+<li>Reference cycles: 12.83</li>
+<li>RS_UOPS_DISPATCHED: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R14, R14;MOV RAX, 0</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 42 f6          	cmovb  r14,r14
+   7:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVC R14, R14; MOV RAX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 13.24</li>
+<li>Reference cycles: 13.23</li>
+<li>RS_UOPS_DISPATCHED: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVO R14, R14&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 12.83</li>
+<li>Reference cycles: 12.83</li>
+<li>RS_UOPS_DISPATCHED: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R14, R14;MOV RAX, 0</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 40 f6          	cmovo  r14,r14
+   7:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVO R14, R14; MOV RAX, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 13.24</li>
+<li>Reference cycles: 13.24</li>
+<li>RS_UOPS_DISPATCHED: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->4_addr_index">Latency operand 1 &rarr; 4 (address, index register): 10</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVC R13, R13</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	4b f7 2c 2e          	imul   QWORD PTR [r14+r13*1]
+   4:	4d 0f 42 ed          	cmovb  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14+R13]; CMOVC R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 12.77</li>
+<li>Reference cycles: 12.77</li>
+<li>RS_UOPS_DISPATCHED: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>CMOVC R13, R13;MOV RAX, 0</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	4b f7 2c 2e          	imul   QWORD PTR [r14+r13*1]
+   4:	4d 0f 42 ed          	cmovb  r13,r13
+   8:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14+R13]; CMOVC R13, R13; MOV RAX, 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 13.24</li>
+<li>Reference cycles: 13.32</li>
+<li>RS_UOPS_DISPATCHED: 6.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVO R13, R13</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	4b f7 2c 2e          	imul   QWORD PTR [r14+r13*1]
+   4:	4d 0f 40 ed          	cmovo  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14+R13]; CMOVO R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 12.77</li>
+<li>Reference cycles: 12.77</li>
+<li>RS_UOPS_DISPATCHED: 5.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14+R13]</code></li>
+<li>Chain instructions: <code>CMOVO R13, R13;MOV RAX, 0</code></li>
+<li>Chain latency: 2</li>
+<li>Code: <pre>   0:	4b f7 2c 2e          	imul   QWORD PTR [r14+r13*1]
+   4:	4d 0f 40 ed          	cmovo  r13,r13
+   8:	48 c7 c0 00 00 00 00 	mov    rax,0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14+R13]; CMOVO R13, R13; MOV RAX, 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 13.24</li>
+<li>Reference cycles: 13.23</li>
+<li>RS_UOPS_DISPATCHED: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->4_mem">Latency operand 1 &rarr; 4 (memory): &le;12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 42 e4          	cmovb  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 63 e4             	movsxd r12,r12d
+  16:	4d 63 e4             	movsxd r12,r12d
+  19:	4d 63 e4             	movsxd r12,r12d
+  1c:	4d 63 e4             	movsxd r12,r12d
+  1f:	4d 63 e4             	movsxd r12,r12d
+  22:	4d 63 e4             	movsxd r12,r12d
+  25:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 24.8</li>
+<li>Reference cycles: 24.8</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;13</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 40 e4          	cmovo  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 63 e4             	movsxd r12,r12d
+  16:	4d 63 e4             	movsxd r12,r12d
+  19:	4d 63 e4             	movsxd r12,r12d
+  1c:	4d 63 e4             	movsxd r12,r12d
+  1f:	4d 63 e4             	movsxd r12,r12d
+  22:	4d 63 e4             	movsxd r12,r12d
+  25:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 24.8</li>
+<li>Reference cycles: 24.81</li>
+<li>RS_UOPS_DISPATCHED: 17.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->2">Latency operand 2 &rarr; 2: 6</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 6.52</li>
+<li>Reference cycles: 6.53</li>
+<li>RS_UOPS_DISPATCHED: 3.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	48 63 c0             	movsxd rax,eax
+   6:	48 63 c0             	movsxd rax,eax
+   9:	48 63 c0             	movsxd rax,eax
+   c:	48 63 c0             	movsxd rax,eax
+   f:	48 63 c0             	movsxd rax,eax
+  12:	48 63 c0             	movsxd rax,eax
+  15:	48 63 c0             	movsxd rax,eax
+  18:	48 63 c0             	movsxd rax,eax
+  1b:	48 63 c0             	movsxd rax,eax
+  1e:	48 63 c0             	movsxd rax,eax
+  21:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 19.72</li>
+<li>Reference cycles: 19.72</li>
+<li>RS_UOPS_DISPATCHED: 14.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3">Latency operand 2 &rarr; 3: 7</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>MOVSX RAX, EDX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 11</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	48 63 c2             	movsxd rax,edx
+   6:	48 63 c0             	movsxd rax,eax
+   9:	48 63 c0             	movsxd rax,eax
+   c:	48 63 c0             	movsxd rax,eax
+   f:	48 63 c0             	movsxd rax,eax
+  12:	48 63 c0             	movsxd rax,eax
+  15:	48 63 c0             	movsxd rax,eax
+  18:	48 63 c0             	movsxd rax,eax
+  1b:	48 63 c0             	movsxd rax,eax
+  1e:	48 63 c0             	movsxd rax,eax
+  21:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; MOVSX RAX, EDX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 12.0</li>
+<li>Core cycles: 18.51</li>
+<li>Reference cycles: 18.52</li>
+<li>RS_UOPS_DISPATCHED: 14.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->4">Latency operand 2 &rarr; 4: 8</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 13</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 42 ff          	cmovb  r15,r15
+   7:	49 63 c7             	movsxd rax,r15d
+   a:	48 63 c0             	movsxd rax,eax
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+  19:	48 63 c0             	movsxd rax,eax
+  1c:	48 63 c0             	movsxd rax,eax
+  1f:	48 63 c0             	movsxd rax,eax
+  22:	48 63 c0             	movsxd rax,eax
+  25:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVC R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 21.2</li>
+<li>Reference cycles: 21.2</li>
+<li>RS_UOPS_DISPATCHED: 16.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>IMUL qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R15, R15;MOVSX RAX, R15D;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX;MOVSX RAX, EAX</code></li>
+<li>Chain latency: 13</li>
+<li>Code: <pre>   0:	49 f7 2e             	imul   QWORD PTR [r14]
+   3:	4d 0f 40 ff          	cmovo  r15,r15
+   7:	49 63 c7             	movsxd rax,r15d
+   a:	48 63 c0             	movsxd rax,eax
+   d:	48 63 c0             	movsxd rax,eax
+  10:	48 63 c0             	movsxd rax,eax
+  13:	48 63 c0             	movsxd rax,eax
+  16:	48 63 c0             	movsxd rax,eax
+  19:	48 63 c0             	movsxd rax,eax
+  1c:	48 63 c0             	movsxd rax,eax
+  1f:	48 63 c0             	movsxd rax,eax
+  22:	48 63 c0             	movsxd rax,eax
+  25:	48 63 c0             	movsxd rax,eax
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;IMUL qword ptr [R14]; CMOVO R15, R15; MOVSX RAX, R15D; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX; MOVSX RAX, EAX&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 21.2</li>
+<li>Reference cycles: 21.2</li>
+<li>RS_UOPS_DISPATCHED: 16.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
