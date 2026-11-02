@@ -1,0 +1,2019 @@
+<html>
+<head>
+<title>XOR_LOCK (M16, R16)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>XOR_LOCK (M16, R16) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r/w): Memory</li><li>Operand 2 (r): Register (AX, CX, DX, BX, SP, BP, SI, DI, R8W, R9W, R10W, R11W, R12W, R13W, R14W, R15W)</li><li>Operand 3 (w, suppressed): Flags (AF: undef, CF: w, OF: w, PF: w, SF: w, ZF: w)</li></ul><hr><a href="#lat1->1_addr"><h3>Latency operand 1 &rarr; 1 (address, base register): &le;30</h3></a><a href="#lat1->1_addr_index"><h3>Latency operand 1 &rarr; 1 (address, index register): &le;30</h3></a><a href="#lat1->1_mem"><h3>Latency operand 1 &rarr; 1 (memory): 18</h3></a><a href="#lat1->3_addr"><h3>Latency operand 1 &rarr; 3 (address, base register): 17</h3></a><a href="#lat1->3_addr_index"><h3>Latency operand 1 &rarr; 3 (address, index register): 17</h3></a><a href="#lat1->3_mem"><h3>Latency operand 1 &rarr; 3 (memory): &le;15</h3></a><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: &le;29</h3></a><a href="#lat2->3"><h3>Latency operand 2 &rarr; 3: 12</h3></a><hr><h2 id="lat1->1_addr">Latency operand 1 &rarr; 1 (address, base register): &le;30</h2><div style="margin-left: 50px"><h3>Experiment 1 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R14, R12; XOR R14, R12</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	4d 0f bf e4          	movsx  r12,r12w
+  35:	4d 0f bf e4          	movsx  r12,r12w
+  39:	4d 0f bf e4          	movsx  r12,r12w
+  3d:	4d 0f bf e4          	movsx  r12,r12w
+  41:	4d 0f bf e4          	movsx  r12,r12w
+  45:	4d 0f bf e4          	movsx  r12,r12w
+  49:	4d 0f bf e4          	movsx  r12,r12w
+  4d:	4d 0f bf e4          	movsx  r12,r12w
+  51:	4d 0f bf e4          	movsx  r12,r12w
+  55:	4d 0f bf e4          	movsx  r12,r12w
+  59:	4d 31 e6             	xor    r14,r12
+  5c:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 24.0</li>
+<li>Core cycles: 53.06</li>
+<li>Reference cycles: 46.25</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R14, R12; XOR R14, R12</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	4d 0f bf e4          	movsx  r12,r12w
+  35:	4d 0f bf e4          	movsx  r12,r12w
+  39:	4d 0f bf e4          	movsx  r12,r12w
+  3d:	4d 0f bf e4          	movsx  r12,r12w
+  41:	4d 0f bf e4          	movsx  r12,r12w
+  45:	4d 0f bf e4          	movsx  r12,r12w
+  49:	4d 0f bf e4          	movsx  r12,r12w
+  4d:	4d 0f bf e4          	movsx  r12,r12w
+  51:	4d 0f bf e4          	movsx  r12,r12w
+  55:	4d 0f bf e4          	movsx  r12,r12w
+  59:	4d 31 e6             	xor    r14,r12
+  5c:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 24.0</li>
+<li>Core cycles: 53.06</li>
+<li>Reference cycles: 45.5</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R14, R12; XOR R14, R12</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	4d 0f bf e4          	movsx  r12,r12w
+  35:	4d 0f bf e4          	movsx  r12,r12w
+  39:	4d 0f bf e4          	movsx  r12,r12w
+  3d:	4d 0f bf e4          	movsx  r12,r12w
+  41:	4d 0f bf e4          	movsx  r12,r12w
+  45:	4d 0f bf e4          	movsx  r12,r12w
+  49:	4d 0f bf e4          	movsx  r12,r12w
+  4d:	4d 0f bf e4          	movsx  r12,r12w
+  51:	4d 0f bf e4          	movsx  r12,r12w
+  55:	4d 0f bf e4          	movsx  r12,r12w
+  59:	4d 31 e6             	xor    r14,r12
+  5c:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R14, R12;  XOR R14, R12&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 24.0</li>
+<li>Core cycles: 53.06</li>
+<li>Reference cycles: 46.0</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with additional nop, with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R14, R12; XOR R14, R12;nop</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	4d 0f bf e4          	movsx  r12,r12w
+  35:	4d 0f bf e4          	movsx  r12,r12w
+  39:	4d 0f bf e4          	movsx  r12,r12w
+  3d:	4d 0f bf e4          	movsx  r12,r12w
+  41:	4d 0f bf e4          	movsx  r12,r12w
+  45:	4d 0f bf e4          	movsx  r12,r12w
+  49:	4d 0f bf e4          	movsx  r12,r12w
+  4d:	4d 0f bf e4          	movsx  r12,r12w
+  51:	4d 0f bf e4          	movsx  r12,r12w
+  55:	4d 0f bf e4          	movsx  r12,r12w
+  59:	4d 31 e6             	xor    r14,r12
+  5c:	4d 31 e6             	xor    r14,r12
+  5f:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R14, R12;  XOR R14, R12; nop&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 25.0</li>
+<li>Core cycles: 53.05</li>
+<li>Reference cycles: 45.75</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with additional nop, with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R14, R12; XOR R14, R12;nop</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	4d 0f bf e4          	movsx  r12,r12w
+  35:	4d 0f bf e4          	movsx  r12,r12w
+  39:	4d 0f bf e4          	movsx  r12,r12w
+  3d:	4d 0f bf e4          	movsx  r12,r12w
+  41:	4d 0f bf e4          	movsx  r12,r12w
+  45:	4d 0f bf e4          	movsx  r12,r12w
+  49:	4d 0f bf e4          	movsx  r12,r12w
+  4d:	4d 0f bf e4          	movsx  r12,r12w
+  51:	4d 0f bf e4          	movsx  r12,r12w
+  55:	4d 0f bf e4          	movsx  r12,r12w
+  59:	4d 31 e6             	xor    r14,r12
+  5c:	4d 31 e6             	xor    r14,r12
+  5f:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R14, R12;  XOR R14, R12; nop&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 25.0</li>
+<li>Core cycles: 53.05</li>
+<li>Reference cycles: 45.75</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with additional nop, with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R14, R12; XOR R14, R12;nop</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	4d 0f bf e4          	movsx  r12,r12w
+  35:	4d 0f bf e4          	movsx  r12,r12w
+  39:	4d 0f bf e4          	movsx  r12,r12w
+  3d:	4d 0f bf e4          	movsx  r12,r12w
+  41:	4d 0f bf e4          	movsx  r12,r12w
+  45:	4d 0f bf e4          	movsx  r12,r12w
+  49:	4d 0f bf e4          	movsx  r12,r12w
+  4d:	4d 0f bf e4          	movsx  r12,r12w
+  51:	4d 0f bf e4          	movsx  r12,r12w
+  55:	4d 0f bf e4          	movsx  r12,r12w
+  59:	4d 31 e6             	xor    r14,r12
+  5c:	4d 31 e6             	xor    r14,r12
+  5f:	90                   	nop
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R14, R12;  XOR R14, R12; nop&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 25.0</li>
+<li>Core cycles: 53.05</li>
+<li>Reference cycles: 45.75</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->1_addr_index">Latency operand 1 &rarr; 1 (address, index register): &le;30</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14+R13];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R13, R12; XOR R13, R12</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	66 47 8b 24 2e       	mov    r12w,WORD PTR [r14+r13*1]
+   b:	4d 0f bf e4          	movsx  r12,r12w
+   f:	4d 0f bf e4          	movsx  r12,r12w
+  13:	4d 0f bf e4          	movsx  r12,r12w
+  17:	4d 0f bf e4          	movsx  r12,r12w
+  1b:	4d 0f bf e4          	movsx  r12,r12w
+  1f:	4d 0f bf e4          	movsx  r12,r12w
+  23:	4d 0f bf e4          	movsx  r12,r12w
+  27:	4d 0f bf e4          	movsx  r12,r12w
+  2b:	4d 0f bf e4          	movsx  r12,r12w
+  2f:	4d 0f bf e4          	movsx  r12,r12w
+  33:	4d 0f bf e4          	movsx  r12,r12w
+  37:	4d 0f bf e4          	movsx  r12,r12w
+  3b:	4d 0f bf e4          	movsx  r12,r12w
+  3f:	4d 0f bf e4          	movsx  r12,r12w
+  43:	4d 0f bf e4          	movsx  r12,r12w
+  47:	4d 0f bf e4          	movsx  r12,r12w
+  4b:	4d 0f bf e4          	movsx  r12,r12w
+  4f:	4d 0f bf e4          	movsx  r12,r12w
+  53:	4d 0f bf e4          	movsx  r12,r12w
+  57:	4d 0f bf e4          	movsx  r12,r12w
+  5b:	4d 31 e5             	xor    r13,r12
+  5e:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; MOV R12W, [R14+R13]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R13, R12;  XOR R13, R12&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 24.0</li>
+<li>Core cycles: 53.06</li>
+<li>Reference cycles: 45.75</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with additional nop)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14+R13];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;XOR R13, R12; XOR R13, R12;nop</code></li>
+<li>Chain latency: &ge;23</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	66 47 8b 24 2e       	mov    r12w,WORD PTR [r14+r13*1]
+   b:	4d 0f bf e4          	movsx  r12,r12w
+   f:	4d 0f bf e4          	movsx  r12,r12w
+  13:	4d 0f bf e4          	movsx  r12,r12w
+  17:	4d 0f bf e4          	movsx  r12,r12w
+  1b:	4d 0f bf e4          	movsx  r12,r12w
+  1f:	4d 0f bf e4          	movsx  r12,r12w
+  23:	4d 0f bf e4          	movsx  r12,r12w
+  27:	4d 0f bf e4          	movsx  r12,r12w
+  2b:	4d 0f bf e4          	movsx  r12,r12w
+  2f:	4d 0f bf e4          	movsx  r12,r12w
+  33:	4d 0f bf e4          	movsx  r12,r12w
+  37:	4d 0f bf e4          	movsx  r12,r12w
+  3b:	4d 0f bf e4          	movsx  r12,r12w
+  3f:	4d 0f bf e4          	movsx  r12,r12w
+  43:	4d 0f bf e4          	movsx  r12,r12w
+  47:	4d 0f bf e4          	movsx  r12,r12w
+  4b:	4d 0f bf e4          	movsx  r12,r12w
+  4f:	4d 0f bf e4          	movsx  r12,r12w
+  53:	4d 0f bf e4          	movsx  r12,r12w
+  57:	4d 0f bf e4          	movsx  r12,r12w
+  5b:	4d 31 e5             	xor    r13,r12
+  5e:	4d 31 e5             	xor    r13,r12
+  61:	90                   	nop
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; MOV R12W, [R14+R13]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; XOR R13, R12;  XOR R13, R12; nop&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 25.0</li>
+<li>Core cycles: 53.05</li>
+<li>Reference cycles: 46.0</li>
+<li>UOPS_EXECUTED.THREAD: 31.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->1_mem">Latency operand 1 &rarr; 1 (memory): 18</h2><div style="margin-left: 50px"><h3>Experiment 1 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 18.04</li>
+<li>Reference cycles: 15.75</li>
+<li>UOPS_EXECUTED.THREAD: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 18.04</li>
+<li>Reference cycles: 15.5</li>
+<li>UOPS_EXECUTED.THREAD: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 1.0</li>
+<li>Core cycles: 18.04</li>
+<li>Reference cycles: 15.5</li>
+<li>UOPS_EXECUTED.THREAD: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOV [R14], R12W</code></li>
+<li>Chain latency: 14</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOV [R14], R12W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 44.04</li>
+<li>Reference cycles: 38.5</li>
+<li>UOPS_EXECUTED.THREAD: 21.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOV [R14], R12W</code></li>
+<li>Chain latency: 14</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOV [R14], R12W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 44.04</li>
+<li>Reference cycles: 37.5</li>
+<li>UOPS_EXECUTED.THREAD: 21.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R12W, [R14];MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOVSX R12, R12W;MOV [R14], R12W</code></li>
+<li>Chain latency: 14</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 26          	mov    r12w,WORD PTR [r14]
+   9:	4d 0f bf e4          	movsx  r12,r12w
+   d:	4d 0f bf e4          	movsx  r12,r12w
+  11:	4d 0f bf e4          	movsx  r12,r12w
+  15:	4d 0f bf e4          	movsx  r12,r12w
+  19:	4d 0f bf e4          	movsx  r12,r12w
+  1d:	4d 0f bf e4          	movsx  r12,r12w
+  21:	4d 0f bf e4          	movsx  r12,r12w
+  25:	4d 0f bf e4          	movsx  r12,r12w
+  29:	4d 0f bf e4          	movsx  r12,r12w
+  2d:	4d 0f bf e4          	movsx  r12,r12w
+  31:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -basic -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R12W, [R14]; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOVSX R12, R12W; MOV [R14], R12W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 13.0</li>
+<li>Core cycles: 44.04</li>
+<li>Reference cycles: 38.0</li>
+<li>UOPS_EXECUTED.THREAD: 21.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_addr">Latency operand 1 &rarr; 3 (address, base register): 17</h2><div style="margin-left: 50px"><h3>Experiment 1 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVZ R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 f6          	cmove  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R14, R14&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.01</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with R8W=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 f6          	cmove  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 19.0</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVZ R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 f6          	cmove  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R14, R14&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with R8W=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 f6          	cmove  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 21.84</li>
+<li>Reference cycles: 19.25</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVZ R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 f6          	cmove  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R14, R14&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.0</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with R8W=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 f6          	cmove  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 21.48</li>
+<li>Reference cycles: 18.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R14, R14&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with R8W=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 f6          	cmovb  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 21.89</li>
+<li>Reference cycles: 18.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R14, R14&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.01</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with R8W=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 f6          	cmovb  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.77</li>
+<li>Reference cycles: 19.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R14, R14&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.01</li>
+<li>Reference cycles: 15.5</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (with R8W=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 f6          	cmovb  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 18.75</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVP R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a f6          	cmovp  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R14, R14&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (with R8W=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a f6          	cmovp  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 19.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVP R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a f6          	cmovp  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R14, R14&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 16 (with R8W=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a f6          	cmovp  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 19.0</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 17 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVP R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a f6          	cmovp  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R14, R14&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.0</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 18 (with R8W=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a f6          	cmovp  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 18.75</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 19 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVS R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 f6          	cmovs  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R14, R14&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.5</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 20 (with R8W=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 f6          	cmovs  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 19.0</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 21 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVS R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 f6          	cmovs  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R14, R14&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 22 (with R8W=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 f6          	cmovs  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.77</li>
+<li>Reference cycles: 19.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 23 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVS R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 f6          	cmovs  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R14, R14&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.0</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 24 (with R8W=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 f6          	cmovs  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.29</li>
+<li>Reference cycles: 19.0</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 25 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R14, R14&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 26 (with R8W=0, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 f6          	cmovo  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 21.48</li>
+<li>Reference cycles: 18.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 27 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R14, R14&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.0</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 28 (with R8W=1, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 f6          	cmovo  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 22.26</li>
+<li>Reference cycles: 19.25</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 29 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R14, R14&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.0</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 30 (with R8W=2, with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R14, R14;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 f6          	cmovo  r14,r14
+   9:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R14, R14; MOV word ptr [R14], 0&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 21.48</li>
+<li>Reference cycles: 18.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_addr_index">Latency operand 1 &rarr; 3 (address, index register): 17</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instruction: <code>CMOVZ R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 44 ed          	cmove  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVZ R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R13, R13;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 44 ed          	cmove  r13,r13
+   a:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVZ R13, R13; MOV word ptr [R14], 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 22.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instruction: <code>CMOVC R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 42 ed          	cmovb  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVC R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R13, R13;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 42 ed          	cmovb  r13,r13
+   a:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVC R13, R13; MOV word ptr [R14], 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 22.75</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instruction: <code>CMOVP R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 4a ed          	cmovp  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVP R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.5</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R13, R13;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 4a ed          	cmovp  r13,r13
+   a:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVP R13, R13; MOV word ptr [R14], 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 22.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instruction: <code>CMOVS R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 48 ed          	cmovs  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVS R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R13, R13;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 48 ed          	cmovs  r13,r13
+   a:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVS R13, R13; MOV word ptr [R14], 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 22.5</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instruction: <code>CMOVO R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 40 ed          	cmovo  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVO R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 2.0</li>
+<li>Core cycles: 18.0</li>
+<li>Reference cycles: 15.25</li>
+<li>UOPS_EXECUTED.THREAD: 8.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with dependency-breaking instructions)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14+R13], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R13, R13;MOV word ptr [R14], 0</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	66 f0 47 31 04 2e    	lock xor WORD PTR [r14+r13*1],r8w
+   6:	4d 0f 40 ed          	cmovo  r13,r13
+   a:	66 41 c7 06 00 00    	mov    WORD PTR [r14],0x0
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14+R13], R8W; CMOVO R13, R13; MOV word ptr [R14], 0&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 3.0</li>
+<li>Core cycles: 26.0</li>
+<li>Reference cycles: 22.25</li>
+<li>UOPS_EXECUTED.THREAD: 10.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat1->3_mem">Latency operand 1 &rarr; 3 (memory): &le;15</h2><div style="margin-left: 50px"><h3>Experiment 1 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 e4          	cmove  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 e4          	cmove  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 44 e4          	cmove  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 e4          	cmovb  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 31.75</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 e4          	cmovb  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.25</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 42 e4          	cmovb  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.01</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a e4          	cmovp  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 31.75</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a e4          	cmovp  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 4a e4          	cmovp  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 e4          	cmovs  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.25</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 e4          	cmovs  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.25</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 48 e4          	cmovs  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (with R8W=0)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 e4          	cmovo  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.0</li>
+<li>Reference cycles: 32.0</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (with R8W=1)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 e4          	cmovo  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.04</li>
+<li>Reference cycles: 31.5</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15 (with R8W=2)</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12W</code></li>
+<li>Chain latency: &ge;22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	4d 0f 40 e4          	cmovo  r12,r12
+   9:	4d 63 e4             	movsxd r12,r12d
+   c:	4d 63 e4             	movsxd r12,r12d
+   f:	4d 63 e4             	movsxd r12,r12d
+  12:	4d 63 e4             	movsxd r12,r12d
+  15:	4d 63 e4             	movsxd r12,r12d
+  18:	4d 63 e4             	movsxd r12,r12d
+  1b:	4d 63 e4             	movsxd r12,r12d
+  1e:	4d 63 e4             	movsxd r12,r12d
+  21:	4d 63 e4             	movsxd r12,r12d
+  24:	4d 63 e4             	movsxd r12,r12d
+  27:	4d 63 e4             	movsxd r12,r12d
+  2a:	4d 63 e4             	movsxd r12,r12d
+  2d:	4d 63 e4             	movsxd r12,r12d
+  30:	4d 63 e4             	movsxd r12,r12d
+  33:	4d 63 e4             	movsxd r12,r12d
+  36:	4d 63 e4             	movsxd r12,r12d
+  39:	4d 63 e4             	movsxd r12,r12d
+  3c:	4d 63 e4             	movsxd r12,r12d
+  3f:	4d 63 e4             	movsxd r12,r12d
+  42:	4d 63 e4             	movsxd r12,r12d
+  45:	66 45 89 26          	mov    WORD PTR [r14],r12w
+</pre></li>
+<li>Init: <pre>MOV R8W, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12W&quot; -asm_init &quot;MOV R8W, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 37.01</li>
+<li>Reference cycles: 31.75</li>
+<li>UOPS_EXECUTED.THREAD: 30.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: &le;29</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>MOV R8W, [R14];MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W</code></li>
+<li>Chain latency: &ge;21</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 8b 06          	mov    r8w,WORD PTR [r14]
+   9:	4d 0f bf c0          	movsx  r8,r8w
+   d:	4d 0f bf c0          	movsx  r8,r8w
+  11:	4d 0f bf c0          	movsx  r8,r8w
+  15:	4d 0f bf c0          	movsx  r8,r8w
+  19:	4d 0f bf c0          	movsx  r8,r8w
+  1d:	4d 0f bf c0          	movsx  r8,r8w
+  21:	4d 0f bf c0          	movsx  r8,r8w
+  25:	4d 0f bf c0          	movsx  r8,r8w
+  29:	4d 0f bf c0          	movsx  r8,r8w
+  2d:	4d 0f bf c0          	movsx  r8,r8w
+  31:	4d 0f bf c0          	movsx  r8,r8w
+  35:	4d 0f bf c0          	movsx  r8,r8w
+  39:	4d 0f bf c0          	movsx  r8,r8w
+  3d:	4d 0f bf c0          	movsx  r8,r8w
+  41:	4d 0f bf c0          	movsx  r8,r8w
+  45:	4d 0f bf c0          	movsx  r8,r8w
+  49:	4d 0f bf c0          	movsx  r8,r8w
+  4d:	4d 0f bf c0          	movsx  r8,r8w
+  51:	4d 0f bf c0          	movsx  r8,r8w
+  55:	4d 0f bf c0          	movsx  r8,r8w
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; MOV R8W, [R14]; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 22.0</li>
+<li>Core cycles: 50.0</li>
+<li>Reference cycles: 43.25</li>
+<li>UOPS_EXECUTED.THREAD: 29.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3">Latency operand 2 &rarr; 3: 12</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVZ R15W, R15W;MOVSX R8, R15W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W</code></li>
+<li>Chain latency: 22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 0f 44 ff       	cmove  r15w,r15w
+   a:	4d 0f bf c7          	movsx  r8,r15w
+   e:	4d 0f bf c0          	movsx  r8,r8w
+  12:	4d 0f bf c0          	movsx  r8,r8w
+  16:	4d 0f bf c0          	movsx  r8,r8w
+  1a:	4d 0f bf c0          	movsx  r8,r8w
+  1e:	4d 0f bf c0          	movsx  r8,r8w
+  22:	4d 0f bf c0          	movsx  r8,r8w
+  26:	4d 0f bf c0          	movsx  r8,r8w
+  2a:	4d 0f bf c0          	movsx  r8,r8w
+  2e:	4d 0f bf c0          	movsx  r8,r8w
+  32:	4d 0f bf c0          	movsx  r8,r8w
+  36:	4d 0f bf c0          	movsx  r8,r8w
+  3a:	4d 0f bf c0          	movsx  r8,r8w
+  3e:	4d 0f bf c0          	movsx  r8,r8w
+  42:	4d 0f bf c0          	movsx  r8,r8w
+  46:	4d 0f bf c0          	movsx  r8,r8w
+  4a:	4d 0f bf c0          	movsx  r8,r8w
+  4e:	4d 0f bf c0          	movsx  r8,r8w
+  52:	4d 0f bf c0          	movsx  r8,r8w
+  56:	4d 0f bf c0          	movsx  r8,r8w
+  5a:	4d 0f bf c0          	movsx  r8,r8w
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVZ R15W, R15W; MOVSX R8, R15W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 34.0</li>
+<li>Reference cycles: 29.0</li>
+<li>UOPS_EXECUTED.THREAD: 29.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVC R15W, R15W;MOVSX R8, R15W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W</code></li>
+<li>Chain latency: 22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 0f 42 ff       	cmovb  r15w,r15w
+   a:	4d 0f bf c7          	movsx  r8,r15w
+   e:	4d 0f bf c0          	movsx  r8,r8w
+  12:	4d 0f bf c0          	movsx  r8,r8w
+  16:	4d 0f bf c0          	movsx  r8,r8w
+  1a:	4d 0f bf c0          	movsx  r8,r8w
+  1e:	4d 0f bf c0          	movsx  r8,r8w
+  22:	4d 0f bf c0          	movsx  r8,r8w
+  26:	4d 0f bf c0          	movsx  r8,r8w
+  2a:	4d 0f bf c0          	movsx  r8,r8w
+  2e:	4d 0f bf c0          	movsx  r8,r8w
+  32:	4d 0f bf c0          	movsx  r8,r8w
+  36:	4d 0f bf c0          	movsx  r8,r8w
+  3a:	4d 0f bf c0          	movsx  r8,r8w
+  3e:	4d 0f bf c0          	movsx  r8,r8w
+  42:	4d 0f bf c0          	movsx  r8,r8w
+  46:	4d 0f bf c0          	movsx  r8,r8w
+  4a:	4d 0f bf c0          	movsx  r8,r8w
+  4e:	4d 0f bf c0          	movsx  r8,r8w
+  52:	4d 0f bf c0          	movsx  r8,r8w
+  56:	4d 0f bf c0          	movsx  r8,r8w
+  5a:	4d 0f bf c0          	movsx  r8,r8w
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVC R15W, R15W; MOVSX R8, R15W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 34.0</li>
+<li>Reference cycles: 29.0</li>
+<li>UOPS_EXECUTED.THREAD: 29.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVP R15W, R15W;MOVSX R8, R15W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W</code></li>
+<li>Chain latency: 22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 0f 4a ff       	cmovp  r15w,r15w
+   a:	4d 0f bf c7          	movsx  r8,r15w
+   e:	4d 0f bf c0          	movsx  r8,r8w
+  12:	4d 0f bf c0          	movsx  r8,r8w
+  16:	4d 0f bf c0          	movsx  r8,r8w
+  1a:	4d 0f bf c0          	movsx  r8,r8w
+  1e:	4d 0f bf c0          	movsx  r8,r8w
+  22:	4d 0f bf c0          	movsx  r8,r8w
+  26:	4d 0f bf c0          	movsx  r8,r8w
+  2a:	4d 0f bf c0          	movsx  r8,r8w
+  2e:	4d 0f bf c0          	movsx  r8,r8w
+  32:	4d 0f bf c0          	movsx  r8,r8w
+  36:	4d 0f bf c0          	movsx  r8,r8w
+  3a:	4d 0f bf c0          	movsx  r8,r8w
+  3e:	4d 0f bf c0          	movsx  r8,r8w
+  42:	4d 0f bf c0          	movsx  r8,r8w
+  46:	4d 0f bf c0          	movsx  r8,r8w
+  4a:	4d 0f bf c0          	movsx  r8,r8w
+  4e:	4d 0f bf c0          	movsx  r8,r8w
+  52:	4d 0f bf c0          	movsx  r8,r8w
+  56:	4d 0f bf c0          	movsx  r8,r8w
+  5a:	4d 0f bf c0          	movsx  r8,r8w
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVP R15W, R15W; MOVSX R8, R15W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 34.01</li>
+<li>Reference cycles: 29.25</li>
+<li>UOPS_EXECUTED.THREAD: 29.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVS R15W, R15W;MOVSX R8, R15W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W</code></li>
+<li>Chain latency: 22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 0f 48 ff       	cmovs  r15w,r15w
+   a:	4d 0f bf c7          	movsx  r8,r15w
+   e:	4d 0f bf c0          	movsx  r8,r8w
+  12:	4d 0f bf c0          	movsx  r8,r8w
+  16:	4d 0f bf c0          	movsx  r8,r8w
+  1a:	4d 0f bf c0          	movsx  r8,r8w
+  1e:	4d 0f bf c0          	movsx  r8,r8w
+  22:	4d 0f bf c0          	movsx  r8,r8w
+  26:	4d 0f bf c0          	movsx  r8,r8w
+  2a:	4d 0f bf c0          	movsx  r8,r8w
+  2e:	4d 0f bf c0          	movsx  r8,r8w
+  32:	4d 0f bf c0          	movsx  r8,r8w
+  36:	4d 0f bf c0          	movsx  r8,r8w
+  3a:	4d 0f bf c0          	movsx  r8,r8w
+  3e:	4d 0f bf c0          	movsx  r8,r8w
+  42:	4d 0f bf c0          	movsx  r8,r8w
+  46:	4d 0f bf c0          	movsx  r8,r8w
+  4a:	4d 0f bf c0          	movsx  r8,r8w
+  4e:	4d 0f bf c0          	movsx  r8,r8w
+  52:	4d 0f bf c0          	movsx  r8,r8w
+  56:	4d 0f bf c0          	movsx  r8,r8w
+  5a:	4d 0f bf c0          	movsx  r8,r8w
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVS R15W, R15W; MOVSX R8, R15W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 34.07</li>
+<li>Reference cycles: 29.75</li>
+<li>UOPS_EXECUTED.THREAD: 29.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>LOCK XOR word ptr [R14], R8W</code></li>
+<li>Chain instructions: <code>CMOVO R15W, R15W;MOVSX R8, R15W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W;MOVSX R8, R8W</code></li>
+<li>Chain latency: 22</li>
+<li>Code: <pre>   0:	66 f0 45 31 06       	lock xor WORD PTR [r14],r8w
+   5:	66 45 0f 40 ff       	cmovo  r15w,r15w
+   a:	4d 0f bf c7          	movsx  r8,r15w
+   e:	4d 0f bf c0          	movsx  r8,r8w
+  12:	4d 0f bf c0          	movsx  r8,r8w
+  16:	4d 0f bf c0          	movsx  r8,r8w
+  1a:	4d 0f bf c0          	movsx  r8,r8w
+  1e:	4d 0f bf c0          	movsx  r8,r8w
+  22:	4d 0f bf c0          	movsx  r8,r8w
+  26:	4d 0f bf c0          	movsx  r8,r8w
+  2a:	4d 0f bf c0          	movsx  r8,r8w
+  2e:	4d 0f bf c0          	movsx  r8,r8w
+  32:	4d 0f bf c0          	movsx  r8,r8w
+  36:	4d 0f bf c0          	movsx  r8,r8w
+  3a:	4d 0f bf c0          	movsx  r8,r8w
+  3e:	4d 0f bf c0          	movsx  r8,r8w
+  42:	4d 0f bf c0          	movsx  r8,r8w
+  46:	4d 0f bf c0          	movsx  r8,r8w
+  4a:	4d 0f bf c0          	movsx  r8,r8w
+  4e:	4d 0f bf c0          	movsx  r8,r8w
+  52:	4d 0f bf c0          	movsx  r8,r8w
+  56:	4d 0f bf c0          	movsx  r8,r8w
+  5a:	4d 0f bf c0          	movsx  r8,r8w
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;LOCK XOR word ptr [R14], R8W; CMOVO R15W, R15W; MOVSX R8, R15W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W; MOVSX R8, R8W&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>Instructions retired: 23.0</li>
+<li>Core cycles: 34.01</li>
+<li>Reference cycles: 28.75</li>
+<li>UOPS_EXECUTED.THREAD: 29.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
