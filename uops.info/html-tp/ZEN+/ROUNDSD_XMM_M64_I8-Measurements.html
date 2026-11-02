@@ -1,0 +1,905 @@
+<html>
+<head>
+<title>ROUNDSD (XMM, M64, I8)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>ROUNDSD (XMM, M64, I8) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.88</li>
+<li>APERF: 1.0</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 1.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.87</li>
+<li>APERF: 1.0</li>
+<li>UOPS: 1.2</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.99</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.87</li>
+<li>APERF: 1.0</li>
+<li>UOPS: 1.02</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.99</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.46</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.49</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 3.97</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.49</li>
+<li>APERF: 4.01</li>
+<li>UOPS: 4.1</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 3.97</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+  1f:	66 41 0f 3a 0b 66 20 	roundsd xmm4,QWORD PTR [r14+0x20],0x2
+  26:	02 
+  27:	66 41 0f 3a 0b 6e 28 	roundsd xmm5,QWORD PTR [r14+0x28],0x2
+  2e:	02 
+  2f:	66 41 0f 3a 0b 76 30 	roundsd xmm6,QWORD PTR [r14+0x30],0x2
+  36:	02 
+  37:	66 41 0f 3a 0b 7e 38 	roundsd xmm7,QWORD PTR [r14+0x38],0x2
+  3e:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2; ROUNDSD XMM4, qword ptr [R14+32], 2; ROUNDSD XMM5, qword ptr [R14+40], 2; ROUNDSD XMM6, qword ptr [R14+48], 2; ROUNDSD XMM7, qword ptr [R14+56], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 6.91</li>
+<li>APERF: 8.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 8.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+  1f:	66 41 0f 3a 0b 66 20 	roundsd xmm4,QWORD PTR [r14+0x20],0x2
+  26:	02 
+  27:	66 41 0f 3a 0b 6e 28 	roundsd xmm5,QWORD PTR [r14+0x28],0x2
+  2e:	02 
+  2f:	66 41 0f 3a 0b 76 30 	roundsd xmm6,QWORD PTR [r14+0x30],0x2
+  36:	02 
+  37:	66 41 0f 3a 0b 7e 38 	roundsd xmm7,QWORD PTR [r14+0x38],0x2
+  3e:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2; ROUNDSD XMM4, qword ptr [R14+32], 2; ROUNDSD XMM5, qword ptr [R14+40], 2; ROUNDSD XMM6, qword ptr [R14+48], 2; ROUNDSD XMM7, qword ptr [R14+56], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 6.98</li>
+<li>APERF: 8.01</li>
+<li>UOPS: 10.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 7.94</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+  1f:	66 41 0f 3a 0b 66 20 	roundsd xmm4,QWORD PTR [r14+0x20],0x2
+  26:	02 
+  27:	66 41 0f 3a 0b 6e 28 	roundsd xmm5,QWORD PTR [r14+0x28],0x2
+  2e:	02 
+  2f:	66 41 0f 3a 0b 76 30 	roundsd xmm6,QWORD PTR [r14+0x30],0x2
+  36:	02 
+  37:	66 41 0f 3a 0b 7e 38 	roundsd xmm7,QWORD PTR [r14+0x38],0x2
+  3e:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2; ROUNDSD XMM4, qword ptr [R14+32], 2; ROUNDSD XMM5, qword ptr [R14+40], 2; ROUNDSD XMM6, qword ptr [R14+48], 2; ROUNDSD XMM7, qword ptr [R14+56], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 6.99</li>
+<li>APERF: 8.02</li>
+<li>UOPS: 8.2</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 7.79</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+  1f:	66 41 0f 3a 0b 66 20 	roundsd xmm4,QWORD PTR [r14+0x20],0x2
+  26:	02 
+  27:	66 41 0f 3a 0b 6e 28 	roundsd xmm5,QWORD PTR [r14+0x28],0x2
+  2e:	02 
+  2f:	66 41 0f 3a 0b 76 30 	roundsd xmm6,QWORD PTR [r14+0x30],0x2
+  36:	02 
+  37:	66 41 0f 3a 0b 7e 38 	roundsd xmm7,QWORD PTR [r14+0x38],0x2
+  3e:	02 
+  3f:	66 45 0f 3a 0b 46 40 	roundsd xmm8,QWORD PTR [r14+0x40],0x2
+  46:	02 
+  47:	66 45 0f 3a 0b 4e 48 	roundsd xmm9,QWORD PTR [r14+0x48],0x2
+  4e:	02 
+  4f:	66 45 0f 3a 0b 56 50 	roundsd xmm10,QWORD PTR [r14+0x50],0x2
+  56:	02 
+  57:	66 45 0f 3a 0b 5e 58 	roundsd xmm11,QWORD PTR [r14+0x58],0x2
+  5e:	02 
+  5f:	66 45 0f 3a 0b 66 60 	roundsd xmm12,QWORD PTR [r14+0x60],0x2
+  66:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7;
+PXOR XMM8, XMM8;
+PXOR XMM9, XMM9;
+PXOR XMM10, XMM10;
+PXOR XMM11, XMM11;
+PXOR XMM12, XMM12</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2; ROUNDSD XMM4, qword ptr [R14+32], 2; ROUNDSD XMM5, qword ptr [R14+40], 2; ROUNDSD XMM6, qword ptr [R14+48], 2; ROUNDSD XMM7, qword ptr [R14+56], 2; ROUNDSD XMM8, qword ptr [R14+64], 2; ROUNDSD XMM9, qword ptr [R14+72], 2; ROUNDSD XMM10, qword ptr [R14+80], 2; ROUNDSD XMM11, qword ptr [R14+88], 2; ROUNDSD XMM12, qword ptr [R14+96], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7; PXOR XMM8, XMM8; PXOR XMM9, XMM9; PXOR XMM10, XMM10; PXOR XMM11, XMM11; PXOR XMM12, XMM12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 11.45</li>
+<li>APERF: 13.0</li>
+<li>UOPS: 13.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 13.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+  1f:	66 41 0f 3a 0b 66 20 	roundsd xmm4,QWORD PTR [r14+0x20],0x2
+  26:	02 
+  27:	66 41 0f 3a 0b 6e 28 	roundsd xmm5,QWORD PTR [r14+0x28],0x2
+  2e:	02 
+  2f:	66 41 0f 3a 0b 76 30 	roundsd xmm6,QWORD PTR [r14+0x30],0x2
+  36:	02 
+  37:	66 41 0f 3a 0b 7e 38 	roundsd xmm7,QWORD PTR [r14+0x38],0x2
+  3e:	02 
+  3f:	66 45 0f 3a 0b 46 40 	roundsd xmm8,QWORD PTR [r14+0x40],0x2
+  46:	02 
+  47:	66 45 0f 3a 0b 4e 48 	roundsd xmm9,QWORD PTR [r14+0x48],0x2
+  4e:	02 
+  4f:	66 45 0f 3a 0b 56 50 	roundsd xmm10,QWORD PTR [r14+0x50],0x2
+  56:	02 
+  57:	66 45 0f 3a 0b 5e 58 	roundsd xmm11,QWORD PTR [r14+0x58],0x2
+  5e:	02 
+  5f:	66 45 0f 3a 0b 66 60 	roundsd xmm12,QWORD PTR [r14+0x60],0x2
+  66:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7;
+PXOR XMM8, XMM8;
+PXOR XMM9, XMM9;
+PXOR XMM10, XMM10;
+PXOR XMM11, XMM11;
+PXOR XMM12, XMM12</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2; ROUNDSD XMM4, qword ptr [R14+32], 2; ROUNDSD XMM5, qword ptr [R14+40], 2; ROUNDSD XMM6, qword ptr [R14+48], 2; ROUNDSD XMM7, qword ptr [R14+56], 2; ROUNDSD XMM8, qword ptr [R14+64], 2; ROUNDSD XMM9, qword ptr [R14+72], 2; ROUNDSD XMM10, qword ptr [R14+80], 2; ROUNDSD XMM11, qword ptr [R14+88], 2; ROUNDSD XMM12, qword ptr [R14+96], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7; PXOR XMM8, XMM8; PXOR XMM9, XMM9; PXOR XMM10, XMM10; PXOR XMM11, XMM11; PXOR XMM12, XMM12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 11.34</li>
+<li>APERF: 13.01</li>
+<li>UOPS: 15.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 12.94</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 3a 0b 06 02 	roundsd xmm0,QWORD PTR [r14],0x2
+   7:	66 41 0f 3a 0b 4e 08 	roundsd xmm1,QWORD PTR [r14+0x8],0x2
+   e:	02 
+   f:	66 41 0f 3a 0b 56 10 	roundsd xmm2,QWORD PTR [r14+0x10],0x2
+  16:	02 
+  17:	66 41 0f 3a 0b 5e 18 	roundsd xmm3,QWORD PTR [r14+0x18],0x2
+  1e:	02 
+  1f:	66 41 0f 3a 0b 66 20 	roundsd xmm4,QWORD PTR [r14+0x20],0x2
+  26:	02 
+  27:	66 41 0f 3a 0b 6e 28 	roundsd xmm5,QWORD PTR [r14+0x28],0x2
+  2e:	02 
+  2f:	66 41 0f 3a 0b 76 30 	roundsd xmm6,QWORD PTR [r14+0x30],0x2
+  36:	02 
+  37:	66 41 0f 3a 0b 7e 38 	roundsd xmm7,QWORD PTR [r14+0x38],0x2
+  3e:	02 
+  3f:	66 45 0f 3a 0b 46 40 	roundsd xmm8,QWORD PTR [r14+0x40],0x2
+  46:	02 
+  47:	66 45 0f 3a 0b 4e 48 	roundsd xmm9,QWORD PTR [r14+0x48],0x2
+  4e:	02 
+  4f:	66 45 0f 3a 0b 56 50 	roundsd xmm10,QWORD PTR [r14+0x50],0x2
+  56:	02 
+  57:	66 45 0f 3a 0b 5e 58 	roundsd xmm11,QWORD PTR [r14+0x58],0x2
+  5e:	02 
+  5f:	66 45 0f 3a 0b 66 60 	roundsd xmm12,QWORD PTR [r14+0x60],0x2
+  66:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7;
+PXOR XMM8, XMM8;
+PXOR XMM9, XMM9;
+PXOR XMM10, XMM10;
+PXOR XMM11, XMM11;
+PXOR XMM12, XMM12</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14], 2; ROUNDSD XMM1, qword ptr [R14+8], 2; ROUNDSD XMM2, qword ptr [R14+16], 2; ROUNDSD XMM3, qword ptr [R14+24], 2; ROUNDSD XMM4, qword ptr [R14+32], 2; ROUNDSD XMM5, qword ptr [R14+40], 2; ROUNDSD XMM6, qword ptr [R14+48], 2; ROUNDSD XMM7, qword ptr [R14+56], 2; ROUNDSD XMM8, qword ptr [R14+64], 2; ROUNDSD XMM9, qword ptr [R14+72], 2; ROUNDSD XMM10, qword ptr [R14+80], 2; ROUNDSD XMM11, qword ptr [R14+88], 2; ROUNDSD XMM12, qword ptr [R14+96], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7; PXOR XMM8, XMM8; PXOR XMM9, XMM9; PXOR XMM10, XMM10; PXOR XMM11, XMM11; PXOR XMM12, XMM12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 11.34</li>
+<li>APERF: 13.02</li>
+<li>UOPS: 13.2</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 12.94</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.88</li>
+<li>APERF: 1.0</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 1.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.87</li>
+<li>APERF: 1.0</li>
+<li>UOPS: 1.2</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.99</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.87</li>
+<li>APERF: 1.0</li>
+<li>UOPS: 1.02</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.99</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.4</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.49</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.49</li>
+<li>APERF: 4.01</li>
+<li>UOPS: 4.1</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 3.98</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+  23:	66 43 0f 3a 0b 64 2e 	roundsd xmm4,QWORD PTR [r14+r13*1+0x20],0x2
+  2a:	20 02 
+  2c:	66 43 0f 3a 0b 6c 2e 	roundsd xmm5,QWORD PTR [r14+r13*1+0x28],0x2
+  33:	28 02 
+  35:	66 43 0f 3a 0b 74 2e 	roundsd xmm6,QWORD PTR [r14+r13*1+0x30],0x2
+  3c:	30 02 
+  3e:	66 43 0f 3a 0b 7c 2e 	roundsd xmm7,QWORD PTR [r14+r13*1+0x38],0x2
+  45:	38 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2; ROUNDSD XMM4, qword ptr [R14+R13+32], 2; ROUNDSD XMM5, qword ptr [R14+R13+40], 2; ROUNDSD XMM6, qword ptr [R14+R13+48], 2; ROUNDSD XMM7, qword ptr [R14+R13+56], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 6.86</li>
+<li>APERF: 8.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 8.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+  23:	66 43 0f 3a 0b 64 2e 	roundsd xmm4,QWORD PTR [r14+r13*1+0x20],0x2
+  2a:	20 02 
+  2c:	66 43 0f 3a 0b 6c 2e 	roundsd xmm5,QWORD PTR [r14+r13*1+0x28],0x2
+  33:	28 02 
+  35:	66 43 0f 3a 0b 74 2e 	roundsd xmm6,QWORD PTR [r14+r13*1+0x30],0x2
+  3c:	30 02 
+  3e:	66 43 0f 3a 0b 7c 2e 	roundsd xmm7,QWORD PTR [r14+r13*1+0x38],0x2
+  45:	38 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2; ROUNDSD XMM4, qword ptr [R14+R13+32], 2; ROUNDSD XMM5, qword ptr [R14+R13+40], 2; ROUNDSD XMM6, qword ptr [R14+R13+48], 2; ROUNDSD XMM7, qword ptr [R14+R13+56], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 6.98</li>
+<li>APERF: 8.01</li>
+<li>UOPS: 10.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 8.01</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+  23:	66 43 0f 3a 0b 64 2e 	roundsd xmm4,QWORD PTR [r14+r13*1+0x20],0x2
+  2a:	20 02 
+  2c:	66 43 0f 3a 0b 6c 2e 	roundsd xmm5,QWORD PTR [r14+r13*1+0x28],0x2
+  33:	28 02 
+  35:	66 43 0f 3a 0b 74 2e 	roundsd xmm6,QWORD PTR [r14+r13*1+0x30],0x2
+  3c:	30 02 
+  3e:	66 43 0f 3a 0b 7c 2e 	roundsd xmm7,QWORD PTR [r14+r13*1+0x38],0x2
+  45:	38 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2; ROUNDSD XMM4, qword ptr [R14+R13+32], 2; ROUNDSD XMM5, qword ptr [R14+R13+40], 2; ROUNDSD XMM6, qword ptr [R14+R13+48], 2; ROUNDSD XMM7, qword ptr [R14+R13+56], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 7.6</li>
+<li>APERF: 8.71</li>
+<li>UOPS: 8.2</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 7.97</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+  23:	66 43 0f 3a 0b 64 2e 	roundsd xmm4,QWORD PTR [r14+r13*1+0x20],0x2
+  2a:	20 02 
+  2c:	66 43 0f 3a 0b 6c 2e 	roundsd xmm5,QWORD PTR [r14+r13*1+0x28],0x2
+  33:	28 02 
+  35:	66 43 0f 3a 0b 74 2e 	roundsd xmm6,QWORD PTR [r14+r13*1+0x30],0x2
+  3c:	30 02 
+  3e:	66 43 0f 3a 0b 7c 2e 	roundsd xmm7,QWORD PTR [r14+r13*1+0x38],0x2
+  45:	38 02 
+  47:	66 47 0f 3a 0b 44 2e 	roundsd xmm8,QWORD PTR [r14+r13*1+0x40],0x2
+  4e:	40 02 
+  50:	66 47 0f 3a 0b 4c 2e 	roundsd xmm9,QWORD PTR [r14+r13*1+0x48],0x2
+  57:	48 02 
+  59:	66 47 0f 3a 0b 54 2e 	roundsd xmm10,QWORD PTR [r14+r13*1+0x50],0x2
+  60:	50 02 
+  62:	66 47 0f 3a 0b 5c 2e 	roundsd xmm11,QWORD PTR [r14+r13*1+0x58],0x2
+  69:	58 02 
+  6b:	66 47 0f 3a 0b 64 2e 	roundsd xmm12,QWORD PTR [r14+r13*1+0x60],0x2
+  72:	60 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7;
+PXOR XMM8, XMM8;
+PXOR XMM9, XMM9;
+PXOR XMM10, XMM10;
+PXOR XMM11, XMM11;
+PXOR XMM12, XMM12</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2; ROUNDSD XMM4, qword ptr [R14+R13+32], 2; ROUNDSD XMM5, qword ptr [R14+R13+40], 2; ROUNDSD XMM6, qword ptr [R14+R13+48], 2; ROUNDSD XMM7, qword ptr [R14+R13+56], 2; ROUNDSD XMM8, qword ptr [R14+R13+64], 2; ROUNDSD XMM9, qword ptr [R14+R13+72], 2; ROUNDSD XMM10, qword ptr [R14+R13+80], 2; ROUNDSD XMM11, qword ptr [R14+R13+88], 2; ROUNDSD XMM12, qword ptr [R14+R13+96], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7; PXOR XMM8, XMM8; PXOR XMM9, XMM9; PXOR XMM10, XMM10; PXOR XMM11, XMM11; PXOR XMM12, XMM12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 11.33</li>
+<li>APERF: 13.0</li>
+<li>UOPS: 13.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 13.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+  23:	66 43 0f 3a 0b 64 2e 	roundsd xmm4,QWORD PTR [r14+r13*1+0x20],0x2
+  2a:	20 02 
+  2c:	66 43 0f 3a 0b 6c 2e 	roundsd xmm5,QWORD PTR [r14+r13*1+0x28],0x2
+  33:	28 02 
+  35:	66 43 0f 3a 0b 74 2e 	roundsd xmm6,QWORD PTR [r14+r13*1+0x30],0x2
+  3c:	30 02 
+  3e:	66 43 0f 3a 0b 7c 2e 	roundsd xmm7,QWORD PTR [r14+r13*1+0x38],0x2
+  45:	38 02 
+  47:	66 47 0f 3a 0b 44 2e 	roundsd xmm8,QWORD PTR [r14+r13*1+0x40],0x2
+  4e:	40 02 
+  50:	66 47 0f 3a 0b 4c 2e 	roundsd xmm9,QWORD PTR [r14+r13*1+0x48],0x2
+  57:	48 02 
+  59:	66 47 0f 3a 0b 54 2e 	roundsd xmm10,QWORD PTR [r14+r13*1+0x50],0x2
+  60:	50 02 
+  62:	66 47 0f 3a 0b 5c 2e 	roundsd xmm11,QWORD PTR [r14+r13*1+0x58],0x2
+  69:	58 02 
+  6b:	66 47 0f 3a 0b 64 2e 	roundsd xmm12,QWORD PTR [r14+r13*1+0x60],0x2
+  72:	60 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7;
+PXOR XMM8, XMM8;
+PXOR XMM9, XMM9;
+PXOR XMM10, XMM10;
+PXOR XMM11, XMM11;
+PXOR XMM12, XMM12</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2; ROUNDSD XMM4, qword ptr [R14+R13+32], 2; ROUNDSD XMM5, qword ptr [R14+R13+40], 2; ROUNDSD XMM6, qword ptr [R14+R13+48], 2; ROUNDSD XMM7, qword ptr [R14+R13+56], 2; ROUNDSD XMM8, qword ptr [R14+R13+64], 2; ROUNDSD XMM9, qword ptr [R14+R13+72], 2; ROUNDSD XMM10, qword ptr [R14+R13+80], 2; ROUNDSD XMM11, qword ptr [R14+R13+88], 2; ROUNDSD XMM12, qword ptr [R14+R13+96], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7; PXOR XMM8, XMM8; PXOR XMM9, XMM9; PXOR XMM10, XMM10; PXOR XMM11, XMM11; PXOR XMM12, XMM12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 41.83</li>
+<li>APERF: 47.99</li>
+<li>UOPS: 15.0</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 13.01</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 3a 0b 04 2e 	roundsd xmm0,QWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	66 43 0f 3a 0b 4c 2e 	roundsd xmm1,QWORD PTR [r14+r13*1+0x8],0x2
+   f:	08 02 
+  11:	66 43 0f 3a 0b 54 2e 	roundsd xmm2,QWORD PTR [r14+r13*1+0x10],0x2
+  18:	10 02 
+  1a:	66 43 0f 3a 0b 5c 2e 	roundsd xmm3,QWORD PTR [r14+r13*1+0x18],0x2
+  21:	18 02 
+  23:	66 43 0f 3a 0b 64 2e 	roundsd xmm4,QWORD PTR [r14+r13*1+0x20],0x2
+  2a:	20 02 
+  2c:	66 43 0f 3a 0b 6c 2e 	roundsd xmm5,QWORD PTR [r14+r13*1+0x28],0x2
+  33:	28 02 
+  35:	66 43 0f 3a 0b 74 2e 	roundsd xmm6,QWORD PTR [r14+r13*1+0x30],0x2
+  3c:	30 02 
+  3e:	66 43 0f 3a 0b 7c 2e 	roundsd xmm7,QWORD PTR [r14+r13*1+0x38],0x2
+  45:	38 02 
+  47:	66 47 0f 3a 0b 44 2e 	roundsd xmm8,QWORD PTR [r14+r13*1+0x40],0x2
+  4e:	40 02 
+  50:	66 47 0f 3a 0b 4c 2e 	roundsd xmm9,QWORD PTR [r14+r13*1+0x48],0x2
+  57:	48 02 
+  59:	66 47 0f 3a 0b 54 2e 	roundsd xmm10,QWORD PTR [r14+r13*1+0x50],0x2
+  60:	50 02 
+  62:	66 47 0f 3a 0b 5c 2e 	roundsd xmm11,QWORD PTR [r14+r13*1+0x58],0x2
+  69:	58 02 
+  6b:	66 47 0f 3a 0b 64 2e 	roundsd xmm12,QWORD PTR [r14+r13*1+0x60],0x2
+  72:	60 02 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+PXOR XMM0, XMM0;
+XOR R13, R13;
+PXOR XMM1, XMM1;
+PXOR XMM2, XMM2;
+PXOR XMM3, XMM3;
+PXOR XMM4, XMM4;
+PXOR XMM5, XMM5;
+PXOR XMM6, XMM6;
+PXOR XMM7, XMM7;
+PXOR XMM8, XMM8;
+PXOR XMM9, XMM9;
+PXOR XMM10, XMM10;
+PXOR XMM11, XMM11;
+PXOR XMM12, XMM12</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;ROUNDSD XMM0, qword ptr [R14+R13], 2; ROUNDSD XMM1, qword ptr [R14+R13+8], 2; ROUNDSD XMM2, qword ptr [R14+R13+16], 2; ROUNDSD XMM3, qword ptr [R14+R13+24], 2; ROUNDSD XMM4, qword ptr [R14+R13+32], 2; ROUNDSD XMM5, qword ptr [R14+R13+40], 2; ROUNDSD XMM6, qword ptr [R14+R13+48], 2; ROUNDSD XMM7, qword ptr [R14+R13+56], 2; ROUNDSD XMM8, qword ptr [R14+R13+64], 2; ROUNDSD XMM9, qword ptr [R14+R13+72], 2; ROUNDSD XMM10, qword ptr [R14+R13+80], 2; ROUNDSD XMM11, qword ptr [R14+R13+88], 2; ROUNDSD XMM12, qword ptr [R14+R13+96], 2&quot; -asm_init &quot;VZEROALL; PXOR XMM0, XMM0; XOR R13, R13; PXOR XMM1, XMM1; PXOR XMM2, XMM2; PXOR XMM3, XMM3; PXOR XMM4, XMM4; PXOR XMM5, XMM5; PXOR XMM6, XMM6; PXOR XMM7, XMM7; PXOR XMM8, XMM8; PXOR XMM9, XMM9; PXOR XMM10, XMM10; PXOR XMM11, XMM11; PXOR XMM12, XMM12&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 12.04</li>
+<li>APERF: 13.81</li>
+<li>UOPS: 13.2</li>
+<li>FpuPipeAssignment.Total0: 0.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 12.95</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

@@ -1,0 +1,686 @@
+<html>
+<head>
+<title>PABSD (XMM, M128)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>PABSD (XMM, M128) - Throughput and Uops</h1>
+<hr>
+<h2 id="nonIndexedAddr">With a non-indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.44</li>
+<li>APERF: 0.5</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.44</li>
+<li>APERF: 0.5</li>
+<li>UOPS: 1.2</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.51</li>
+<li>APERF: 0.58</li>
+<li>UOPS: 1.02</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 1.79</li>
+<li>APERF: 2.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 2.06</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 2.13</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 1.75</li>
+<li>APERF: 2.0</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 2.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.23</li>
+<li>APERF: 2.55</li>
+<li>UOPS: 4.1</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 2.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+  1b:	66 41 0f 38 1e 66 40 	pabsd  xmm4,XMMWORD PTR [r14+0x40]
+  22:	66 41 0f 38 1e 6e 50 	pabsd  xmm5,XMMWORD PTR [r14+0x50]
+  29:	66 41 0f 38 1e 76 60 	pabsd  xmm6,XMMWORD PTR [r14+0x60]
+  30:	66 41 0f 38 1e 7e 70 	pabsd  xmm7,XMMWORD PTR [r14+0x70]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]; PABSD XMM4, xmmword ptr [R14+64]; PABSD XMM5, xmmword ptr [R14+80]; PABSD XMM6, xmmword ptr [R14+96]; PABSD XMM7, xmmword ptr [R14+112]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.63</li>
+<li>APERF: 4.0</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+  1b:	66 41 0f 38 1e 66 40 	pabsd  xmm4,XMMWORD PTR [r14+0x40]
+  22:	66 41 0f 38 1e 6e 50 	pabsd  xmm5,XMMWORD PTR [r14+0x50]
+  29:	66 41 0f 38 1e 76 60 	pabsd  xmm6,XMMWORD PTR [r14+0x60]
+  30:	66 41 0f 38 1e 7e 70 	pabsd  xmm7,XMMWORD PTR [r14+0x70]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]; PABSD XMM4, xmmword ptr [R14+64]; PABSD XMM5, xmmword ptr [R14+80]; PABSD XMM6, xmmword ptr [R14+96]; PABSD XMM7, xmmword ptr [R14+112]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.49</li>
+<li>APERF: 4.01</li>
+<li>UOPS: 10.0</li>
+<li>FpuPipeAssignment.Total0: 4.01</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.01</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+  1b:	66 41 0f 38 1e 66 40 	pabsd  xmm4,XMMWORD PTR [r14+0x40]
+  22:	66 41 0f 38 1e 6e 50 	pabsd  xmm5,XMMWORD PTR [r14+0x50]
+  29:	66 41 0f 38 1e 76 60 	pabsd  xmm6,XMMWORD PTR [r14+0x60]
+  30:	66 41 0f 38 1e 7e 70 	pabsd  xmm7,XMMWORD PTR [r14+0x70]
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]; PABSD XMM4, xmmword ptr [R14+64]; PABSD XMM5, xmmword ptr [R14+80]; PABSD XMM6, xmmword ptr [R14+96]; PABSD XMM7, xmmword ptr [R14+112]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.43</li>
+<li>APERF: 5.11</li>
+<li>UOPS: 8.2</li>
+<li>FpuPipeAssignment.Total0: 4.01</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.01</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+  1b:	66 41 0f 38 1e 66 40 	pabsd  xmm4,XMMWORD PTR [r14+0x40]
+  22:	66 41 0f 38 1e 6e 50 	pabsd  xmm5,XMMWORD PTR [r14+0x50]
+  29:	66 41 0f 38 1e 76 60 	pabsd  xmm6,XMMWORD PTR [r14+0x60]
+  30:	66 41 0f 38 1e 7e 70 	pabsd  xmm7,XMMWORD PTR [r14+0x70]
+  37:	66 45 0f 38 1e 86 80 	pabsd  xmm8,XMMWORD PTR [r14+0x80]
+  3e:	00 00 00 
+  41:	66 45 0f 38 1e 8e 90 	pabsd  xmm9,XMMWORD PTR [r14+0x90]
+  48:	00 00 00 
+  4b:	66 45 0f 38 1e 96 a0 	pabsd  xmm10,XMMWORD PTR [r14+0xa0]
+  52:	00 00 00 
+  55:	66 45 0f 38 1e 9e b0 	pabsd  xmm11,XMMWORD PTR [r14+0xb0]
+  5c:	00 00 00 
+  5f:	66 45 0f 38 1e a6 c0 	pabsd  xmm12,XMMWORD PTR [r14+0xc0]
+  66:	00 00 00 
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]; PABSD XMM4, xmmword ptr [R14+64]; PABSD XMM5, xmmword ptr [R14+80]; PABSD XMM6, xmmword ptr [R14+96]; PABSD XMM7, xmmword ptr [R14+112]; PABSD XMM8, xmmword ptr [R14+128]; PABSD XMM9, xmmword ptr [R14+144]; PABSD XMM10, xmmword ptr [R14+160]; PABSD XMM11, xmmword ptr [R14+176]; PABSD XMM12, xmmword ptr [R14+192]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 7.14</li>
+<li>APERF: 8.21</li>
+<li>UOPS: 13.0</li>
+<li>FpuPipeAssignment.Total0: 6.42</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 6.58</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+  1b:	66 41 0f 38 1e 66 40 	pabsd  xmm4,XMMWORD PTR [r14+0x40]
+  22:	66 41 0f 38 1e 6e 50 	pabsd  xmm5,XMMWORD PTR [r14+0x50]
+  29:	66 41 0f 38 1e 76 60 	pabsd  xmm6,XMMWORD PTR [r14+0x60]
+  30:	66 41 0f 38 1e 7e 70 	pabsd  xmm7,XMMWORD PTR [r14+0x70]
+  37:	66 45 0f 38 1e 86 80 	pabsd  xmm8,XMMWORD PTR [r14+0x80]
+  3e:	00 00 00 
+  41:	66 45 0f 38 1e 8e 90 	pabsd  xmm9,XMMWORD PTR [r14+0x90]
+  48:	00 00 00 
+  4b:	66 45 0f 38 1e 96 a0 	pabsd  xmm10,XMMWORD PTR [r14+0xa0]
+  52:	00 00 00 
+  55:	66 45 0f 38 1e 9e b0 	pabsd  xmm11,XMMWORD PTR [r14+0xb0]
+  5c:	00 00 00 
+  5f:	66 45 0f 38 1e a6 c0 	pabsd  xmm12,XMMWORD PTR [r14+0xc0]
+  66:	00 00 00 
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]; PABSD XMM4, xmmword ptr [R14+64]; PABSD XMM5, xmmword ptr [R14+80]; PABSD XMM6, xmmword ptr [R14+96]; PABSD XMM7, xmmword ptr [R14+112]; PABSD XMM8, xmmword ptr [R14+128]; PABSD XMM9, xmmword ptr [R14+144]; PABSD XMM10, xmmword ptr [R14+160]; PABSD XMM11, xmmword ptr [R14+176]; PABSD XMM12, xmmword ptr [R14+192]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 38.34</li>
+<li>APERF: 43.98</li>
+<li>UOPS: 15.0</li>
+<li>FpuPipeAssignment.Total0: 6.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 6.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 41 0f 38 1e 06    	pabsd  xmm0,XMMWORD PTR [r14]
+   6:	66 41 0f 38 1e 4e 10 	pabsd  xmm1,XMMWORD PTR [r14+0x10]
+   d:	66 41 0f 38 1e 56 20 	pabsd  xmm2,XMMWORD PTR [r14+0x20]
+  14:	66 41 0f 38 1e 5e 30 	pabsd  xmm3,XMMWORD PTR [r14+0x30]
+  1b:	66 41 0f 38 1e 66 40 	pabsd  xmm4,XMMWORD PTR [r14+0x40]
+  22:	66 41 0f 38 1e 6e 50 	pabsd  xmm5,XMMWORD PTR [r14+0x50]
+  29:	66 41 0f 38 1e 76 60 	pabsd  xmm6,XMMWORD PTR [r14+0x60]
+  30:	66 41 0f 38 1e 7e 70 	pabsd  xmm7,XMMWORD PTR [r14+0x70]
+  37:	66 45 0f 38 1e 86 80 	pabsd  xmm8,XMMWORD PTR [r14+0x80]
+  3e:	00 00 00 
+  41:	66 45 0f 38 1e 8e 90 	pabsd  xmm9,XMMWORD PTR [r14+0x90]
+  48:	00 00 00 
+  4b:	66 45 0f 38 1e 96 a0 	pabsd  xmm10,XMMWORD PTR [r14+0xa0]
+  52:	00 00 00 
+  55:	66 45 0f 38 1e 9e b0 	pabsd  xmm11,XMMWORD PTR [r14+0xb0]
+  5c:	00 00 00 
+  5f:	66 45 0f 38 1e a6 c0 	pabsd  xmm12,XMMWORD PTR [r14+0xc0]
+  66:	00 00 00 
+</pre></li>
+<li>Init: <pre>VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14]; PABSD XMM1, xmmword ptr [R14+16]; PABSD XMM2, xmmword ptr [R14+32]; PABSD XMM3, xmmword ptr [R14+48]; PABSD XMM4, xmmword ptr [R14+64]; PABSD XMM5, xmmword ptr [R14+80]; PABSD XMM6, xmmword ptr [R14+96]; PABSD XMM7, xmmword ptr [R14+112]; PABSD XMM8, xmmword ptr [R14+128]; PABSD XMM9, xmmword ptr [R14+144]; PABSD XMM10, xmmword ptr [R14+160]; PABSD XMM11, xmmword ptr [R14+176]; PABSD XMM12, xmmword ptr [R14+192]&quot; -asm_init &quot;VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.46</li>
+<li>APERF: 9.7</li>
+<li>UOPS: 13.2</li>
+<li>FpuPipeAssignment.Total0: 6.6</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 6.41</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="indexedAddr">With an indexed addressing mode</h2>
+<h3 style="margin-left: 25px">With 1 independent instruction</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=500 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 500 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.4</li>
+<li>APERF: 0.5</li>
+<li>UOPS: 1.0</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.44</li>
+<li>APERF: 0.5</li>
+<li>UOPS: 1.2</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=100</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 0.44</li>
+<li>APERF: 0.5</li>
+<li>UOPS: 1.02</li>
+<li>FpuPipeAssignment.Total0: 0.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 0.5</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 4 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=200 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 200 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 1.76</li>
+<li>APERF: 2.0</li>
+<li>UOPS: 4.0</li>
+<li>FpuPipeAssignment.Total0: 4.77</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.76</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=2</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 2 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.18</li>
+<li>APERF: 2.49</li>
+<li>UOPS: 5.0</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 2.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=20</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 20 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 2.43</li>
+<li>APERF: 2.8</li>
+<li>UOPS: 4.1</li>
+<li>FpuPipeAssignment.Total0: 2.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 2.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 8 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+  1f:	66 43 0f 38 1e 64 2e 	pabsd  xmm4,XMMWORD PTR [r14+r13*1+0x40]
+  26:	40 
+  27:	66 43 0f 38 1e 6c 2e 	pabsd  xmm5,XMMWORD PTR [r14+r13*1+0x50]
+  2e:	50 
+  2f:	66 43 0f 38 1e 74 2e 	pabsd  xmm6,XMMWORD PTR [r14+r13*1+0x60]
+  36:	60 
+  37:	66 43 0f 38 1e 7c 2e 	pabsd  xmm7,XMMWORD PTR [r14+r13*1+0x70]
+  3e:	70 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]; PABSD XMM4, xmmword ptr [R14+R13+64]; PABSD XMM5, xmmword ptr [R14+R13+80]; PABSD XMM6, xmmword ptr [R14+R13+96]; PABSD XMM7, xmmword ptr [R14+R13+112]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 3.63</li>
+<li>APERF: 4.11</li>
+<li>UOPS: 8.0</li>
+<li>FpuPipeAssignment.Total0: 4.0</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.0</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+  1f:	66 43 0f 38 1e 64 2e 	pabsd  xmm4,XMMWORD PTR [r14+r13*1+0x40]
+  26:	40 
+  27:	66 43 0f 38 1e 6c 2e 	pabsd  xmm5,XMMWORD PTR [r14+r13*1+0x50]
+  2e:	50 
+  2f:	66 43 0f 38 1e 74 2e 	pabsd  xmm6,XMMWORD PTR [r14+r13*1+0x60]
+  36:	60 
+  37:	66 43 0f 38 1e 7c 2e 	pabsd  xmm7,XMMWORD PTR [r14+r13*1+0x70]
+  3e:	70 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]; PABSD XMM4, xmmword ptr [R14+R13+64]; PABSD XMM5, xmmword ptr [R14+R13+80]; PABSD XMM6, xmmword ptr [R14+R13+96]; PABSD XMM7, xmmword ptr [R14+R13+112]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.38</li>
+<li>APERF: 4.99</li>
+<li>UOPS: 10.0</li>
+<li>FpuPipeAssignment.Total0: 4.01</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.01</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+  1f:	66 43 0f 38 1e 64 2e 	pabsd  xmm4,XMMWORD PTR [r14+r13*1+0x40]
+  26:	40 
+  27:	66 43 0f 38 1e 6c 2e 	pabsd  xmm5,XMMWORD PTR [r14+r13*1+0x50]
+  2e:	50 
+  2f:	66 43 0f 38 1e 74 2e 	pabsd  xmm6,XMMWORD PTR [r14+r13*1+0x60]
+  36:	60 
+  37:	66 43 0f 38 1e 7c 2e 	pabsd  xmm7,XMMWORD PTR [r14+r13*1+0x70]
+  3e:	70 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]; PABSD XMM4, xmmword ptr [R14+R13+64]; PABSD XMM5, xmmword ptr [R14+R13+80]; PABSD XMM6, xmmword ptr [R14+R13+96]; PABSD XMM7, xmmword ptr [R14+R13+112]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.89</li>
+<li>APERF: 5.61</li>
+<li>UOPS: 8.2</li>
+<li>FpuPipeAssignment.Total0: 3.9</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 4.1</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div><h3 style="margin-left: 25px">With 13 independent instructions</h3>
+<div style="margin-left: 50px">
+<h4>With unroll_count=100 and no inner loop</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+  1f:	66 43 0f 38 1e 64 2e 	pabsd  xmm4,XMMWORD PTR [r14+r13*1+0x40]
+  26:	40 
+  27:	66 43 0f 38 1e 6c 2e 	pabsd  xmm5,XMMWORD PTR [r14+r13*1+0x50]
+  2e:	50 
+  2f:	66 43 0f 38 1e 74 2e 	pabsd  xmm6,XMMWORD PTR [r14+r13*1+0x60]
+  36:	60 
+  37:	66 43 0f 38 1e 7c 2e 	pabsd  xmm7,XMMWORD PTR [r14+r13*1+0x70]
+  3e:	70 
+  3f:	66 47 0f 38 1e 84 2e 	pabsd  xmm8,XMMWORD PTR [r14+r13*1+0x80]
+  46:	80 00 00 00 
+  4a:	66 47 0f 38 1e 8c 2e 	pabsd  xmm9,XMMWORD PTR [r14+r13*1+0x90]
+  51:	90 00 00 00 
+  55:	66 47 0f 38 1e 94 2e 	pabsd  xmm10,XMMWORD PTR [r14+r13*1+0xa0]
+  5c:	a0 00 00 00 
+  60:	66 47 0f 38 1e 9c 2e 	pabsd  xmm11,XMMWORD PTR [r14+r13*1+0xb0]
+  67:	b0 00 00 00 
+  6b:	66 47 0f 38 1e a4 2e 	pabsd  xmm12,XMMWORD PTR [r14+r13*1+0xc0]
+  72:	c0 00 00 00 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]; PABSD XMM4, xmmword ptr [R14+R13+64]; PABSD XMM5, xmmword ptr [R14+R13+80]; PABSD XMM6, xmmword ptr [R14+R13+96]; PABSD XMM7, xmmword ptr [R14+R13+112]; PABSD XMM8, xmmword ptr [R14+R13+128]; PABSD XMM9, xmmword ptr [R14+R13+144]; PABSD XMM10, xmmword ptr [R14+R13+160]; PABSD XMM11, xmmword ptr [R14+R13+176]; PABSD XMM12, xmmword ptr [R14+R13+192]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 7.54</li>
+<li>APERF: 8.63</li>
+<li>UOPS: 13.0</li>
+<li>FpuPipeAssignment.Total0: 6.39</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 6.61</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=1000 and unroll_count=1</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+  1f:	66 43 0f 38 1e 64 2e 	pabsd  xmm4,XMMWORD PTR [r14+r13*1+0x40]
+  26:	40 
+  27:	66 43 0f 38 1e 6c 2e 	pabsd  xmm5,XMMWORD PTR [r14+r13*1+0x50]
+  2e:	50 
+  2f:	66 43 0f 38 1e 74 2e 	pabsd  xmm6,XMMWORD PTR [r14+r13*1+0x60]
+  36:	60 
+  37:	66 43 0f 38 1e 7c 2e 	pabsd  xmm7,XMMWORD PTR [r14+r13*1+0x70]
+  3e:	70 
+  3f:	66 47 0f 38 1e 84 2e 	pabsd  xmm8,XMMWORD PTR [r14+r13*1+0x80]
+  46:	80 00 00 00 
+  4a:	66 47 0f 38 1e 8c 2e 	pabsd  xmm9,XMMWORD PTR [r14+r13*1+0x90]
+  51:	90 00 00 00 
+  55:	66 47 0f 38 1e 94 2e 	pabsd  xmm10,XMMWORD PTR [r14+r13*1+0xa0]
+  5c:	a0 00 00 00 
+  60:	66 47 0f 38 1e 9c 2e 	pabsd  xmm11,XMMWORD PTR [r14+r13*1+0xb0]
+  67:	b0 00 00 00 
+  6b:	66 47 0f 38 1e a4 2e 	pabsd  xmm12,XMMWORD PTR [r14+r13*1+0xc0]
+  72:	c0 00 00 00 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 1 -loop 1000 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]; PABSD XMM4, xmmword ptr [R14+R13+64]; PABSD XMM5, xmmword ptr [R14+R13+80]; PABSD XMM6, xmmword ptr [R14+R13+96]; PABSD XMM7, xmmword ptr [R14+R13+112]; PABSD XMM8, xmmword ptr [R14+R13+128]; PABSD XMM9, xmmword ptr [R14+R13+144]; PABSD XMM10, xmmword ptr [R14+R13+160]; PABSD XMM11, xmmword ptr [R14+R13+176]; PABSD XMM12, xmmword ptr [R14+R13+192]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 38.35</li>
+<li>APERF: 43.98</li>
+<li>UOPS: 15.0</li>
+<li>FpuPipeAssignment.Total0: 6.5</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 6.51</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+<h4>With loop_count=100 and unroll_count=10</h4>
+<ul>
+<li>Code: <pre>   0:	66 43 0f 38 1e 04 2e 	pabsd  xmm0,XMMWORD PTR [r14+r13*1]
+   7:	66 43 0f 38 1e 4c 2e 	pabsd  xmm1,XMMWORD PTR [r14+r13*1+0x10]
+   e:	10 
+   f:	66 43 0f 38 1e 54 2e 	pabsd  xmm2,XMMWORD PTR [r14+r13*1+0x20]
+  16:	20 
+  17:	66 43 0f 38 1e 5c 2e 	pabsd  xmm3,XMMWORD PTR [r14+r13*1+0x30]
+  1e:	30 
+  1f:	66 43 0f 38 1e 64 2e 	pabsd  xmm4,XMMWORD PTR [r14+r13*1+0x40]
+  26:	40 
+  27:	66 43 0f 38 1e 6c 2e 	pabsd  xmm5,XMMWORD PTR [r14+r13*1+0x50]
+  2e:	50 
+  2f:	66 43 0f 38 1e 74 2e 	pabsd  xmm6,XMMWORD PTR [r14+r13*1+0x60]
+  36:	60 
+  37:	66 43 0f 38 1e 7c 2e 	pabsd  xmm7,XMMWORD PTR [r14+r13*1+0x70]
+  3e:	70 
+  3f:	66 47 0f 38 1e 84 2e 	pabsd  xmm8,XMMWORD PTR [r14+r13*1+0x80]
+  46:	80 00 00 00 
+  4a:	66 47 0f 38 1e 8c 2e 	pabsd  xmm9,XMMWORD PTR [r14+r13*1+0x90]
+  51:	90 00 00 00 
+  55:	66 47 0f 38 1e 94 2e 	pabsd  xmm10,XMMWORD PTR [r14+r13*1+0xa0]
+  5c:	a0 00 00 00 
+  60:	66 47 0f 38 1e 9c 2e 	pabsd  xmm11,XMMWORD PTR [r14+r13*1+0xb0]
+  67:	b0 00 00 00 
+  6b:	66 47 0f 38 1e a4 2e 	pabsd  xmm12,XMMWORD PTR [r14+r13*1+0xc0]
+  72:	c0 00 00 00 
+</pre></li>
+<li>Init: <pre>VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 10 -loop 100 -basic -warm_up_count 10 -asm &quot;PABSD XMM0, xmmword ptr [R14+R13]; PABSD XMM1, xmmword ptr [R14+R13+16]; PABSD XMM2, xmmword ptr [R14+R13+32]; PABSD XMM3, xmmword ptr [R14+R13+48]; PABSD XMM4, xmmword ptr [R14+R13+64]; PABSD XMM5, xmmword ptr [R14+R13+80]; PABSD XMM6, xmmword ptr [R14+R13+96]; PABSD XMM7, xmmword ptr [R14+R13+112]; PABSD XMM8, xmmword ptr [R14+R13+128]; PABSD XMM9, xmmword ptr [R14+R13+144]; PABSD XMM10, xmmword ptr [R14+R13+160]; PABSD XMM11, xmmword ptr [R14+R13+176]; PABSD XMM12, xmmword ptr [R14+R13+192]&quot; -asm_init &quot;VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 8.98</li>
+<li>APERF: 10.31</li>
+<li>UOPS: 13.2</li>
+<li>FpuPipeAssignment.Total0: 6.41</li>
+<li>FpuPipeAssignment.Total1: 0.0</li>
+<li>FpuPipeAssignment.Total2: 0.0</li>
+<li>FpuPipeAssignment.Total3: 6.6</li>
+<li>DIV_CYCLES: 0.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
