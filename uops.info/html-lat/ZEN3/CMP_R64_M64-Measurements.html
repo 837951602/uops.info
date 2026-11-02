@@ -1,0 +1,876 @@
+<html>
+<head>
+<title>CMP (R64, M64)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>CMP (R64, M64) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (r): Register (RAX, RCX, RDX, RBX, RSP, RBP, RSI, RDI, R8, R9, R10, R11, R12, R13, R14, R15)</li><li>Operand 2 (r): Memory</li><li>Operand 3 (w, suppressed): Flags (AF: w, CF: w, OF: w, PF: w, SF: w, ZF: w)</li></ul><hr><a href="#lat1->3"><h3>Latency operand 1 &rarr; 3: 1</h3></a><a href="#lat2->3_addr"><h3>Latency operand 2 &rarr; 3 (address, base register): 5</h3></a><a href="#lat2->3_addr_index"><h3>Latency operand 2 &rarr; 3 (address, index register): 5</h3></a><a href="#lat2->3_mem"><h3>Latency operand 2 &rarr; 3 (memory): &le;6</h3></a><hr><h2 id="lat1->3">Latency operand 1 &rarr; 3: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVS R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 ff          	cmovs  r15,r15
+   7:	4d 63 c7             	movsxd r8,r15d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 5.67</li>
+<li>APERF: 7.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVP R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a ff          	cmovp  r15,r15
+   7:	4d 63 c7             	movsxd r8,r15d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 5.61</li>
+<li>APERF: 7.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVZ R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 ff          	cmove  r15,r15
+   7:	4d 63 c7             	movsxd r8,r15d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 5.74</li>
+<li>APERF: 7.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 ff          	cmovo  r15,r15
+   7:	4d 63 c7             	movsxd r8,r15d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 5.8</li>
+<li>APERF: 7.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R15, R15;MOVSX R8, R15D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D;MOVSX R8, R8D</code></li>
+<li>Chain latency: 6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 ff          	cmovb  r15,r15
+   7:	4d 63 c7             	movsxd r8,r15d
+   a:	4d 63 c0             	movsxd r8,r8d
+   d:	4d 63 c0             	movsxd r8,r8d
+  10:	4d 63 c0             	movsxd r8,r8d
+  13:	4d 63 c0             	movsxd r8,r8d
+</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R15, R15; MOVSX R8, R15D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D; MOVSX R8, R8D&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 5.86</li>
+<li>APERF: 7.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3_addr">Latency operand 2 &rarr; 3 (address, base register): 5</h2><div style="margin-left: 50px"><h3>Experiment 1 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVS R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 f6          	cmovs  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R14, R14&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVS R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 f6          	cmovs  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R14, R14&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVS R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 f6          	cmovs  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R14, R14&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVP R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a f6          	cmovp  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R14, R14&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVP R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a f6          	cmovp  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R14, R14&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.93</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVP R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a f6          	cmovp  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R14, R14&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVZ R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 f6          	cmove  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R14, R14&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVZ R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 f6          	cmove  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R14, R14&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVZ R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 f6          	cmove  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R14, R14&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R14, R14&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R14, R14&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVO R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 f6          	cmovo  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R14, R14&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R14, R14&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R14, R14&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instruction: <code>CMOVC R14, R14</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 f6          	cmovb  r14,r14
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R14, R14&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3_addr_index">Latency operand 2 &rarr; 3 (address, index register): 5</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVS R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 48 ed          	cmovs  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVS R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVP R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 4a ed          	cmovp  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVP R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.87</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVZ R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 44 ed          	cmove  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVZ R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVO R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 40 ed          	cmovo  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVO R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVC R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 42 ed          	cmovb  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVC R13, R13&quot; -asm_init &quot;XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVS R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 48 ed          	cmovs  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVS R13, R13&quot; -asm_init &quot;XOR R13, R13; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVP R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 4a ed          	cmovp  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVP R13, R13&quot; -asm_init &quot;XOR R13, R13; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.87</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVZ R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 44 ed          	cmove  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVZ R13, R13&quot; -asm_init &quot;XOR R13, R13; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVO R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 40 ed          	cmovo  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVO R13, R13&quot; -asm_init &quot;XOR R13, R13; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with clean upper 32 bits)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14+R13]</code></li>
+<li>Chain instruction: <code>CMOVC R13, R13</code></li>
+<li>Chain latency: 1</li>
+<li>Code: <pre>   0:	4f 3b 04 2e          	cmp    r8,QWORD PTR [r14+r13*1]
+   4:	4d 0f 42 ed          	cmovb  r13,r13
+</pre></li>
+<li>Init: <pre>XOR R13, R13;
+MOV R8D, R8D;</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14+R13]; CMOVC R13, R13&quot; -asm_init &quot;XOR R13, R13; MOV R8D, R8D;&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 4.81</li>
+<li>APERF: 6.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->3_mem">Latency operand 2 &rarr; 3 (memory): &le;6</h2><div style="margin-left: 50px"><h3>Experiment 1 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 e4          	cmovs  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 e4          	cmovs  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.74</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 3 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVS R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 48 e4          	cmovs  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVS R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 4 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a e4          	cmovp  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.81</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 5 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a e4          	cmovp  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 6 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVP R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 4a e4          	cmovp  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVP R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.87</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 7 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 e4          	cmove  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.93</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 8 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 e4          	cmove  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.93</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 9 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVZ R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 44 e4          	cmove  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVZ R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 10 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 e4          	cmovo  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 11 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 e4          	cmovo  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.62</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 12 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVO R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 40 e4          	cmovo  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVO R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 13 (with R8=0)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 e4          	cmovb  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 0</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 0&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.62</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 14 (with R8=1)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 e4          	cmovb  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 1</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 1&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.81</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 15 (with R8=2)</h3>
+<ul>
+<li>Instruction: <code>CMP R8, qword ptr [R14]</code></li>
+<li>Chain instructions: <code>CMOVC R12, R12;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;MOVSX R12, R12d;mov [R14], R12</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	4d 3b 06             	cmp    r8,QWORD PTR [r14]
+   3:	4d 0f 42 e4          	cmovb  r12,r12
+   7:	4d 63 e4             	movsxd r12,r12d
+   a:	4d 63 e4             	movsxd r12,r12d
+   d:	4d 63 e4             	movsxd r12,r12d
+  10:	4d 63 e4             	movsxd r12,r12d
+  13:	4d 89 26             	mov    QWORD PTR [r14],r12
+</pre></li>
+<li>Init: <pre>MOV R8, 2</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;CMP R8, qword ptr [R14]; CMOVC R12, R12; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; MOVSX R12, R12d; mov [R14], R12&quot; -asm_init &quot;MOV R8, 2&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 9.99</li>
+<li>APERF: 12.29</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
