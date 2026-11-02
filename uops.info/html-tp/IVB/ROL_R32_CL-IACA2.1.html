@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>ROL (R32, CL)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>ROL (R32, CL) - Throughput and Uops (IACA 2.1)</h1>
+<hr>
+<h2 id="distinctRegs">With different registers for different operands</h2>
+<h3>With 1 independent instruction</h3>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 0.0  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r8d, cl
+Total Num Of Uops: 2
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r8d, cl
+|   1    |           | 1.0 |           |           |     |     |    | test r15, r15
+Total Num Of Uops: 3
+</pre>
+<h3>With 12 independent instructions</h3>
+<hr>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 12.00 Cycles       Throughput Bottleneck: Port0, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 12.0   0.0  | 0.0  | 0.0    0.0  | 0.0    0.0  | 0.0  | 12.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r8d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r9d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r10d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r11d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r12d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r13d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r14d, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol ebx, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol edx, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol edi, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol esi, cl
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol ebp, cl
+Total Num Of Uops: 24
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 12.00 Cycles       Throughput Bottleneck: Port0, Port1, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 12.0   0.0  | 12.0 | 0.0    0.0  | 0.0    0.0  | 0.0  | 12.0 |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r8d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r9d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r10d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r11d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r12d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r13d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r14d, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol ebx, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol edx, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol edi, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol esi, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol ebp, cl
+|   1    |           | 1.0 |           |           |     |     | CP | test r15, r15
+Total Num Of Uops: 36
+</pre>
+<hr><h2 id="sameReg">With the same register for for different operands</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 0.0  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol ecx, cl
+Total Num Of Uops: 2
+</pre>
+<h4>With additional dependency-breaking instructions</h4>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 2.00 Cycles       Throughput Bottleneck: InterIteration
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 1.0  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol ecx, cl
+|   1    |           | 1.0 |           |           |     |     |    | test r15, r15
+Total Num Of Uops: 3
+</pre>
+<hr><h2 id="noInteriteration">With the -no_interiteration flag</h2>
+<pre>
+Throughput Analysis Report
+--------------------------
+Block Throughput: 1.00 Cycles       Throughput Bottleneck: Port0, Port5
+
+Port Binding In Cycles Per Iteration:
+-------------------------------------------------------------------------
+|  Port  |  0   -  DV  |  1   |  2   -  D   |  3   -  D   |  4   |  5   |
+-------------------------------------------------------------------------
+| Cycles | 1.0    0.0  | 0.0  | 0.0    0.0  | 0.0    0.0  | 0.0  | 1.0  |
+-------------------------------------------------------------------------
+
+
+| Num Of |              Ports pressure in cycles               |    |
+|  Uops  |  0  - DV  |  1  |  2  -  D  |  3  -  D  |  4  |  5  |    |
+---------------------------------------------------------------------
+|   2    | 1.0       |     |           |           |     | 1.0 | CP | rol r8d, cl
+Total Num Of Uops: 2
+</pre>
+</body>
+</html>
