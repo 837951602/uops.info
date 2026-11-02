@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>KMOVD (K, K)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>KMOVD (K, K) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (K0, K1, K2, K3, K4, K5, K6, K7)</li><li>Operand 2 (r): Register (K0, K1, K2, K3, K4, K5, K6, K7)</li></ul><hr><a href="#lat2->1"><h3>Latency operand 2 &rarr; 1: 1</h3></a><hr><h2 id="lat2->1">Latency operand 2 &rarr; 1: 1</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>KMOVD K2, K1</code></li>
+<li>Chain instruction: <code>KMOVD K1, K2</code></li>
+<li>Code: <pre>   0:	c4 e1 f9 90 d1       	kmovd  k2,k1
+   5:	c4 e1 f9 90 ca       	kmovd  k1,k2
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;KMOVD K2, K1; KMOVD K1, K2&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 1.65</li>
+<li>APERF: 2.0</li>
+<li>UOPS: 2.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>KMOVD K2, K1</code></li>
+<li>Chain instructions: <code>KMOVQ K1, K2;KMOVQ K1, K1;KMOVQ K1, K1;KMOVQ K1, K1;KMOVQ K1, K1</code></li>
+<li>Chain latency: 5</li>
+<li>Code: <pre>   0:	c4 e1 f9 90 d1       	kmovd  k2,k1
+   5:	c4 e1 f8 90 ca       	kmovq  k1,k2
+   a:	c4 e1 f8 90 c9       	kmovq  k1,k1
+   f:	c4 e1 f8 90 c9       	kmovq  k1,k1
+  14:	c4 e1 f8 90 c9       	kmovq  k1,k1
+  19:	c4 e1 f8 90 c9       	kmovq  k1,k1
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;KMOVD K2, K1; KMOVQ K1, K2; KMOVQ K1, K1; KMOVQ K1, K1; KMOVQ K1, K1; KMOVQ K1, K1&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 5.17</li>
+<li>APERF: 6.01</li>
+<li>UOPS: 6.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>

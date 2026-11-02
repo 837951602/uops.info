@@ -1,0 +1,119 @@
+<html>
+<head>
+<title>VPSRLW_EVEX (YMM, M256, I8)</title>
+<script src="../../../uops.info/m.js"></script>
+</head>
+<body>
+<noscript><p><img src="https://epica.cs.uni-saarland.de/piwik.php?idsite=19&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+<h1>VPSRLW_EVEX (YMM, M256, I8) - Latency</h1>
+<hr>
+<h2>Operands</h2><ul><li>Operand 1 (w): Register (YMM0, YMM1, YMM2, YMM3, YMM4, YMM5, YMM6, YMM7, YMM8, YMM9, YMM10, YMM11, YMM12, YMM13, YMM14, YMM15, YMM16, YMM17, YMM18, YMM19, YMM20, YMM21, YMM22, YMM23, YMM24, YMM25, YMM26, YMM27, YMM28, YMM29, YMM30, YMM31)</li><li>Operand 2 (r): Memory</li><li>Operand 3 (r): 8-bit immediate</li></ul><hr><a href="#lat2->1_addr"><h3>Latency operand 2 &rarr; 1 (address, base register): &le;9</h3></a><a href="#lat2->1_addr_index"><h3>Latency operand 2 &rarr; 1 (address, index register): &le;9</h3></a><a href="#lat2->1_mem"><h3>Latency operand 2 &rarr; 1 (memory): &le;10</h3></a><hr><h2 id="lat2->1_addr">Latency operand 2 &rarr; 1 (address, base register): &le;9</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>{evex} VPSRLW YMM0, ymmword ptr [R14], 2</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R14, R12;XOR R14, R12;XOR R14, R12;XOR R14, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	62 d1 7d 28 71 16 02 	vpsrlw ymm0,YMMWORD PTR [r14],0x2
+   7:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   c:	4d 31 e6             	xor    r14,r12
+   f:	4d 31 e6             	xor    r14,r12
+  12:	4d 31 e6             	xor    r14,r12
+  15:	4d 31 e6             	xor    r14,r12
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPSRLW YMM0, ymmword ptr [R14], 2; VMOVQ R12, XMM0; XOR R14, R12; XOR R14, R12; XOR R14, R12; XOR R14, R12&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 11.91</li>
+<li>APERF: 14.0</li>
+<li>UOPS: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_addr_index">Latency operand 2 &rarr; 1 (address, index register): &le;9</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>{evex} VPSRLW YMM0, ymmword ptr [R14+R13], 2</code></li>
+<li>Chain instructions: <code>VMOVQ R12, XMM0;XOR R13, R12;XOR R13, R12;XOR R13, R12;XOR R13, R12</code></li>
+<li>Chain latency: &ge;5</li>
+<li>Code: <pre>   0:	62 91 7d 28 71 14 2e 	vpsrlw ymm0,YMMWORD PTR [r14+r13*1],0x2
+   7:	02 
+   8:	c4 c1 f9 7e c4       	vmovq  r12,xmm0
+   d:	4d 31 e5             	xor    r13,r12
+  10:	4d 31 e5             	xor    r13,r12
+  13:	4d 31 e5             	xor    r13,r12
+  16:	4d 31 e5             	xor    r13,r12
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL;
+XOR R13, R13</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPSRLW YMM0, ymmword ptr [R14+R13], 2; VMOVQ R12, XMM0; XOR R13, R12; XOR R13, R12; XOR R13, R12; XOR R13, R12&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL; XOR R13, R13&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 11.83</li>
+<li>APERF: 14.0</li>
+<li>UOPS: 6.0</li>
+</ul>
+</li></ul>
+</div><hr><h2 id="lat2->1_mem">Latency operand 2 &rarr; 1 (memory): &le;10</h2><div style="margin-left: 50px"><h3>Experiment 1</h3>
+<ul>
+<li>Instruction: <code>{evex} VPSRLW YMM0, ymmword ptr [R14], 2</code></li>
+<li>Chain instructions: <code>VANDPD YMM13, YMM0, YMM0;VANDPD YMM13, YMM13, YMM13;VANDPD YMM13, YMM13, YMM13;VANDPD YMM13, YMM13, YMM13;VANDPD YMM13, YMM13, YMM13;VMOVUPD [R14], YMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	62 d1 7d 28 71 16 02 	vpsrlw ymm0,YMMWORD PTR [r14],0x2
+   7:	c5 7d 54 e8          	vandpd ymm13,ymm0,ymm0
+   b:	c4 41 15 54 ed       	vandpd ymm13,ymm13,ymm13
+  10:	c4 41 15 54 ed       	vandpd ymm13,ymm13,ymm13
+  15:	c4 41 15 54 ed       	vandpd ymm13,ymm13,ymm13
+  1a:	c4 41 15 54 ed       	vandpd ymm13,ymm13,ymm13
+  1f:	c4 41 7d 11 2e       	vmovupd YMMWORD PTR [r14],ymm13
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPSRLW YMM0, ymmword ptr [R14], 2; VANDPD YMM13, YMM0, YMM0; VANDPD YMM13, YMM13, YMM13; VANDPD YMM13, YMM13, YMM13; VANDPD YMM13, YMM13, YMM13; VANDPD YMM13, YMM13, YMM13; VMOVUPD [R14], YMM13&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 13.94</li>
+<li>APERF: 16.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+<h3>Experiment 2</h3>
+<ul>
+<li>Instruction: <code>{evex} VPSRLW YMM0, ymmword ptr [R14], 2</code></li>
+<li>Chain instructions: <code>VPAND YMM13, YMM0, YMM0;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VPAND YMM13, YMM13, YMM13;VMOVDQU [R14], YMM13</code></li>
+<li>Chain latency: &ge;6</li>
+<li>Code: <pre>   0:	62 d1 7d 28 71 16 02 	vpsrlw ymm0,YMMWORD PTR [r14],0x2
+   7:	c5 7d db e8          	vpand  ymm13,ymm0,ymm0
+   b:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  10:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  15:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  1a:	c4 41 15 db ed       	vpand  ymm13,ymm13,ymm13
+  1f:	c4 41 7e 7f 2e       	vmovdqu YMMWORD PTR [r14],ymm13
+</pre></li>
+<li>Init: <pre>MOV R15, 10000;
+L: VADDPS YMM0, YMM1, YMM1;
+VADDPS YMM0, YMM1, YMM1;
+DEC R15;
+JNZ L;
+VZEROALL</pre></li>
+<li><a href="javascript:;" onclick="this.outerHTML = '<pre>sudo ./kernel-nanoBench.sh -f -unroll 100 -warm_up_count 10 -asm &quot;{evex} VPSRLW YMM0, ymmword ptr [R14], 2; VPAND YMM13, YMM0, YMM0; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VPAND YMM13, YMM13, YMM13; VMOVDQU [R14], YMM13&quot; -asm_init &quot;MOV R15, 10000; L: VADDPS YMM0, YMM1, YMM1; VADDPS YMM0, YMM1, YMM1; DEC R15; JNZ L; VZEROALL&quot;</pre>'">Show nanoBench command</a></li>
+<li>Results:
+<ul>
+<li>MPERF: 13.94</li>
+<li>APERF: 16.0</li>
+<li>UOPS: 7.0</li>
+</ul>
+</li></ul>
+</div></body>
+</html>
